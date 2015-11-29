@@ -1,0 +1,93 @@
+/*
+
+dmccarroll 20121030
+Modified Tink's code to make it work (I think) with 4.6 SDK
+
+*/
+
+/* CSS file */
+@namespace "library://ns.tink.ws/flex/spark";
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace containers "ws.tink.spark.containers.*";
+@namespace controls "ws.tink.spark.controls.*";
+@namespace itemRenderers "ws.tink.spark.itemRenderers.*";
+
+containers|Accordion
+{
+	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
+}
+
+containers|Accordion s|ButtonBarButton
+{
+/*	cornerRadius : 0;*/
+}
+
+controls|Alert
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.AlertSkin");
+}
+
+controls|BorderDataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.BorderDataNavigatorSkin");
+}
+
+controls|CheckBoxBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.CheckBoxBarSkin");
+}
+
+controls|DataAccordion
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.DataAccordionSkin");
+}
+
+controls|DataAccordion s|ButtonBarButton
+{
+/*	cornerRadius : 0;*/
+}
+
+controls|DataNavigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.DataNavigatorSkin");
+}
+
+controls|MenuBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MenuBarSkin");
+}
+
+itemRenderers|MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropRightMenuBarItemRendererSkin");
+}
+
+controls|MenuBar itemRenderers|MenuBarItemRenderer
+{
+	skinClass: ClassReference("ws.tink.spark.skins.itemRenderers.DropDownMenuBarItemRendererSkin");
+}
+
+controls|MultipleSelectionButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.MultipleSelectionButtonBarSkin");
+}
+
+containers|Navigator
+{
+	skinClass: ClassReference("ws.tink.spark.skins.containers.NavigatorSkin");
+}
+
+controls|PropertiesList
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.PropertiesListSkin");
+}
+
+controls|RadioButtonBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.RadioButtonBarSkin");
+}
+
+controls|ValidityVScrollBar
+{
+	skinClass: ClassReference("ws.tink.spark.skins.controls.ValidityVScrollBarSkin");
+}
