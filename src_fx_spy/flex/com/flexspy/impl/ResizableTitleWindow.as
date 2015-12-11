@@ -182,7 +182,7 @@ public class ResizableTitleWindow extends TitleWindow {
         doubleClickEnabled = true;
 
         setStyle("headerHeight", 21);
-        setStyle("cornerRadius", 4);
+        //setStyle("cornerRadius", 4);
         setStyle("borderAlpha", 1);
         setStyle("dropShadowEnabled", true);
         setStyle("resizeAffordance", 6);

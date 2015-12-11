@@ -41,6 +41,8 @@ package com.brightworks.util {
       }
 
       public static function getStandardFontSize():int {
+         if (Utils_System.isRunningOnDesktop())
+            return 14;
          //
          // Note that while this is named "standard *font* size", we also use this metric for other things.
          // For examples, do a "Find Usages" search.
