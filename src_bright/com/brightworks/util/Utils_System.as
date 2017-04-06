@@ -122,6 +122,10 @@ package com.brightworks.util {
          return (platformName == Constant_PlatformName.IOS);
       }
 
+      public static function isMobilePlatform():Boolean {
+         return (isAndroid() || isIOS());
+      }
+
       public static function isScreenResolutionHighEnough(requiredX:uint, requiredY:uint, isMobile:Boolean):Boolean {
          init();
          if ((isMobile) && (!Utils_System._isMobileDevice)) {

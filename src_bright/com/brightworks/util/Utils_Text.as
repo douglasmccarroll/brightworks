@@ -22,6 +22,7 @@ package com.brightworks.util {
    import flash.text.TextFormat;
 
    public class Utils_Text {
+
       public static function createSimpleTextField(fontSize:uint = 0, fontFamily:String = "", selectable:Boolean = false):TextField {
          if (fontSize == 0)
             fontSize = getStandardFontSize();

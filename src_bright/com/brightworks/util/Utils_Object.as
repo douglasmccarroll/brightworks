@@ -298,6 +298,11 @@ package com.brightworks.util
                 System.disposeXML(xml);
                 return indentString + "Class: " + className;
             }
+            if (o is Sort)
+            {
+               System.disposeXML(xml);
+               return indentString + "Sort";
+            }
             // First, create arrays of property names and their data types, and find length of longest property name
             var propertyInfoList:ArrayCollection = new ArrayCollection();
             var sort:Sort = new Sort();

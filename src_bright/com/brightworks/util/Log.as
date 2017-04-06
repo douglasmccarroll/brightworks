@@ -213,7 +213,8 @@ package com.brightworks.util {
          }
          result += "\n";
          if (_summaryStringAppenderCallback is Function)
-            result += _summaryStringAppenderCallback(result);
+            result += _summaryStringAppenderCallback(result) + "\n";
+         result += "mb key: air in-use mb / air total mb / app mb\n";
          return result;
       }
 
@@ -249,8 +250,9 @@ package com.brightworks.util {
          Log.hasFatalErrorBeenLogged = true;
          doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL, logToServerCallbackFunction);
          if (Utils_System.isAlphaOrBetaVersion()) {
+            var alertString:String = "Fatal error - diagnostic information has been copied to the clipboard\n\n" + info.toString();
             copyRecentInfoToClipboard();
-            MobileAlert.open("Fatal error - diagnostic information has been copied to the clipboard", false);
+            MobileAlert.open(alertString, false);
          }
          _fatalLogUserFeedbackFunction();
       }
@@ -258,7 +260,7 @@ package com.brightworks.util {
       public static function frameLength(length:Number):void {
          if (!Log._isInitialized)
             return;
-         addMessageToDetailedInfoList("f:" + length + "\n");
+         addMessageToDetailedInfoList("frame ms:" + length + "\n");
       }
 
       public static function getLengthLimitedInfoString(maxStringLength:Number):String {
@@ -442,6 +444,11 @@ package com.brightworks.util {
                   result += error + "\n";
             } else {
                try {
+
+                  /*if (infoItem.hasOwnProperty("publishedLessonVersionId") && (infoItem.publishedLessonVersionId == "info.xiaina.eng.cmn.newbie_017_go_to_restaurant_2")) {
+                     var a:int = 0;
+                  }*/
+
                   var stateInfo:String = Utils_Object.getInstanceStateInfo(infoItem) + "\n";
                } catch (error:Error) {
                   stateInfo = "######### Log.convertInfoDataToHumanReadableString(): Utils_Object.getInstanceStateInfo() throws error for: " + infoItem.toString();
@@ -515,15 +522,15 @@ package com.brightworks.util {
          var airOrPlayerInUseBytes:Number = System.totalMemoryNumber; // Docs: "memory ... in use ... directly allocated by Flash Player or AIR
          var airOrPlayerUnusedBytes:int = System.freeMemory; // Docs: "allocated ... not in use ... fluctuates as garbage collection takes place.
          var airOrPlayerTotalBytes:Number = airOrPlayerInUseBytes + Number(airOrPlayerUnusedBytes);
-         var totalAppBytes:int = Math.round(System.privateMemory); // Docs: "AIR ... entire memory consumption of an application"
+         var totalAppBytes:int = Math.round(System.privateMemory); // Total memory used by application
          var airOrPlayerInUseMB:Number = airOrPlayerInUseBytes / (1024 * 1024);
          var airOrPlayerTotalMB:Number = airOrPlayerTotalBytes / (1024 * 1024);
          var totalAppMB:int = totalAppBytes / (1024 * 1024);
          var airOrPlayerInUseMBString:String = Utils_DataConversionComparison.convertNumberToString(airOrPlayerInUseMB, 2);
          var airOrPlayerTotalMBString:String = Utils_DataConversionComparison.convertNumberToString(airOrPlayerTotalMB, 1);
          var totalAppMBString:String = Utils_DataConversionComparison.convertNumberToString(totalAppMB);
-         result += "s:" + elapsedSecondsString + "  ";
-         result += "m:" + airOrPlayerInUseMBString + "/";
+         result += "secs:" + elapsedSecondsString + "  ";
+         result += "mb:" + airOrPlayerInUseMBString + "/";
          result += airOrPlayerTotalMBString + "/";
          result += totalAppMBString;
          return result;

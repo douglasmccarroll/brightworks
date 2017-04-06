@@ -385,7 +385,18 @@ package com.brightworks.util {
          var currChar:String;
          while (true) {
             currChar = s.charAt(0);
-            if ((currChar == " ") || (currChar == "\t") || (currChar == "\n") || (currChar == "\r")) {
+            // ToDo: Extract isCharWhiteSpace() from these two methods
+            if (
+                  (currChar == " ") ||
+                  (currChar == "\f") ||     // form feed
+                  (currChar == "\n") ||     // new line
+                  (currChar == "\r") ||     // carriage return
+                  (currChar == "\t") ||     // tab
+                  (currChar == "\u00A0") || // non-breaking space
+                  (currChar == "\u2028") || // line separator
+                  (currChar == "\u2029") || // paragraph separator
+                  (currChar == "\u3000")    // ideographic separator
+            ) {
                s = s.substring(1, s.length);
             } else {
                break;
@@ -399,8 +410,18 @@ package com.brightworks.util {
             return "";
          var charCount:int = s.length;
          for (var i:int = charCount - 1; i >= 0; i--) {
-            // \n \r \t 
-            if ((s.charAt(i) == " ") || (s.charAt(i) == "\t") || (s.charAt(i) == "\n") || (s.charAt(i) == "\r")) {
+            // ToDo: Extract isCharWhiteSpace() from these two methods
+            if (
+                  (s.charAt(i) == " ") ||
+                  (s.charAt(i) == "\f") ||     // form feed
+                  (s.charAt(i) == "\n") ||     // new line
+                  (s.charAt(i) == "\r") ||     // carriage return
+                  (s.charAt(i) == "\t") ||     // tab
+                  (s.charAt(i) == "\u00A0") || // non-breaking space
+                  (s.charAt(i) == "\u2028") || // line separator
+                  (s.charAt(i) == "\u2029") || // paragraph separator
+                  (s.charAt(i) == "\u3000")    // ideographic separator
+            ) {
                s = s.substring(0, i);
             } else {
                break;

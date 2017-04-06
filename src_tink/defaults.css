@@ -17,11 +17,6 @@ containers|Accordion
 	skinClass: ClassReference("ws.tink.spark.skins.containers.AccordionSkin");
 }
 
-containers|Accordion s|ButtonBarButton
-{
-/*	cornerRadius : 0;*/
-}
-
 controls|Alert
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.AlertSkin");
@@ -40,11 +35,6 @@ controls|CheckBoxBar
 controls|DataAccordion
 {
 	skinClass: ClassReference("ws.tink.spark.skins.controls.DataAccordionSkin");
-}
-
-controls|DataAccordion s|ButtonBarButton
-{
-/*	cornerRadius : 0;*/
 }
 
 controls|DataNavigator

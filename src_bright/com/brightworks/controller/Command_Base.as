@@ -20,7 +20,6 @@ package com.brightworks.controller
 {
     import com.brightworks.base.Callbacks;
     import com.brightworks.util.AppActiveElapsedTimeTimer;
-    import com.brightworks.util.AppUseAnalytics;
     import com.brightworks.util.Log;
     import com.brightworks.util.Utils_System;
 
@@ -28,8 +27,6 @@ package com.brightworks.controller
 
     public class Command_Base
     {
-        protected var appUseAnalytics:AppUseAnalytics = AppUseAnalytics.getInstance();
-
         private var _timeoutTimer:AppActiveElapsedTimeTimer;
         private var _timeoutTimerCompleteFunction:Function;
 
