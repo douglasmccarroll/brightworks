@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="1.0" viewHeight="500" viewWidth="500" xmlns="http://ns.adobe.com/fxg/2008">
+  <Library/>
+  <Group x="-10" y="-10" d:type="layer" d:userLabel="Layer 1" xmlns:d="http://ns.adobe.com/fxg/2008/dt">
+    <Group>
+      <Group>
+        <BitmapGraphic alpha="0.65" width="528" height="528" source="@Embed('ButtonSkin_Flat_fxg_up.assets/images/ai149693333512.png')" repeat="false"/>
+        <Path winding="nonZero" data="M500 488C500 494.627 494.627 500 488 500L32 500C25.3726 500 20 494.627 20 488L20 32C20 25.3726 25.3726 20 32 20L488 20C494.627 20 500 25.3726 500 32L500 488Z" >
+          <fill>
+            <SolidColor color="#c0c0c0"/>
+          </fill>
+        </Path>
+      </Group>
+    </Group>
+  </Group>
+</Graphic>
