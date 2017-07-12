@@ -2,7 +2,9 @@ package com.brightworks.skins.button {
 
 /*
 
-  This class was created by modifying spark.skins.android4.ButtonSkin
+  dmccarroll 20170711
+  This class was created by modifying spark.skins.android4.ButtonSkin, which was created by modifying some other skin, I think.
+  It calls the background graphic "BorderSkin". This should probably be changed.
 
 */
 
@@ -151,13 +153,14 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
          labelDisplayShadow = StyleableTextField(createInFontContext(StyleableTextField));
          labelDisplayShadow.styleName = this;
          labelDisplayShadow.colorName = "textShadowColor";
+         labelDisplayShadow.alpha = 1;
          labelDisplayShadow.useTightTextBounds = false;
 
          // add shadow before display
          addChildAt(labelDisplayShadow, getChildIndex(labelDisplay));
       }
       setStyle("textAlign", "center");
-      setStyle("color", 0x444499);
+      setStyle("color", 0xcbcbef);
    }
 
    override protected function commitDisabled():void {
@@ -192,10 +195,10 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
       }
       layoutBorder(unscaledWidth, unscaledHeight);
       // update label shadow
-      labelDisplayShadow.alpha = getStyle("textShadowAlpha");
+      labelDisplayShadow.alpha = .85;
       labelDisplayShadow.commitStyles();
       // don't use tightText positioning on shadow
-      setElementPosition(labelDisplayShadow, labelDisplay.x, labelDisplay.y + 1);
+      setElementPosition(labelDisplayShadow, labelDisplay.x + 1, labelDisplay.y + 1);
       setElementSize(labelDisplayShadow, labelDisplay.width, labelDisplay.height);
       // if labelDisplay is truncated, then push it down here as well.
       // otherwise, it would have gotten pushed in the labelDisplay_valueCommitHandler()
