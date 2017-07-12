@@ -2,12 +2,21 @@ package com.brightworks.util {
 import flash.display.Sprite;
 import flash.filters.BitmapFilterQuality;
 import flash.filters.BitmapFilterType;
+import flash.filters.DropShadowFilter;
 import flash.geom.ColorTransform;
 
 import spark.filters.BevelFilter;
 
 public class Utils_Graphic {
    public function Utils_Graphic() {
+   }
+
+   public static function addDropShadow(sprite:Sprite, offset:Number = 4, alpha:Number = 1, angle:Number = 45, color:uint = 0x000000):void {
+      sprite.graphics.clear();
+      var filters:Array = (sprite.filters is Array) ? sprite.filters : [];
+      var filter:DropShadowFilter = new DropShadowFilter(offset, angle, color, alpha, offset * 6, offset * 6);
+      filters.push(filter);
+      sprite.filters = filters;
    }
 
    public static function drawBevelledSurface(sprite:Sprite, color:uint, brightnessMultiplier:Number, cornerRadius:uint, bevelDistance:uint):void {

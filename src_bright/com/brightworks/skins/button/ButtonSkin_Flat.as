@@ -9,6 +9,8 @@ package com.brightworks.skins.button {
 */
 
 import com.brightworks.util.Log;
+import com.brightworks.util.Utils_Graphic;
+import com.brightworks.util.Utils_Text;
 
 import flash.display.DisplayObject;
 
@@ -59,6 +61,7 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
 
    public function ButtonSkin_Flat() {
       super();
+      Utils_Graphic.addDropShadow(this, Utils_Text.getStandardFontSize() / 6, .4);
       _disabledBorderSkin = ButtonSkin_Flat_fxg_disabled;
       _downBorderSkin = ButtonSkin_Flat_fxg_down;
       _upBorderSkin = ButtonSkin_Flat_fxg_up;
