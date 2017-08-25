@@ -35,7 +35,7 @@ import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 
  NOTE: This class has separate versions for our production project and our
  desktop debugging project. Many ANEs don't support
- Windows, so we use a dummy class/methods for that case.
+ Windows/Mac, so we use a dummy class/methods for that case.
 
 
 
@@ -131,7 +131,7 @@ public class Utils_NativeExtensions {
       return _goViralExtension.isFacebookSupported();
    }
 
-   // MyFlashLabs PermissionCheck needed for AIR 24 and later?
+   // MyFlashLabs PermissionCheck needed for AIR 24 and later
    public static function requestMicrophonePermission(callback:Function):void {
       if (!_permissionCheck)
          _permissionCheck = new PermissionCheck();
