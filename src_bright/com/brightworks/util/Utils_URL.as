@@ -22,7 +22,7 @@ package com.brightworks.util
 
     public class Utils_URL
     {
-        public static const FILEPATHINFO__DESKTOP_SERVER_STRING:String = "//localhost/";
+        public static const FILEPATHINFO__DESKTOP_SERVER_STRING:String = "//127.0.0.1/";   // changed this from 'localhost' because I was getting "Error #2032: Stream Error" with localhost
 
         public static function convertUrlToDesktopServerUrl(url:String):String
         {

@@ -28,7 +28,8 @@ package com.brightworks.util.download
     import flash.errors.IOError;
     import flash.events.Event;
     import flash.events.EventDispatcher;
-    import flash.events.IOErrorEvent;
+import flash.events.HTTPStatusEvent;
+import flash.events.IOErrorEvent;
     import flash.events.ProgressEvent;
     import flash.net.URLRequest;
     import flash.net.URLStream;
@@ -132,6 +133,7 @@ package com.brightworks.util.download
             _stream.addEventListener(IOErrorEvent.IO_ERROR, onDownloadError);
             _stream.addEventListener(IOErrorEvent.NETWORK_ERROR, onDownloadError);
             _stream.addEventListener(IOErrorEvent.VERIFY_ERROR, onDownloadError);
+            _stream.addEventListener(HTTPStatusEvent.HTTP_STATUS, onDownloadStatus);
             _stream.load(_request);
         }
 
@@ -154,7 +156,9 @@ package com.brightworks.util.download
                 _stream.removeEventListener(IOErrorEvent.IO_ERROR, onDownloadError);
                 _stream.removeEventListener(IOErrorEvent.NETWORK_ERROR, onDownloadError);
                 _stream.removeEventListener(IOErrorEvent.VERIFY_ERROR, onDownloadError);
-                try
+                _stream.removeEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onDownloadStatus);
+
+               try
                 {
                     _stream.close();
                 }
@@ -199,11 +203,17 @@ package com.brightworks.util.download
             dispatchEvent(e);
         }
 
-        private function onDownloadProgress(event:ProgressEvent):void
-        {
-            bytesLoaded = event.bytesLoaded;
-            bytesTotal = event.bytesTotal;
-        }
+       private function onDownloadProgress(event:ProgressEvent):void
+       {
+          bytesLoaded = event.bytesLoaded;
+          bytesTotal = event.bytesTotal;
+       }
+
+       private function onDownloadStatus(event:HTTPStatusEvent):void
+       {
+          // For debugging...
+          // trace(event.status);
+       }
     }
 }
 
