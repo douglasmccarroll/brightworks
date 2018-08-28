@@ -16,8 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.component.mobile
-{
+package com.brightworks.component.mobile {
 import com.brightworks.constant.Constant_Misc;
 import com.brightworks.interfaces.IDisposable;
 import com.brightworks.resource.Resources_Audio;
@@ -28,46 +27,40 @@ import flash.events.MouseEvent;
 
 import spark.components.Button;
 
-public class MobileButton extends Button implements IDisposable
-    {
-        public var clickSoundEnabled:Boolean = true;
+public class MobileButton extends Button implements IDisposable {
+   public var clickSoundEnabled:Boolean = true;
 
-        private var _isDisposed:Boolean;
-        private var _mostRecentClickTime:Number;
+   private var _isDisposed:Boolean;
+   private var _mostRecentClickTime:Number;
 
-        public function MobileButton()
-        {
-            super();
-            addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-            addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-        }
+   public function MobileButton() {
+      super();
+      addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+      addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
 
-        public function dispose():void
-        {
-            if (_isDisposed)
-                return;
-            _isDisposed = false;
-            removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-            removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-        }
+   public function dispose():void {
+      if (_isDisposed)
+         return;
+      _isDisposed = false;
+      removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+      removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
 
-        private function onMouseDown(event:MouseEvent):void
-        {
-            if (_mostRecentClickTime > 0)
-            {
-                var currentTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
-                var timeSinceLastClick:Number = currentTime - _mostRecentClickTime;
-                if (timeSinceLastClick <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL)
-                    return;
-            }
-            _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
-            if (clickSoundEnabled)
-                Resources_Audio.CLICK.play();
-        }
+   private function onMouseDown(event:MouseEvent):void {
+      if (_mostRecentClickTime > 0) {
+         var currentTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
+         var timeSinceLastClick:Number = currentTime - _mostRecentClickTime;
+         if (timeSinceLastClick <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL)
+            return;
+      }
+      _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
+      if (clickSoundEnabled)
+         Resources_Audio.CLICK.play();
+   }
 
-        private function onRemovedFromStage(event:Event):void
-        {
-            dispose();
-        }
-    }
+   private function onRemovedFromStage(event:Event):void {
+      dispose();
+   }
+}
 }

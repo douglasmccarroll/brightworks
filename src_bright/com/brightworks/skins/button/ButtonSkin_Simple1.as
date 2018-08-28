@@ -12,9 +12,6 @@ import mx.core.DPIClassification;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
 
-import com.brightworks.skins.button.ButtonSkin_Simple1_fxg_down;
-import com.brightworks.skins.button.ButtonSkin_Simple1_fxg_up;
-
 import spark.components.supportClasses.StyleableTextField;
 import spark.skins.mobile.supportClasses.ButtonSkinBase;
 
@@ -215,7 +212,6 @@ public class ButtonSkin_Simple1 extends ButtonSkinBase {
       else
          return _upBorderSkin;
    }
-
 
 
 }

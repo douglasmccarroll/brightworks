@@ -16,61 +16,48 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.service
-{
-    import com.brightworks.util.Log;
+package com.brightworks.service {
+import com.brightworks.util.Log;
 
-    import mx.rpc.IResponder;
+import mx.rpc.IResponder;
 
-    public class BwAsyncResponder implements IResponder
-    {
-        private var resultHandler:Function;
-        private var faultHandler:Function;
-        private var handlerArgs:Array;
+public class BwAsyncResponder implements IResponder {
+   private var resultHandler:Function;
+   private var faultHandler:Function;
+   private var handlerArgs:Array;
 
-        public function BwAsyncResponder(resultHandler:Function, faultHandler:Function = null, handlerArgs:Array = null)
-        {
-            this.resultHandler = resultHandler;
-            this.faultHandler = faultHandler;
-            this.handlerArgs = handlerArgs;
-        }
+   public function BwAsyncResponder(resultHandler:Function, faultHandler:Function = null, handlerArgs:Array = null) {
+      this.resultHandler = resultHandler;
+      this.faultHandler = faultHandler;
+      this.handlerArgs = handlerArgs;
+   }
 
-        public function result(data:Object):void
-        {
-            if (!(handlerArgs))
-            {
-                resultHandler(data);
+   public function result(data:Object):void {
+      if (!(handlerArgs)) {
+         resultHandler(data);
+      }
+      else {
+         resultHandler.apply(null, [data].concat(handlerArgs));
+      }
+   }
+
+   public function fault(info:Object):void {
+      if (faultHandler != null) {
+         if (handlerArgs == null) {
+            faultHandler(info);
+         }
+         else {
+            try {
+               faultHandler(info);
             }
-            else
-            {
-                resultHandler.apply(null, [data].concat(handlerArgs));
+            catch (e:Error) {
+               faultHandler.apply(null, [info].concat(handlerArgs));
             }
-        }
-
-        public function fault(info:Object):void
-        {
-            if (faultHandler != null)
-            {
-                if (handlerArgs == null)
-                {
-                    faultHandler(info);
-                }
-                else
-                {
-                    try
-                    {
-                        faultHandler(info);
-                    }
-                    catch (e:Error)
-                    {
-                        faultHandler.apply(null, [info].concat(handlerArgs));
-                    }
-                }
-            }
-            else
-            {
-                Log.warn(["BwAsyncResponder.fault(): No faultHandler", info]);
-            }
-        }
-    }
+         }
+      }
+      else {
+         Log.warn(["BwAsyncResponder.fault(): No faultHandler", info]);
+      }
+   }
+}
 }

@@ -16,20 +16,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.file
-{
-    import com.brightworks.techreport.ITechReport;
-    import com.brightworks.techreport.TechReport;
+package com.brightworks.util.file {
+import com.brightworks.techreport.ITechReport;
+import com.brightworks.techreport.TechReport;
 
-    public class FileSaverErrorReport extends TechReport implements ITechReport
-    {
-        public var errorEventType:String;
-        public var errorEventText:String;
-        public var fileFolder:String;
-        public var fileName:String;
+public class FileSaverErrorReport extends TechReport implements ITechReport {
+   public var errorEventType:String;
+   public var errorEventText:String;
+   public var fileFolder:String;
+   public var fileName:String;
 
-        public function FileSaverErrorReport()
-        {
-        }
-    }
+   public function FileSaverErrorReport() {
+   }
+}
 }

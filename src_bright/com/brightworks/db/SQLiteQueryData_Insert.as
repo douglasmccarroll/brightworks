@@ -28,65 +28,57 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
                as discussed at http://www.verysimple.com/blog/2008/09/09/working-with-dates-in-flex-air-and-sqlite/?
 
 */
-package com.brightworks.db
-{
-    import com.brightworks.vo.IVO;
+package com.brightworks.db {
+import com.brightworks.vo.IVO;
 
-    public class SQLiteQueryData_Insert extends SQLiteQueryData
-    {
-        public function SQLiteQueryData_Insert(
-            vo:IVO,
-            minAllowedRowsAffectedCount:Number = 0, 
-            maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE)
-        {
-            super(minAllowedRowsAffectedCount, maxAllowedRowsAffectedCount);
-            this.vo = vo;
-        }
+public class SQLiteQueryData_Insert extends SQLiteQueryData {
+   public function SQLiteQueryData_Insert(
+         vo:IVO,
+         minAllowedRowsAffectedCount:Number = 0,
+         maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE) {
+      super(minAllowedRowsAffectedCount, maxAllowedRowsAffectedCount);
+      this.vo = vo;
+   }
 
-        override public function getParameters():Object
-        {
-            var result:Object = {};
-            var setPropList:Array = vo.getPropNameList_SetProps();
-            for each (var propName:String in setPropList)
-            {
-                result[":" + propName] = vo[propName];
-            }
-            return result;
-        }
+   override public function getParameters():Object {
+      var result:Object = {};
+      var setPropList:Array = vo.getPropNameList_SetProps();
+      for each (var propName:String in setPropList) {
+         result[":" + propName] = vo[propName];
+      }
+      return result;
+   }
 
-        override public function getSQLString():String
-        {
-            var result:String =
-                "INSERT INTO " +
-                databaseName + "." +
-                vo.getAssociatedTableName() +
-                " (";
-            var columnName:String;
-            var setPropList:Array = vo.getPropNameList_SetProps();
-            // Add column names
-            var columnNameAdded:Boolean = false;
-            for each (columnName in setPropList)
-            {
-                if (columnNameAdded)
-                    result = result + ", "
-                result = result + columnName;
-                columnNameAdded = true;
-            }
-            result = result + ") VALUES ("
-            // Add values or, actually, parameters
-            var paramAdded:Boolean = false;
-            for each (columnName in setPropList)
-            {
-                if (paramAdded)
-                    result = result + ", "
-                result = result + ":" + columnName;
-                paramAdded = true;
-            }
-            result = result + ")"
-            // e.g. "INSERT INTO main.LessonVersion (levelId, uploaded, LessonVersionSignature, contentProviderId, publishedLessonVersionId) VALUES (:levelId, :uploaded, :LessonVersionSignature, :contentProviderId, :publishedLessonVersionId)"	
-            return result;
-        }
-    }
+   override public function getSQLString():String {
+      var result:String =
+            "INSERT INTO " +
+            databaseName + "." +
+            vo.getAssociatedTableName() +
+            " (";
+      var columnName:String;
+      var setPropList:Array = vo.getPropNameList_SetProps();
+      // Add column names
+      var columnNameAdded:Boolean = false;
+      for each (columnName in setPropList) {
+         if (columnNameAdded)
+            result = result + ", "
+         result = result + columnName;
+         columnNameAdded = true;
+      }
+      result = result + ") VALUES ("
+      // Add values or, actually, parameters
+      var paramAdded:Boolean = false;
+      for each (columnName in setPropList) {
+         if (paramAdded)
+            result = result + ", "
+         result = result + ":" + columnName;
+         paramAdded = true;
+      }
+      result = result + ")"
+      // e.g. "INSERT INTO main.LessonVersion (levelId, uploaded, LessonVersionSignature, contentProviderId, publishedLessonVersionId) VALUES (:levelId, :uploaded, :LessonVersionSignature, :contentProviderId, :publishedLessonVersionId)"	
+      return result;
+   }
+}
 }
 
 

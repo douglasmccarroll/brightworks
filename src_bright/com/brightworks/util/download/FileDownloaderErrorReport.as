@@ -16,27 +16,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.download
-{
-    import com.brightworks.techreport.ITechReport;
-    import com.brightworks.techreport.TechReport;
-    import com.brightworks.interfaces.IDisposable;
+package com.brightworks.util.download {
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.techreport.ITechReport;
+import com.brightworks.techreport.TechReport;
 
-    public class FileDownloaderErrorReport extends TechReport implements ITechReport, IDisposable
-    {
-        public var downloadFolderURL:String;
-        public var downloadFileName:String;
-        public var downloadFileExtension:String;
-        public var ioErrorEventText:String;
+public class FileDownloaderErrorReport extends TechReport implements ITechReport, IDisposable {
+   public var downloadFolderURL:String;
+   public var downloadFileName:String;
+   public var downloadFileExtension:String;
+   public var ioErrorEventText:String;
 
-        public function FileDownloaderErrorReport()
-        {
-        }
+   public function FileDownloaderErrorReport() {
+   }
 
-        override public function dispose():void
-        {
-            super.dispose();
-        }
-    }
+   override public function dispose():void {
+      super.dispose();
+   }
+}
 }
 

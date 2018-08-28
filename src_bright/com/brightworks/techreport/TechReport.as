@@ -16,25 +16,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.techreport
-{
-    import com.brightworks.event.BwEvent;
+package com.brightworks.techreport {
+import com.brightworks.event.BwEvent;
 
-    public class TechReport implements ITechReport
-    {
-        public var cause:ITechReport;
-        public var errorEvent:BwEvent;
-        public var errorType:String;
-        public var miscInfoList:Array = [];
+public class TechReport implements ITechReport {
+   public var cause:ITechReport;
+   public var errorEvent:BwEvent;
+   public var errorType:String;
+   public var miscInfoList:Array = [];
 
-        public function TechReport()
-        {
-        }
+   public function TechReport() {
+   }
 
-        public function dispose():void
-        {
+   public function dispose():void {
 
-        }
+   }
 
-    }
+}
 }

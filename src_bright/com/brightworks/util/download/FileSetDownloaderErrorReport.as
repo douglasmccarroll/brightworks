@@ -16,35 +16,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.download
-{
-    import com.brightworks.techreport.ITechReport;
-    import com.brightworks.techreport.TechReport;
-    import com.brightworks.interfaces.IDisposable;
-    import com.brightworks.util.Utils_Dispose;
+package com.brightworks.util.download {
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.techreport.ITechReport;
+import com.brightworks.techreport.TechReport;
+import com.brightworks.util.Utils_Dispose;
 
-    import flash.utils.Dictionary;
+import flash.utils.Dictionary;
 
-    public class FileSetDownloaderErrorReport extends TechReport implements ITechReport, IDisposable
-    {
-        public var bFileInfoNotPopulated:Boolean;
-        public var index_fileId_to_fileDownloaderErrorReport:Dictionary;
-        public var index_fileId_to_fileDownloaderStatus:Dictionary;
+public class FileSetDownloaderErrorReport extends TechReport implements ITechReport, IDisposable {
+   public var bFileInfoNotPopulated:Boolean;
+   public var index_fileId_to_fileDownloaderErrorReport:Dictionary;
+   public var index_fileId_to_fileDownloaderStatus:Dictionary;
 
-        private var _isDisposed:Boolean = false;
+   private var _isDisposed:Boolean = false;
 
-        public function FileSetDownloaderErrorReport()
-        {
-        }
+   public function FileSetDownloaderErrorReport() {
+   }
 
-        override public function dispose():void
-        {
-            super.dispose();
-            if (_isDisposed)
-                return;
-            _isDisposed = true;
-            Utils_Dispose.disposeDictionary(index_fileId_to_fileDownloaderErrorReport, true);
-            index_fileId_to_fileDownloaderErrorReport = null;
-        }
-    }
+   override public function dispose():void {
+      super.dispose();
+      if (_isDisposed)
+         return;
+      _isDisposed = true;
+      Utils_Dispose.disposeDictionary(index_fileId_to_fileDownloaderErrorReport, true);
+      index_fileId_to_fileDownloaderErrorReport = null;
+   }
+}
 }

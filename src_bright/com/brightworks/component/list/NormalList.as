@@ -28,53 +28,53 @@ subclass it, and style the subclass.
 
 */
 package com.brightworks.component.list {
-   import com.brightworks.interfaces.IDisposable;
-   import com.brightworks.resource.Resources_Audio;
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.resource.Resources_Audio;
 
-   import flash.events.Event;
+import flash.events.Event;
 
-   import spark.components.List;
-   import spark.events.IndexChangeEvent;
+import spark.components.List;
+import spark.events.IndexChangeEvent;
 
-   public class NormalList extends List implements IDisposable {
-      public var clickSoundEnabled:Boolean = true;
+public class NormalList extends List implements IDisposable {
+   public var clickSoundEnabled:Boolean = true;
 
-      private var _isDisposed:Boolean;
+   private var _isDisposed:Boolean;
 
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-      //
-      //          Public Methods
-      //
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   //
+   //          Public Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-      public function NormalList() {
-         super();
-         addEventListener(IndexChangeEvent.CHANGE, onChange);
-         addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-      }
-
-      public function dispose():void {
-         if (_isDisposed)
-            return;
-         _isDisposed = true;
-         removeEventListener(IndexChangeEvent.CHANGE, onChange);
-         removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-      }
-
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-      //
-      //          Private Methods
-      //
-      // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-      private function onChange(event:IndexChangeEvent):void {
-         if (clickSoundEnabled)
-            Resources_Audio.CLICK.play();
-      }
-
-      private function onRemovedFromStage(event:Event):void {
-         dispose();
-      }
-
+   public function NormalList() {
+      super();
+      addEventListener(IndexChangeEvent.CHANGE, onChange);
+      addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
    }
+
+   public function dispose():void {
+      if (_isDisposed)
+         return;
+      _isDisposed = true;
+      removeEventListener(IndexChangeEvent.CHANGE, onChange);
+      removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
+
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   //
+   //          Private Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   private function onChange(event:IndexChangeEvent):void {
+      if (clickSoundEnabled)
+         Resources_Audio.CLICK.play();
+   }
+
+   private function onRemovedFromStage(event:Event):void {
+      dispose();
+   }
+
+}
 }

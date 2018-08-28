@@ -16,24 +16,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.audio
-{
-    import com.brightworks.interfaces.IDisposable;
+package com.brightworks.util.audio {
+import com.brightworks.interfaces.IDisposable;
 
-    import flash.utils.ByteArray;
+import flash.utils.ByteArray;
 
-    public class MP3FileInfo implements IDisposable
-    {
-        public var fileFolder:String;
-        public var fileName:String;
-        public var duration:int;
-        public var mp3FormattedByteData:ByteArray;
+public class MP3FileInfo implements IDisposable {
+   public var fileFolder:String;
+   public var fileName:String;
+   public var duration:int;
+   public var mp3FormattedByteData:ByteArray;
 
-        public function dispose():void
-        {
-            mp3FormattedByteData = null;
-        }
-    }
+   public function dispose():void {
+      mp3FormattedByteData = null;
+   }
+}
 
 }
 

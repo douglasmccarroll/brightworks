@@ -16,58 +16,50 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.db
-{
-    import com.brightworks.util.Log;
-    import com.brightworks.vo.IVO;
+package com.brightworks.db {
+import com.brightworks.util.Log;
+import com.brightworks.vo.IVO;
 
-    public class SQLiteQueryData_Delete extends SQLiteQueryData
-    {
-        public function SQLiteQueryData_Delete(
-            vo:IVO,
-            minAllowedRowsAffectedCount:Number = 0, 
-            maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE)
-        {
-            super(minAllowedRowsAffectedCount, maxAllowedRowsAffectedCount);
-            this.vo = vo;
-        }
+public class SQLiteQueryData_Delete extends SQLiteQueryData {
+   public function SQLiteQueryData_Delete(
+         vo:IVO,
+         minAllowedRowsAffectedCount:Number = 0,
+         maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE) {
+      super(minAllowedRowsAffectedCount, maxAllowedRowsAffectedCount);
+      this.vo = vo;
+   }
 
-        override public function getParameters():Object
-        {
-            var result:Object = {};
-            for each (var propName:String in vo.getPropNameList_KeyProps())
-            {
-                if (result.hasOwnProperty(propName))
-                {
-                    Log.warn(["SQLiteQueryData_Delete.getParameters(): vo.getPropNameList_KeyProps() has '" + propName + "' listed more than once.", vo]);
-                    continue;
-                }
-                result[":" + propName] = vo[propName];
-            }
-            return result;
-        }
+   override public function getParameters():Object {
+      var result:Object = {};
+      for each (var propName:String in vo.getPropNameList_KeyProps()) {
+         if (result.hasOwnProperty(propName)) {
+            Log.warn(["SQLiteQueryData_Delete.getParameters(): vo.getPropNameList_KeyProps() has '" + propName + "' listed more than once.", vo]);
+            continue;
+         }
+         result[":" + propName] = vo[propName];
+      }
+      return result;
+   }
 
-        override public function getSQLString():String
-        {
-            // DELETE FROM database-name.table-name [WHERE expr] 
-            var result:String =
-                "DELETE FROM " +
-                databaseName + "." +
-                vo.getAssociatedTableName() +
-                " WHERE ";
-            var columnName:String;
-            var keyAdded:Boolean = false;
-            for each (columnName in vo.getPropNameList_KeyProps())
-            {
-                if (keyAdded)
-                    result += " AND "
-                result += columnName + "=:" + columnName;
-                keyAdded = true;
-            }
-            // e.g. DELETE FROM main.LessonVersion WHERE contentProviderId=:contentProviderId AND lessonVersionSignature=:lessonVersionSignature	
-            return result;
-        }
-    }
+   override public function getSQLString():String {
+      // DELETE FROM database-name.table-name [WHERE expr] 
+      var result:String =
+            "DELETE FROM " +
+            databaseName + "." +
+            vo.getAssociatedTableName() +
+            " WHERE ";
+      var columnName:String;
+      var keyAdded:Boolean = false;
+      for each (columnName in vo.getPropNameList_KeyProps()) {
+         if (keyAdded)
+            result += " AND "
+         result += columnName + "=:" + columnName;
+         keyAdded = true;
+      }
+      // e.g. DELETE FROM main.LessonVersion WHERE contentProviderId=:contentProviderId AND lessonVersionSignature=:lessonVersionSignature	
+      return result;
+   }
+}
 
 
 }

@@ -18,39 +18,35 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 
 
 */
-package com.brightworks.event
-{
-    import com.brightworks.base.Callbacks;
-    import com.brightworks.techreport.ITechReport;
+package com.brightworks.event {
+import com.brightworks.base.Callbacks;
+import com.brightworks.techreport.ITechReport;
 
-    import flash.events.Event;
+import flash.events.Event;
 
-    import mx.utils.ArrayUtil;
+import mx.utils.ArrayUtil;
 
-    public class BwEvent extends Event
-    {
-        public static const COMPLETE:String = "complete";
-        public static const FAILURE:String = "failure";
-        public static const NEW_INFO:String = "newInfo";
+public class BwEvent extends Event {
+   public static const COMPLETE:String = "complete";
+   public static const FAILURE:String = "failure";
+   public static const NEW_INFO:String = "newInfo";
 
-        public var callbacks:Callbacks;
-        public var cause:Object;
-        public var techReport:ITechReport;
+   public var callbacks:Callbacks;
+   public var cause:Object;
+   public var techReport:ITechReport;
 
-        private var _info:Object; // Can be an object or an array, suitable for logging
+   private var _info:Object; // Can be an object or an array, suitable for logging
 
-        public function get infoArray():Array
-        {
-            var a:Array = ArrayUtil.toArray(_info);
-            return a;
-        }
+   public function get infoArray():Array {
+      var a:Array = ArrayUtil.toArray(_info);
+      return a;
+   }
 
-        public function BwEvent(type:String, techReport:ITechReport = null, info:Object = null)
-        {
-            super(type, true);
-            this.techReport = techReport;
-            _info = info;
-        }
+   public function BwEvent(type:String, techReport:ITechReport = null, info:Object = null) {
+      super(type, true);
+      this.techReport = techReport;
+      _info = info;
+   }
 
-    }
+}
 }

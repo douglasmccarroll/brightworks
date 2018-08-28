@@ -1,10 +1,8 @@
-package com.brightworks.interfaces
-{
+package com.brightworks.interfaces {
 
-    // See comments in SingletonManager
+// See comments in SingletonManager
 
-    public interface IManagedSingleton
-    {
-        function initSingleton():void
-    }
+public interface IManagedSingleton {
+   function initSingleton():void
+}
 }

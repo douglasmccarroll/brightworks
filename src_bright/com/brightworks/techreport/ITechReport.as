@@ -30,13 +30,11 @@ parsed by client code and used in the creation of user-friendly messages.
 
 
 */
-package com.brightworks.techreport
-{
+package com.brightworks.techreport {
 
-    public interface ITechReport
-    {
-        function dispose():void
-    }
+public interface ITechReport {
+   function dispose():void
+}
 
 }
 

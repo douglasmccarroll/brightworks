@@ -16,35 +16,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.download
-{
-    import com.brightworks.interfaces.IDisposable;
+package com.brightworks.util.download {
+import com.brightworks.interfaces.IDisposable;
 
-    import flash.utils.ByteArray;
+import flash.utils.ByteArray;
 
-    public class FileSetDownloaderFileInfo implements IDisposable
-    {
-        public var fileData:ByteArray;
-        public var fileFolderURL:String;
-        public var fileNameBody:String;
-        public var fileNameExtension:String;
+public class FileSetDownloaderFileInfo implements IDisposable {
+   public var fileData:ByteArray;
+   public var fileFolderURL:String;
+   public var fileNameBody:String;
+   public var fileNameExtension:String;
 
-        private var _isDisposed:Boolean = false;
+   private var _isDisposed:Boolean = false;
 
-        public function FileSetDownloaderFileInfo()
-        {
-        }
+   public function FileSetDownloaderFileInfo() {
+   }
 
-        public function dispose():void
-        {
-            if (_isDisposed)
-                return;
-            _isDisposed = true;
-            if (fileData)
-            {
-                fileData.clear();
-                fileData = null;
-            }
-        }
-    }
+   public function dispose():void {
+      if (_isDisposed)
+         return;
+      _isDisposed = true;
+      if (fileData) {
+         fileData.clear();
+         fileData = null;
+      }
+   }
+}
 }

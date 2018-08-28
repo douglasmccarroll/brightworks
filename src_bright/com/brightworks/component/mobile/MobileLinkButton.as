@@ -18,21 +18,16 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-
-
 /*
 This is a 'marker' subclass of Button which allows us to specify a skin
 class and other styles in CSS.
 */
-package com.brightworks.component.mobile
-{
-    import spark.components.Button;
+package com.brightworks.component.mobile {
+import spark.components.Button;
 
-    public class MobileLinkButton extends Button
-    {
-        public function MobileLinkButton()
-        {
-            super();
-        }
-    }
+public class MobileLinkButton extends Button {
+   public function MobileLinkButton() {
+      super();
+   }
+}
 }

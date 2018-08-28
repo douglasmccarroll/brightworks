@@ -16,24 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.db
-{
-    import flash.data.SQLStatement;
+package com.brightworks.db {
+import flash.data.SQLStatement;
 
-    public class BwSQLStatement extends SQLStatement
-    {
-        public function BwSQLStatement()
-        {
-            super();
-        }
+public class BwSQLStatement extends SQLStatement {
+   public function BwSQLStatement() {
+      super();
+   }
 
-        public function setParameters(params:Object):void
-        {
-            var paramString:String;
-            for (paramString in params)
-            {
-                this.parameters[paramString] = params[paramString];
-            }
-        }
-    }
+   public function setParameters(params:Object):void {
+      var paramString:String;
+      for (paramString in params) {
+         this.parameters[paramString] = params[paramString];
+      }
+   }
+}
 }

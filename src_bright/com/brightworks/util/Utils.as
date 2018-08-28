@@ -16,35 +16,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util
-{
-    public class Utils
-    {
-        import flash.utils.describeType;
+package com.brightworks.util {
+import flash.utils.describeType;
 
-        public function Utils():void{}
+public class Utils {
+   public function Utils():void {
+   }
 
-        public static function dump(o:Object):void
-        {
-            //race("Dump for " + getFullyQualdType(o))
-            var i:int = 0;
-            for(var prop:* in o) {
-                i++;
-                var val:*  = o[prop];
-                var propType:String = typeof prop;
-                var valType:String = typeof val;
-                    //race("  " + String(i) + ":")
-                    //race("    Prop: " + String(prop) + ": " + getFullyQualdType(prop))
-                    //race("    Val:  " + String(val ) + ": " + getFullyQualdType(val ))
-            }
-        }
+   public static function dump(o:Object):void {
+      //race("Dump for " + getFullyQualdType(o))
+      var i:int = 0;
+      for (var prop:* in o) {
+         i++;
+         var val:* = o[prop];
+         var propType:String = typeof prop;
+         var valType:String = typeof val;
+         //race("  " + String(i) + ":")
+         //race("    Prop: " + String(prop) + ": " + getFullyQualdType(prop))
+         //race("    Val:  " + String(val ) + ": " + getFullyQualdType(val ))
+      }
+   }
 
-        public static function getFullyQualdType(o:Object):String
-        {
-            var x:XML = describeType(o);
-            var s:String = x.@name;
-            return s;
-        }
-    }
+   public static function getFullyQualdType(o:Object):String {
+      var x:XML = describeType(o);
+      var s:String = x.@name;
+      return s;
+   }
+}
 }
 

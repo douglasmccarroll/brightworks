@@ -19,10 +19,6 @@ import mx.core.UIComponent;
 import mx.core.mx_internal;
 import mx.events.FlexEvent;
 
-import com.brightworks.skins.button.ButtonSkin_Flat_fxg_disabled;
-import com.brightworks.skins.button.ButtonSkin_Flat_fxg_down;
-import com.brightworks.skins.button.ButtonSkin_Flat_fxg_up;
-
 import spark.components.supportClasses.StyleableTextField;
 import spark.skins.mobile.supportClasses.ButtonSkinBase;
 
@@ -246,7 +242,6 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
          return _disabledBorderSkin;
       }
    }
-
 
 
 }

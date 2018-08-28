@@ -27,67 +27,60 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 
 
 */
-package com.brightworks.db
-{
-    import com.brightworks.util.Log;
-    import com.brightworks.vo.IVO;
+package com.brightworks.db {
+import com.brightworks.util.Log;
+import com.brightworks.vo.IVO;
 
-    import flash.net.Responder;
+import flash.net.Responder;
 
-    public class SQLiteQueryData
-    {
-        public static const PROBLEM_TYPE__NO_ROWS_AFFECTED_COUNT:String = "No 'rows affected' count";
-        public static const PROBLEM_TYPE__ROWS_AFFECTED_COUNT_INVALID:String = "'rows affected' result is invalid";
+public class SQLiteQueryData {
+   public static const PROBLEM_TYPE__NO_ROWS_AFFECTED_COUNT:String = "No 'rows affected' count";
+   public static const PROBLEM_TYPE__ROWS_AFFECTED_COUNT_INVALID:String = "'rows affected' result is invalid";
 
-        public var databaseName:String = "main";
-        public var prefetch:int = -1;
-        public var responder:Responder;
+   public var databaseName:String = "main";
+   public var prefetch:int = -1;
+   public var responder:Responder;
 
-        protected var vo:IVO; // Only set in subclass constructors
+   protected var vo:IVO; // Only set in subclass constructors
 
-        private var _maxAllowedRowsAffectedCount:Number;
-        private var _minAllowedRowsAffectedCount:Number;
+   private var _maxAllowedRowsAffectedCount:Number;
+   private var _minAllowedRowsAffectedCount:Number;
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        //
-        //          Public Methods
-        //
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   //
+   //          Public Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        public function SQLiteQueryData(
-            minAllowedRowsAffectedCount:Number = 0, 
-            maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE)
-        {
-            _minAllowedRowsAffectedCount = minAllowedRowsAffectedCount;
-            _maxAllowedRowsAffectedCount = maxAllowedRowsAffectedCount;
-        }
+   public function SQLiteQueryData(
+         minAllowedRowsAffectedCount:Number = 0,
+         maxAllowedRowsAffectedCount:Number = Number.MAX_VALUE) {
+      _minAllowedRowsAffectedCount = minAllowedRowsAffectedCount;
+      _maxAllowedRowsAffectedCount = maxAllowedRowsAffectedCount;
+   }
 
-        public function getParameters():Object
-        {
-            // Abstract function
-            Log.fatal("Abstract method, SQLiteQueryData.getParameters(), called.");
-            return "Error";
-        }
+   public function getParameters():Object {
+      // Abstract function
+      Log.fatal("Abstract method, SQLiteQueryData.getParameters(), called.");
+      return "Error";
+   }
 
-        public function getSQLString():String
-        {
-            // Abstract function
-            Log.fatal("Abstract method, SQLiteQueryData.getSQLString(), called.");
-            return "Error";
-        }
+   public function getSQLString():String {
+      // Abstract function
+      Log.fatal("Abstract method, SQLiteQueryData.getSQLString(), called.");
+      return "Error";
+   }
 
-        public function getVOClass():Class
-        {
-            return vo.getClass();
-        }
+   public function getVOClass():Class {
+      return vo.getClass();
+   }
 
-        public function isRowsAffectedCountValid(count:Number):Boolean
-        {
-            if (count < _minAllowedRowsAffectedCount)
-                return false;
-            if (count > _maxAllowedRowsAffectedCount)
-                return false;
-            return true;
-        }
-    }
+   public function isRowsAffectedCountValid(count:Number):Boolean {
+      if (count < _minAllowedRowsAffectedCount)
+         return false;
+      if (count > _maxAllowedRowsAffectedCount)
+         return false;
+      return true;
+   }
+}
 }

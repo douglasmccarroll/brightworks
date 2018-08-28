@@ -16,37 +16,33 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.audio
-{
-    import com.brightworks.interfaces.IDisposable;
-    import com.brightworks.techreport.ITechReport;
-    import com.brightworks.techreport.TechReport;
-    import com.brightworks.util.Log;
-    import com.brightworks.util.Utils_Dispose;
-    
-    import flash.utils.Dictionary;
+package com.brightworks.util.audio {
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.techreport.ITechReport;
+import com.brightworks.techreport.TechReport;
+import com.brightworks.util.Log;
+import com.brightworks.util.Utils_Dispose;
 
-    public class FileSetMP3SaverTechReport extends TechReport implements ITechReport, IDisposable
-    {
-        public var fileSaverErrorReports:Dictionary;
-        public var fileSaversStillSavingWhenSetIsFinishedList:Array;
+import flash.utils.Dictionary;
 
-        private var _isDisposed:Boolean = false;
+public class FileSetMP3SaverTechReport extends TechReport implements ITechReport, IDisposable {
+   public var fileSaverErrorReports:Dictionary;
+   public var fileSaversStillSavingWhenSetIsFinishedList:Array;
 
-        public function FileSetMP3SaverTechReport()
-        {
-            Log.debug("FileSetMP3SaverTechReport constructor");
-        }
+   private var _isDisposed:Boolean = false;
 
-        override public function dispose():void
-        {
-            Log.debug("FileSetMP3SaverTechReport.dispose()");
-            super.dispose();
-            if (_isDisposed)
-                return;
-            _isDisposed = true;
-            Utils_Dispose.disposeDictionary(fileSaverErrorReports, true);
-        }
+   public function FileSetMP3SaverTechReport() {
+      Log.debug("FileSetMP3SaverTechReport constructor");
+   }
 
-    }
+   override public function dispose():void {
+      Log.debug("FileSetMP3SaverTechReport.dispose()");
+      super.dispose();
+      if (_isDisposed)
+         return;
+      _isDisposed = true;
+      Utils_Dispose.disposeDictionary(fileSaverErrorReports, true);
+   }
+
+}
 }

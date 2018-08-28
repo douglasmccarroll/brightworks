@@ -16,122 +16,105 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.component.itemrenderer
-{
-    // This class is a modified version of code written by Nahuel Foronda for this article:
-    // http://www.asfusion.com/blog/entry/mobile-itemrenderer-in-actionscript-part-4
+package com.brightworks.component.itemrenderer {
+// This class is a modified version of code written by Nahuel Foronda for this article:
+// http://www.asfusion.com/blog/entry/mobile-itemrenderer-in-actionscript-part-4
 
-    import com.brightworks.component.core.StyleClientSpriteVisualElement;
-    
-    import spark.components.IItemRenderer;
+import com.brightworks.component.core.StyleClientSpriteVisualElement;
 
-    public class ItemRenderer_Mobile_Base extends StyleClientSpriteVisualElement implements IItemRenderer
-    {
-        //--------------------------------------------------------------------------
-        //
-        //  Setters and Getters
-        //
-        //--------------------------------------------------------------------------
+import spark.components.IItemRenderer;
 
-        private var _data:Object;
+public class ItemRenderer_Mobile_Base extends StyleClientSpriteVisualElement implements IItemRenderer {
+   //--------------------------------------------------------------------------
+   //
+   //  Setters and Getters
+   //
+   //--------------------------------------------------------------------------
 
-        public function set data(value:Object):void
-        {
-            if (_data == value)
-                return;
+   private var _data:Object;
 
-            _data = value;
-            // if the elements has been created we set the values
-            if (creationComplete)
-                setValues();
-        }
+   public function set data(value:Object):void {
+      if (_data == value)
+         return;
 
-        public function get data():Object
-        {
-            return _data;
-        }
+      _data = value;
+      // if the elements has been created we set the values
+      if (creationComplete)
+         setValues();
+   }
 
-        //Property not used but it is required by the interface IItemRenderer
-        private var _dragging:Boolean;
+   public function get data():Object {
+      return _data;
+   }
 
-        public function set dragging(value:Boolean):void
-        {
-            _dragging = value;
-        }
+   //Property not used but it is required by the interface IItemRenderer
+   private var _dragging:Boolean;
 
-        public function get dragging():Boolean
-        {
-            return _dragging;
-        }
+   public function set dragging(value:Boolean):void {
+      _dragging = value;
+   }
 
-        private var _itemIndex:int;
+   public function get dragging():Boolean {
+      return _dragging;
+   }
 
-        public function set itemIndex(value:int):void
-        {
-            _itemIndex = value;
-        }
+   private var _itemIndex:int;
 
-        public function get itemIndex():int
-        {
-            return _itemIndex;
-        }
+   public function set itemIndex(value:int):void {
+      _itemIndex = value;
+   }
 
-        private var _label:String;
+   public function get itemIndex():int {
+      return _itemIndex;
+   }
 
-        public function get label():String
-        {
-            return _label;
-        }
+   private var _label:String;
 
-        public function set label(value:String):void
-        {
-            _label = value;
-        }
+   public function get label():String {
+      return _label;
+   }
 
-        private var _selected:Boolean = false;
+   public function set label(value:String):void {
+      _label = value;
+   }
 
-        public function get selected():Boolean
-        {
-            return _selected;
-        }
+   private var _selected:Boolean = false;
 
-        public function set selected(value:Boolean):void
-        {
-            if (value != _selected)
-            {
-                _selected = value;
-                updateSkin();
-            }
-        }
+   public function get selected():Boolean {
+      return _selected;
+   }
 
-        // Property not used but it is required by the interface IItemRenderer
-        private var _showsCaret:Boolean;
+   public function set selected(value:Boolean):void {
+      if (value != _selected) {
+         _selected = value;
+         updateSkin();
+      }
+   }
 
-        public function set showsCaret(value:Boolean):void
-        {
-            _showsCaret = value;
-        }
+   // Property not used but it is required by the interface IItemRenderer
+   private var _showsCaret:Boolean;
 
-        public function get showsCaret():Boolean
-        {
-            return _showsCaret;
-        }
+   public function set showsCaret(value:Boolean):void {
+      _showsCaret = value;
+   }
 
-        //--------------------------------------------------------------------------
-        //
-        //  Protected Methods
-        //
-        //--------------------------------------------------------------------------
+   public function get showsCaret():Boolean {
+      return _showsCaret;
+   }
 
-        protected function setValues():void
-        {
-            // To be implemented in children
-        }
+   //--------------------------------------------------------------------------
+   //
+   //  Protected Methods
+   //
+   //--------------------------------------------------------------------------
 
-        protected function updateSkin():void
-        {
-            // To be implemented in children
-        }
+   protected function setValues():void {
+      // To be implemented in children
+   }
 
-    }
+   protected function updateSkin():void {
+      // To be implemented in children
+   }
+
+}
 }

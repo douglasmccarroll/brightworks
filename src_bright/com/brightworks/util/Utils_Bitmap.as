@@ -16,20 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util
-{
-    public class Utils_Bitmap
-    {
-        import flash.display.BitmapData;
-        import flash.geom.Matrix;
-        import mx.core.UIComponent;
-        
-        public static function getUIComponentBitmapData( target : UIComponent ) : BitmapData {
-            // With thanks to Andrew Trice
-            var bd : BitmapData = new BitmapData( target.width, target.height );
-            var m : Matrix = new Matrix();
-            bd.draw( target, m );
-            return bd;  
-        }
-    }
+package com.brightworks.util {
+import flash.display.BitmapData;
+import flash.geom.Matrix;
+
+import mx.core.UIComponent;
+
+public class Utils_Bitmap {
+   public static function getUIComponentBitmapData(target:UIComponent):BitmapData {
+      // With thanks to Andrew Trice
+      var bd:BitmapData = new BitmapData(target.width, target.height);
+      var m:Matrix = new Matrix();
+      bd.draw(target, m);
+      return bd;
+   }
+}
 }

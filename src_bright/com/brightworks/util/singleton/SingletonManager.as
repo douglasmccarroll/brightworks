@@ -37,37 +37,30 @@ Set singletonClassList in your subclass's override of populateClassList()
 
 
 */
-package com.brightworks.util.singleton
-{
-    import com.brightworks.interfaces.IManagedSingleton;
+package com.brightworks.util.singleton {
+import com.brightworks.interfaces.IManagedSingleton;
 
-    public class SingletonManager
-    {
-        protected var singletonClassList:Array;
-        protected var singletonInstanceList:Vector.<IManagedSingleton> = new Vector.<IManagedSingleton>();
+public class SingletonManager {
+   protected var singletonClassList:Array;
+   protected var singletonInstanceList:Vector.<IManagedSingleton> = new Vector.<IManagedSingleton>();
 
-        public function SingletonManager()
-        {
-            populateClassList();
-            initializeSingletons();
-        }
+   public function SingletonManager() {
+      populateClassList();
+      initializeSingletons();
+   }
 
-        protected function populateClassList():void
-        {
-            // Override in subclass
-        }
+   protected function populateClassList():void {
+      // Override in subclass
+   }
 
-        private function initializeSingletons():void
-        {
-            for each (var c:Class in singletonClassList)
-            {
-                var ms:IManagedSingleton = IManagedSingleton(new c(this));
-                singletonInstanceList.push(ms);
-            }
-            for each (var s:IManagedSingleton in singletonInstanceList)
-            {
-                s.initSingleton();
-            }
-        }
-    }
+   private function initializeSingletons():void {
+      for each (var c:Class in singletonClassList) {
+         var ms:IManagedSingleton = IManagedSingleton(new c(this));
+         singletonInstanceList.push(ms);
+      }
+      for each (var s:IManagedSingleton in singletonInstanceList) {
+         s.initSingleton();
+      }
+   }
+}
 }

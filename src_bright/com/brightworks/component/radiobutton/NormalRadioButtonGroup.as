@@ -26,59 +26,53 @@ vibration and a click sound added.
 
 
 */
-package com.brightworks.component.radiobutton
-{
-    import com.brightworks.interfaces.IDisposable;
-    import com.brightworks.resource.Resources_Audio;
+package com.brightworks.component.radiobutton {
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.resource.Resources_Audio;
 
-    import flash.events.Event;
+import flash.events.Event;
 
-    import spark.components.RadioButtonGroup;
+import spark.components.RadioButtonGroup;
 
-    public class NormalRadioButtonGroup extends RadioButtonGroup implements IDisposable
-    {
-        public var clickSoundEnabled:Boolean = true;
+public class NormalRadioButtonGroup extends RadioButtonGroup implements IDisposable {
+   public var clickSoundEnabled:Boolean = true;
 
-        private var _isDisposed:Boolean;
+   private var _isDisposed:Boolean;
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        //
-        //          Public Methods
-        //
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   //
+   //          Public Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-        public function NormalRadioButtonGroup()
-        {
-            super();
-            addEventListener(Event.CHANGE, onChange);
-            addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-        }
+   public function NormalRadioButtonGroup() {
+      super();
+      addEventListener(Event.CHANGE, onChange);
+      addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
 
-        public function dispose():void
-        {
-            if (_isDisposed)
-                return;
-            _isDisposed = true;
-            removeEventListener(Event.CHANGE, onChange);
-            removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-        }
+   public function dispose():void {
+      if (_isDisposed)
+         return;
+      _isDisposed = true;
+      removeEventListener(Event.CHANGE, onChange);
+      removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
 
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-        //
-        //          Private Methods
-        //
-        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   //
+   //          Private Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        private function onChange(event:Event):void
-        {
-            if (clickSoundEnabled)
-                Resources_Audio.CLICK.play();
-        }
+   private function onChange(event:Event):void {
+      if (clickSoundEnabled)
+         Resources_Audio.CLICK.play();
+   }
 
-        private function onRemovedFromStage(event:Event):void
-        {
-            dispose();
-        }
+   private function onRemovedFromStage(event:Event):void {
+      dispose();
+   }
 
-    }
+}
 }

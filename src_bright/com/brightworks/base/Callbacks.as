@@ -16,24 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.base
-{
+package com.brightworks.base {
 
-    public class Callbacks
-    {
-        public var fault:Function;
-        public var result:Function;
+public class Callbacks {
+   public var fault:Function;
+   public var result:Function;
 
-        public function Callbacks(result:Function, fault:Function = null)
-        {
-            this.fault = fault;
-            this.result = result;
-        }
+   public function Callbacks(result:Function, fault:Function = null) {
+      this.fault = fault;
+      this.result = result;
+   }
 
-        public function dispose():void
-        {
-            fault = null;
-            result = null;
-        }
-    }
+   public function dispose():void {
+      fault = null;
+      result = null;
+   }
+}
 }

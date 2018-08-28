@@ -16,88 +16,77 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.tree
-{
-    import com.brightworks.component.treelist.TreeItem;
-    import com.brightworks.component.treelist.TreeListLevelInfo;
-    import com.brightworks.util.Log;
+package com.brightworks.util.tree {
+import com.brightworks.component.treelist.TreeItem;
+import com.brightworks.component.treelist.TreeListLevelInfo;
+import com.brightworks.util.Log;
 
-    import mx.collections.ArrayCollection;
-    import mx.collections.Sort;
-    import mx.collections.SortField;
+import mx.collections.ArrayCollection;
+import mx.collections.Sort;
+import mx.collections.SortField;
 
-    public class Utils_Tree
-    {
-        public static function createDataSourceObject(sourceObjects:ArrayCollection, treeHierarchyInfo:Array, parentItem:TreeItem = null):ArrayCollection
-        {
-            if (treeHierarchyInfo.length < 1)
-            {
-                Log.fatal("Utils_Tree.createDataSourceObject(): zero-length treeHierarchyInfo argument");
-                return null;
-            }
-            var levelInfo:TreeListLevelInfo = treeHierarchyInfo[0]
-            var result:ArrayCollection = new ArrayCollection();
-            // Set up Sort for the result ArrayCollection
-            var levelSortingField:String = levelInfo.customSort ? "sortInfo" : "label";
-            var isNumericSort:Boolean = (levelInfo.customSort && levelInfo.customSortDataIsNumeric);
-            var sort:Sort = new Sort();
-            var sortField:SortField = new SortField(levelSortingField, true, false, isNumericSort);
-            sort.fields = [sortField];
-            result.sort = sort;
-            result.refresh();
+public class Utils_Tree {
+   public static function createDataSourceObject(sourceObjects:ArrayCollection, treeHierarchyInfo:Array, parentItem:TreeItem = null):ArrayCollection {
+      if (treeHierarchyInfo.length < 1) {
+         Log.fatal("Utils_Tree.createDataSourceObject(): zero-length treeHierarchyInfo argument");
+         return null;
+      }
+      var levelInfo:TreeListLevelInfo = treeHierarchyInfo[0]
+      var result:ArrayCollection = new ArrayCollection();
+      // Set up Sort for the result ArrayCollection
+      var levelSortingField:String = levelInfo.customSort ? "sortInfo" : "label";
+      var isNumericSort:Boolean = (levelInfo.customSort && levelInfo.customSortDataIsNumeric);
+      var sort:Sort = new Sort();
+      var sortField:SortField = new SortField(levelSortingField, true, false, isNumericSort);
+      sort.fields = [sortField];
+      result.sort = sort;
+      result.refresh();
 
-            var currentSourceObject:Object = null;
-            var currentSourceObjectDisplayAndGroupingValue:String = null;
-            if (treeHierarchyInfo.length > 1)
-            {
-                // This is a non-final "branch" level
-                var sortedData:Object = new Object();
-                for each (currentSourceObject in sourceObjects)
-                {
-                    currentSourceObjectDisplayAndGroupingValue = currentSourceObject[levelInfo.displayAndGroupingProp];
-                    if (!sortedData.hasOwnProperty(currentSourceObjectDisplayAndGroupingValue))
-                    {
-                        sortedData[currentSourceObjectDisplayAndGroupingValue] = new Object();
-                        sortedData[currentSourceObjectDisplayAndGroupingValue].sourceObjectList = new ArrayCollection();
-                        if (levelInfo.customSort)
-                            sortedData[currentSourceObjectDisplayAndGroupingValue].sortInfo = currentSourceObject[levelInfo.sortInfoProp];
-                    }
-                    ArrayCollection(sortedData[currentSourceObjectDisplayAndGroupingValue].sourceObjectList).addItem(currentSourceObject);
-                }
-                var currentSortedListLevelGroupingValue:String = null;
-                for (currentSortedListLevelGroupingValue in sortedData)
-                {
-                    var branchItem:TreeItem = new TreeItem();
-                    branchItem.parent = parentItem;
-                    branchItem.levelDisplayName = levelInfo.levelDisplayName;
-                    branchItem.label = currentSortedListLevelGroupingValue;
-                    branchItem.children = createDataSourceObject(sortedData[currentSortedListLevelGroupingValue].sourceObjectList, treeHierarchyInfo.slice(1, treeHierarchyInfo.length), branchItem);
-                    if (levelInfo.customSort)
-                    {
-                        branchItem.sortInfo = sortedData[currentSortedListLevelGroupingValue].sortInfo;
-                    }
-                    result.addItem(branchItem);
-                }
+      var currentSourceObject:Object = null;
+      var currentSourceObjectDisplayAndGroupingValue:String = null;
+      if (treeHierarchyInfo.length > 1) {
+         // This is a non-final "branch" level
+         var sortedData:Object = new Object();
+         for each (currentSourceObject in sourceObjects) {
+            currentSourceObjectDisplayAndGroupingValue = currentSourceObject[levelInfo.displayAndGroupingProp];
+            if (!sortedData.hasOwnProperty(currentSourceObjectDisplayAndGroupingValue)) {
+               sortedData[currentSourceObjectDisplayAndGroupingValue] = new Object();
+               sortedData[currentSourceObjectDisplayAndGroupingValue].sourceObjectList = new ArrayCollection();
+               if (levelInfo.customSort)
+                  sortedData[currentSourceObjectDisplayAndGroupingValue].sortInfo = currentSourceObject[levelInfo.sortInfoProp];
             }
-            else
-            {
-                // This is the final "leaf" level
-                var leafItem:TreeItem;
-                for each (currentSourceObject in sourceObjects)
-                {
-                    leafItem = new TreeItem();
-                    leafItem.data = currentSourceObject;
-                    leafItem.isLeaf = true;
-                    leafItem.label = currentSourceObject[levelInfo.displayAndGroupingProp];
-                    if (levelInfo.customSort)
-                        leafItem.sortInfo = currentSourceObject[levelInfo.sortInfoProp];
-                    leafItem.levelDisplayName = levelInfo.levelDisplayName;
-                    leafItem.parent = parentItem;
-                    result.addItem(leafItem);
-                }
+            ArrayCollection(sortedData[currentSourceObjectDisplayAndGroupingValue].sourceObjectList).addItem(currentSourceObject);
+         }
+         var currentSortedListLevelGroupingValue:String = null;
+         for (currentSortedListLevelGroupingValue in sortedData) {
+            var branchItem:TreeItem = new TreeItem();
+            branchItem.parent = parentItem;
+            branchItem.levelDisplayName = levelInfo.levelDisplayName;
+            branchItem.label = currentSortedListLevelGroupingValue;
+            branchItem.children = createDataSourceObject(sortedData[currentSortedListLevelGroupingValue].sourceObjectList, treeHierarchyInfo.slice(1, treeHierarchyInfo.length), branchItem);
+            if (levelInfo.customSort) {
+               branchItem.sortInfo = sortedData[currentSortedListLevelGroupingValue].sortInfo;
             }
-            return result;
-        }
-    }
+            result.addItem(branchItem);
+         }
+      }
+      else {
+         // This is the final "leaf" level
+         var leafItem:TreeItem;
+         for each (currentSourceObject in sourceObjects) {
+            leafItem = new TreeItem();
+            leafItem.data = currentSourceObject;
+            leafItem.isLeaf = true;
+            leafItem.label = currentSourceObject[levelInfo.displayAndGroupingProp];
+            if (levelInfo.customSort)
+               leafItem.sortInfo = currentSourceObject[levelInfo.sortInfoProp];
+            leafItem.levelDisplayName = levelInfo.levelDisplayName;
+            leafItem.parent = parentItem;
+            result.addItem(leafItem);
+         }
+      }
+      return result;
+   }
+}
 }
 

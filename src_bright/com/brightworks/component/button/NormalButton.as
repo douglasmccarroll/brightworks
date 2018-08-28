@@ -28,46 +28,46 @@ subclass it, and style the subclass.
 
 */
 package com.brightworks.component.button {
-   import com.brightworks.constant.Constant_Misc;
-   import com.brightworks.interfaces.IDisposable;
-   import com.brightworks.resource.Resources_Audio;
-   import com.brightworks.util.Utils_DateTime;
+import com.brightworks.constant.Constant_Misc;
+import com.brightworks.interfaces.IDisposable;
+import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.Utils_DateTime;
 
-   import flash.events.Event;
-   import flash.events.MouseEvent;
+import flash.events.Event;
+import flash.events.MouseEvent;
 
-   import spark.components.Button;
+import spark.components.Button;
 
-   public class NormalButton extends Button implements IDisposable {
-      public var clickSoundEnabled:Boolean = true;
+public class NormalButton extends Button implements IDisposable {
+   public var clickSoundEnabled:Boolean = true;
 
-      private var _isDisposed:Boolean;
-      private var _mostRecentClickTime:Number;
+   private var _isDisposed:Boolean;
+   private var _mostRecentClickTime:Number;
 
-      public function NormalButton() {
-         super();
-         addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-         addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-      }
-
-      public function dispose():void {
-         if (_isDisposed)
-            return;
-         _isDisposed = false;
-         removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-         removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
-      }
-
-      private function onMouseDown(event:MouseEvent):void {
-         if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL))
-            return;
-         _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
-         if (clickSoundEnabled)
-            Resources_Audio.CLICK.play();
-      }
-
-      private function onRemovedFromStage(event:Event):void {
-         dispose();
-      }
+   public function NormalButton() {
+      super();
+      addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+      addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
    }
+
+   public function dispose():void {
+      if (_isDisposed)
+         return;
+      _isDisposed = false;
+      removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+      removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
+   }
+
+   private function onMouseDown(event:MouseEvent):void {
+      if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL))
+         return;
+      _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
+      if (clickSoundEnabled)
+         Resources_Audio.CLICK.play();
+   }
+
+   private function onRemovedFromStage(event:Event):void {
+      dispose();
+   }
+}
 }

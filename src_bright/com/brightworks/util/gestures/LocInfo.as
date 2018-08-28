@@ -16,24 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util.gestures
-{
-	public class LocInfo
-	{
-		public var time:Number;
-		public var x:int;
-		public var y:int;
-		
-		public function LocInfo(x:int, y:int, time:Number) 
-		{
-			setInfo(x, y, time);
-		}
-		
-		public function setInfo(x:int, y:int, time:Number):void
-		{
-			this.time = time;
-			this.x = x;
-			this.y = y;
-		}
-	}
+package com.brightworks.util.gestures {
+public class LocInfo {
+   public var time:Number;
+   public var x:int;
+   public var y:int;
+
+   public function LocInfo(x:int, y:int, time:Number) {
+      setInfo(x, y, time);
+   }
+
+   public function setInfo(x:int, y:int, time:Number):void {
+      this.time = time;
+      this.x = x;
+      this.y = y;
+   }
+}
 }

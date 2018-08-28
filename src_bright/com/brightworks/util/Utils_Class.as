@@ -16,30 +16,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.util
-{
-    public class Utils_Class
-    {
-        // To get get reference to Class from class name use
-        //     flash.utils.getDefinitionByName(name:String):Object
+package com.brightworks.util {
+import mx.utils.ObjectUtil;
 
-        import mx.utils.ObjectUtil;
+public class Utils_Class {
+   // To get get reference to Class from class name use
+   //     flash.utils.getDefinitionByName(name:String):Object
 
-        public static function getInstanceType(instance:Object, fullyQuald:Boolean = true) : String {
-            var name:String;
-            if (instance is String) {
-                name = "String";
-            } else {
-                var ci:Object = ObjectUtil.getClassInfo(instance);
-                name = ci.name;
-            }
-            if (!fullyQuald) {
-                if (name.indexOf("::") != -1) {
-                    name = Utils_String.getCharsAfterSubstring(name, "::");
-                }
-            }
-            return name;
-        }
-    }
+   public static function getInstanceType(instance:Object, fullyQuald:Boolean = true):String {
+      var name:String;
+      if (instance is String) {
+         name = "String";
+      } else {
+         var ci:Object = ObjectUtil.getClassInfo(instance);
+         name = ci.name;
+      }
+      if (!fullyQuald) {
+         if (name.indexOf("::") != -1) {
+            name = Utils_String.getCharsAfterSubstring(name, "::");
+         }
+      }
+      return name;
+   }
+}
 }
 

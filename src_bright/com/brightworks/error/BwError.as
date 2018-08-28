@@ -36,30 +36,25 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
     at all the detailed error data. The Log.fatal() method displays a generic error message when an error
     occurs.
 */
-package com.brightworks.error
-{
-    import mx.utils.ArrayUtil;
+package com.brightworks.error {
+import mx.utils.ArrayUtil;
 
-    public class BwError extends Error
-    {
-        private var _errorInfo:Object;
+public class BwError extends Error {
+   private var _errorInfo:Object;
 
-        public function set errorInfo(o:Object):void
-        {
-            _errorInfo = o;
-        }
+   public function set errorInfo(o:Object):void {
+      _errorInfo = o;
+   }
 
-        public function get errorInfoArray():Array
-        {
-            var a:Array = ArrayUtil.toArray(_errorInfo);
-            return a;
-        }
+   public function get errorInfoArray():Array {
+      var a:Array = ArrayUtil.toArray(_errorInfo);
+      return a;
+   }
 
-        public function BwError(message:String, errorInfo:Object = null)
-        {
-            super(message)
-            _errorInfo = errorInfo;
-        }
-    }
+   public function BwError(message:String, errorInfo:Object = null) {
+      super(message)
+      _errorInfo = errorInfo;
+   }
+}
 }
 

@@ -16,13 +16,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.db
-{
-    import flash.filesystem.File;
+package com.brightworks.db {
+import flash.filesystem.File;
 
-    public interface ISQLiteOperation
-    {
-        function dispose():void;
-        function execute(databaseFile:File):SQLiteTransactionReport;
-    }
+public interface ISQLiteOperation {
+   function dispose():void;
+
+   function execute(databaseFile:File):SQLiteTransactionReport;
+}
 }

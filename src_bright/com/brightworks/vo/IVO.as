@@ -16,34 +16,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.vo
-{
-    import flash.utils.Dictionary;
+package com.brightworks.vo {
+import flash.utils.Dictionary;
 
-    public interface IVO
-    {
-        function equals(vo:IVO):Boolean
+public interface IVO {
+   function equals(vo:IVO):Boolean
 
-        function getPropInfoList():Dictionary
+   function getPropInfoList():Dictionary
 
-        function getAssociatedTableName():String
+   function getAssociatedTableName():String
 
-        function getClass():Class
+   function getClass():Class
 
-        function getPropNameList_KeyProps():Array
+   function getPropNameList_KeyProps():Array
 
-        // dmccarroll 200908
-        //  This is inherantly error-prone, as it requires that we remember to write
-        //  getter/setter code in all VO subclasses for all props where the props
-        //  type is such that that != null if not set (e.g. number types & Boolean).
-        //  I'm doing it for two reasons:
-        //            1. It will allow simpler code when creating
-        //               SQLiteQueryData instances.
-        //            2. Simpler code there will be less error prone
-        //  I'm making a judgment that the tradeoffs are worthwhile, but I'm not sure. :)
-        function getPropNameList_SetProps():Array
+   // dmccarroll 200908
+   //  This is inherantly error-prone, as it requires that we remember to write
+   //  getter/setter code in all VO subclasses for all props where the props
+   //  type is such that that != null if not set (e.g. number types & Boolean).
+   //  I'm doing it for two reasons:
+   //            1. It will allow simpler code when creating
+   //               SQLiteQueryData instances.
+   //            2. Simpler code there will be less error prone
+   //  I'm making a judgment that the tradeoffs are worthwhile, but I'm not sure. :)
+   function getPropNameList_SetProps():Array
 
-        function isReferencingInstance(vo:VO):Boolean
+   function isReferencingInstance(vo:VO):Boolean
 
-    }
+}
 }

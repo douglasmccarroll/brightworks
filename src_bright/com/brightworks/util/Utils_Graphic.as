@@ -36,14 +36,14 @@ public class Utils_Graphic {
       var angleInDegrees:Number = 45;
       var highlightColor:Number = 0xFFFFFF; // Utils_Color.modifyColorBrightness(computeButtonFillColor(), .5);
       var highlightAlpha:Number = .2;
-      var shadowColor:Number    = 0x000000; // Utils_Color.modifyColorBrightness(computeButtonFillColor(), -.5);
-      var shadowAlpha:Number    = .2;
-      var blurX:Number          = 0;
-      var blurY:Number          = 0;
-      var strength:Number       = 1;
-      var quality:Number        = BitmapFilterQuality.MEDIUM;
-      var type:String           = BitmapFilterType.INNER;
-      var knockout:Boolean      = false;
+      var shadowColor:Number = 0x000000; // Utils_Color.modifyColorBrightness(computeButtonFillColor(), -.5);
+      var shadowAlpha:Number = .2;
+      var blurX:Number = 0;
+      var blurY:Number = 0;
+      var strength:Number = 1;
+      var quality:Number = BitmapFilterQuality.MEDIUM;
+      var type:String = BitmapFilterType.INNER;
+      var knockout:Boolean = false;
       return new BevelFilter(
             distance,
             angleInDegrees,

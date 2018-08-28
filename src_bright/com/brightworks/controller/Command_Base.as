@@ -16,102 +16,88 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.brightworks.controller
-{
-    import com.brightworks.base.Callbacks;
-    import com.brightworks.util.AppActiveElapsedTimeTimer;
-    import com.brightworks.util.Log;
-    import com.brightworks.util.Utils_System;
+package com.brightworks.controller {
+import com.brightworks.base.Callbacks;
+import com.brightworks.util.AppActiveElapsedTimeTimer;
+import com.brightworks.util.Log;
+import com.brightworks.util.Utils_System;
 
-    import flash.events.TimerEvent;
+import flash.events.TimerEvent;
 
-    public class Command_Base
-    {
-        private var _timeoutTimer:AppActiveElapsedTimeTimer;
-        private var _timeoutTimerCompleteFunction:Function;
+public class Command_Base {
+   private var _timeoutTimer:AppActiveElapsedTimeTimer;
+   private var _timeoutTimerCompleteFunction:Function;
 
-        // --------------------------------------------
-        //
-        //           Getters / Setters
-        //
-        // --------------------------------------------
+   // --------------------------------------------
+   //
+   //           Getters / Setters
+   //
+   // --------------------------------------------
 
-        private var _callbacks:Callbacks;
+   private var _callbacks:Callbacks;
 
-        public function set callbacks(value:Callbacks):void
-        {
-            _callbacks = value;
-        }
+   public function set callbacks(value:Callbacks):void {
+      _callbacks = value;
+   }
 
-        // --------------------------------------------
-        //
-        //           Public Methods
-        //
-        // --------------------------------------------
+   // --------------------------------------------
+   //
+   //           Public Methods
+   //
+   // --------------------------------------------
 
-        public function Command_Base()
-        {
-            CommandManager.addCommand(this);
-        }
+   public function Command_Base() {
+      CommandManager.addCommand(this);
+   }
 
 
-        public function dispose():void
-        {
-            stopTimeoutTimer();
-            CommandManager.removeCommand(this);
-        }
+   public function dispose():void {
+      stopTimeoutTimer();
+      CommandManager.removeCommand(this);
+   }
 
-        public function fault(info:Object = null):void
-        {
-            if (_callbacks && (_callbacks.fault is Function))
-            {
-                _callbacks.fault(info);
-            }
-            else
-            {
-                Log.fatal(["Command_Base.fault()", info]);
-            }
-        }
+   public function fault(info:Object = null):void {
+      if (_callbacks && (_callbacks.fault is Function)) {
+         _callbacks.fault(info);
+      }
+      else {
+         Log.fatal(["Command_Base.fault()", info]);
+      }
+   }
 
-        public function result(data:Object = null):void
-        {
-            if (_callbacks && (_callbacks.result is Function))
-            {
-                _callbacks.result(data);
-            }
-            else
-            {
-                Log.fatal(["Command_Base.result(): result function instance isn't available", data]);
-            }
-        }
+   public function result(data:Object = null):void {
+      if (_callbacks && (_callbacks.result is Function)) {
+         _callbacks.result(data);
+      }
+      else {
+         Log.fatal(["Command_Base.result(): result function instance isn't available", data]);
+      }
+   }
 
-        // --------------------------------------------
-        //
-        //           Protected Methods
-        //
-        // --------------------------------------------
+   // --------------------------------------------
+   //
+   //           Protected Methods
+   //
+   // --------------------------------------------
 
-        protected function startOrRestartTimeoutTimer(timeoutMS:uint, timerCompleteFunction:Function):void
-        {
-            Log.debug("Command_Base.startOrRestartTimeoutTimer()");
-            if (Utils_System.isRunningOnDesktop())
-                timeoutMS = timeoutMS * 10;
-            _timeoutTimerCompleteFunction = timerCompleteFunction;
-            stopTimeoutTimer();
-            _timeoutTimer = new AppActiveElapsedTimeTimer(timeoutMS);
-            _timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteFunction);
-            _timeoutTimer.start();
-        }
+   protected function startOrRestartTimeoutTimer(timeoutMS:uint, timerCompleteFunction:Function):void {
+      Log.debug("Command_Base.startOrRestartTimeoutTimer()");
+      if (Utils_System.isRunningOnDesktop())
+         timeoutMS = timeoutMS * 10;
+      _timeoutTimerCompleteFunction = timerCompleteFunction;
+      stopTimeoutTimer();
+      _timeoutTimer = new AppActiveElapsedTimeTimer(timeoutMS);
+      _timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteFunction);
+      _timeoutTimer.start();
+   }
 
-        protected function stopTimeoutTimer():void
-        {
-            Log.debug("Command_Base.stopTimer()");
-            if (_timeoutTimer)
-            {
-                _timeoutTimer.stop();
-                _timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, _timeoutTimerCompleteFunction);
-                _timeoutTimer = null;
-            }
-        }
-    }
+   protected function stopTimeoutTimer():void {
+      Log.debug("Command_Base.stopTimer()");
+      if (_timeoutTimer) {
+         _timeoutTimer.stop();
+         _timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, _timeoutTimerCompleteFunction);
+         _timeoutTimer = null;
+      }
+   }
+}
 }

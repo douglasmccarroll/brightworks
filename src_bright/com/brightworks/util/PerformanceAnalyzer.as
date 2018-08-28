@@ -17,104 +17,104 @@ You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.brightworks.util {
-   import com.brightworks.interfaces.IManagedSingleton;
-   import com.brightworks.util.singleton.SingletonManager;
+import com.brightworks.interfaces.IManagedSingleton;
+import com.brightworks.util.singleton.SingletonManager;
 
-   import flash.events.Event;
-   import flash.events.TimerEvent;
+import flash.events.Event;
+import flash.events.TimerEvent;
 
-   import mx.core.FlexGlobals;
-   import mx.core.UIComponent;
+import mx.core.FlexGlobals;
+import mx.core.UIComponent;
 
-   public class PerformanceAnalyzer implements IManagedSingleton {
-      private static const _TIMER_INTERVAL:uint = 1000;
+public class PerformanceAnalyzer implements IManagedSingleton {
+   private static const _TIMER_INTERVAL:uint = 1000;
 
-      private static var _instance:PerformanceAnalyzer;
+   private static var _instance:PerformanceAnalyzer;
 
-      public var diagnosticString:String;
+   public var diagnosticString:String;
 
-      private var _mostRecentEnterFrameTime:Number;
-      private var _timer:AppActiveElapsedTimeTimer;
+   private var _mostRecentEnterFrameTime:Number;
+   private var _timer:AppActiveElapsedTimeTimer;
 
-      // ****************************************************
-      //
-      //          Getters / Setters
-      //
-      // ****************************************************
+   // ****************************************************
+   //
+   //          Getters / Setters
+   //
+   // ****************************************************
 
-      private var _loopsPerMS:Number;
+   private var _loopsPerMS:Number;
 
-      public function get loopsPerMS():Number {
-         return _loopsPerMS;
-      }
-
-      // ****************************************************
-      //
-      //          Public Methods
-      //
-      // ****************************************************
-
-      public function PerformanceAnalyzer(manager:SingletonManager):void {
-         _instance = this;
-         Log.debug("PerformanceAnalyzer constructor");
-      }
-
-      public static function getInstance():PerformanceAnalyzer {
-         if (!(_instance))
-            throw new Error("Singleton not initialized");
-         return _instance;
-      }
-
-      public function initSingleton():void {
-         computeLoopsPerMS();
-         startTimer();
-         UIComponent(FlexGlobals.topLevelApplication).addEventListener(Event.ENTER_FRAME, onEnterFrame);
-      }
-
-      // ****************************************************
-      //
-      //          Private Methods
-      //
-      // ****************************************************
-
-      private function computeLoopsPerMS():void {
-         var loopCount:Number = 100000000;
-         while (true) {
-            var startTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
-            var x:int = 0;
-            for (var i:uint = 0; i < loopCount; i++) {
-               x++;
-            }
-            var elapsedTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate() - startTime;
-            if (elapsedTime > 10) {
-               break;
-            }
-            loopCount *= 10;
-         }
-         _loopsPerMS = Math.round(loopCount / elapsedTime);
-         diagnosticString = "loopCount:" + loopCount + " elapsedTime:" + elapsedTime + " loopsPerMS:" + _loopsPerMS + " x:" + x;
-      }
-
-      private function onEnterFrame(event:Event):void {
-         var currTime:Number = Utils_DateTime.getCurrentMS_AppActive();
-         var msSinceLastEnterFrame:Number = currTime - _mostRecentEnterFrameTime;
-         var infoReportingThreshold:Number = 300;
-         if ((Log.isLoggingEnabled(Log.LOG_LEVEL__DEBUG)) ||
-            (Log.isLoggingEnabled(Log.LOG_LEVEL__INFO) && (msSinceLastEnterFrame >= infoReportingThreshold))) {
-            Log.frameLength(msSinceLastEnterFrame);
-         }
-         _mostRecentEnterFrameTime = currTime;
-      }
-
-      private function onTimer(event:TimerEvent):void {
-         // restart timer?
-      }
-
-      private function startTimer():void {
-         _timer = new AppActiveElapsedTimeTimer(_TIMER_INTERVAL);
-         _timer.addEventListener(TimerEvent.TIMER, onTimer);
-         _timer.start();
-      }
-
+   public function get loopsPerMS():Number {
+      return _loopsPerMS;
    }
+
+   // ****************************************************
+   //
+   //          Public Methods
+   //
+   // ****************************************************
+
+   public function PerformanceAnalyzer(manager:SingletonManager):void {
+      _instance = this;
+      Log.debug("PerformanceAnalyzer constructor");
+   }
+
+   public static function getInstance():PerformanceAnalyzer {
+      if (!(_instance))
+         throw new Error("Singleton not initialized");
+      return _instance;
+   }
+
+   public function initSingleton():void {
+      computeLoopsPerMS();
+      startTimer();
+      UIComponent(FlexGlobals.topLevelApplication).addEventListener(Event.ENTER_FRAME, onEnterFrame);
+   }
+
+   // ****************************************************
+   //
+   //          Private Methods
+   //
+   // ****************************************************
+
+   private function computeLoopsPerMS():void {
+      var loopCount:Number = 100000000;
+      while (true) {
+         var startTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
+         var x:int = 0;
+         for (var i:uint = 0; i < loopCount; i++) {
+            x++;
+         }
+         var elapsedTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate() - startTime;
+         if (elapsedTime > 10) {
+            break;
+         }
+         loopCount *= 10;
+      }
+      _loopsPerMS = Math.round(loopCount / elapsedTime);
+      diagnosticString = "loopCount:" + loopCount + " elapsedTime:" + elapsedTime + " loopsPerMS:" + _loopsPerMS + " x:" + x;
+   }
+
+   private function onEnterFrame(event:Event):void {
+      var currTime:Number = Utils_DateTime.getCurrentMS_AppActive();
+      var msSinceLastEnterFrame:Number = currTime - _mostRecentEnterFrameTime;
+      var infoReportingThreshold:Number = 300;
+      if ((Log.isLoggingEnabled(Log.LOG_LEVEL__DEBUG)) ||
+            (Log.isLoggingEnabled(Log.LOG_LEVEL__INFO) && (msSinceLastEnterFrame >= infoReportingThreshold))) {
+         Log.frameLength(msSinceLastEnterFrame);
+      }
+      _mostRecentEnterFrameTime = currTime;
+   }
+
+   private function onTimer(event:TimerEvent):void {
+      // restart timer?
+   }
+
+   private function startTimer():void {
+      _timer = new AppActiveElapsedTimeTimer(_TIMER_INTERVAL);
+      _timer.addEventListener(TimerEvent.TIMER, onTimer);
+      _timer.start();
+   }
+
+}
 }
