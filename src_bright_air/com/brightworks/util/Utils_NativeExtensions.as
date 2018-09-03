@@ -24,6 +24,7 @@ import com.milkmangames.nativeextensions.GoViral;
 import com.milkmangames.nativeextensions.RateBox;
 import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 import com.milkmangames.nativeextensions.events.GVTwitterEvent;
+// Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of androidSupport and overrideAir 'common dependency extensions' are installed
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
@@ -144,7 +145,7 @@ public class Utils_NativeExtensions {
                callback(false);
             }
          }
-         _permissionCheck.request(PermissionCheck.SOURCE_CAMERA, requestResultHandler);
+         _permissionCheck.request(PermissionCheck.SOURCE_MIC, requestResultHandler);
       } else {
          callback(true);
       }
