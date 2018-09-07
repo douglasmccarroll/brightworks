@@ -56,7 +56,6 @@ public class MobileText extends UIComponent {
       addChild(spriteVisualElement);
       textField = new StyleableTextField();
       doInitTextField();
-      textField.setStyle("fontFamily", "lucidaunicode");
       // StyleableTextField breaks if the next 2 lines aren't here
       // Also, if you move the next four lines into doInitTextField(), things break. Which doesn't seem to make sense...
       textField.setStyle("fontAntiAliasType", AntiAliasType.NORMAL);
@@ -104,7 +103,7 @@ public class MobileText extends UIComponent {
    protected function doInitTextField():void {
       textField.multiline = true;
       textField.wordWrap = true;
-      textField.setStyle("fontFamily", Utils_Text.getDefaultFont());
+      textField.setStyle("fontFamily", "lucidaunicode");
    }
 
    override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {

@@ -18,12 +18,24 @@
  */
 package com.brightworks.util {
 import com.brightworks.constant.Constant_Private;
+import com.distriqt.extension.googleanalytics.GoogleAnalytics;
+import com.distriqt.extension.googleanalytics.Tracker;
+import com.distriqt.extension.googleanalytics.builders.EventBuilder;
+import com.distriqt.extension.googleanalytics.builders.ItemBuilder;
+import com.distriqt.extension.googleanalytics.builders.ScreenViewBuilder;
+import com.distriqt.extension.googleanalytics.builders.TimingBuilder;
+import com.distriqt.extension.googleanalytics.builders.TransactionBuilder;
+/*
 import com.milkmangames.nativeextensions.GATracker;
 import com.milkmangames.nativeextensions.GAnalytics;
 import com.milkmangames.nativeextensions.GoViral;
 import com.milkmangames.nativeextensions.RateBox;
 import com.milkmangames.nativeextensions.events.GVFacebookEvent;
 import com.milkmangames.nativeextensions.events.GVTwitterEvent;
+*/
+
+import flash.events.Event;
+
 // Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of androidSupport and overrideAir 'common dependency extensions' are installed
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -51,13 +63,9 @@ public class Utils_NativeExtensions {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
-   private static var _facebookInviteResultFunc:Function;
-   private static var _facebookInviteText:String;
-   private static var _googleAnalyticsTracker:GATracker;
-   private static var _goViralExtension:GoViral;
+   private static var _googleAnalyticsTracker:Tracker;
+   private static var _isGoogleAnalyticsInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
-   private static var _rateBoxExtension:RateBox;
-   private static var _tweetResultFunc:Function;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -99,7 +107,7 @@ public class Utils_NativeExtensions {
    }
 
    public static function facebookInvite(inviteText:String, resultCallbackFunc:Function):void {
-      _facebookInviteText = inviteText;
+      /*_facebookInviteText = inviteText;
       _facebookInviteResultFunc = resultCallbackFunc;
       initGoViral();
       if (!_goViralExtension.isFacebookAuthenticated()) {
@@ -109,7 +117,7 @@ public class Utils_NativeExtensions {
          _goViralExtension.authenticateWithFacebook("");
       } else {
          onFacebookResult_AuthenticateForInvite();
-      }
+      }*/
    }
 
    public static function googleAnalyticsTrackAppStartup(appName:String, extraParams:Object):void
@@ -129,7 +137,7 @@ public class Utils_NativeExtensions {
 
    public static function isFacebookSupported():Boolean {
       initGoViral();
-      return _goViralExtension.isFacebookSupported();
+      return false;  //return _goViralExtension.isFacebookSupported();
    }
 
    // MyFlashLabs PermissionCheck needed for AIR 24 and later
@@ -152,19 +160,19 @@ public class Utils_NativeExtensions {
    }
 
    public static function showRatingsPrompt():void {
-      if (!RateBox.isSupported())
+      /*if (!RateBox.isSupported())
          return;
       initRateBox();
-      _rateBoxExtension.showRatingPrompt("Rate Language Mentor", "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?", "Yes!", "Maybe Later", "No");
+      _rateBoxExtension.showRatingPrompt("Rate Language Mentor", "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?", "Yes!", "Maybe Later", "No");*/
    }
 
    public static function tweet(tweetText:String, resultCallbackFunc:Function):void {
-      _tweetResultFunc = resultCallbackFunc;
+      /*_tweetResultFunc = resultCallbackFunc;
       initGoViral();
       _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_CANCELED, onTweetResult);
       _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_FAILED, onTweetResult);
       _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_FINISHED, onTweetResult);
-      _goViralExtension.showTweetSheet(tweetText);
+      _goViralExtension.showTweetSheet(tweetText);*/
    }
 
    public static function vibrate(duration:uint = 1):void {
@@ -176,39 +184,54 @@ public class Utils_NativeExtensions {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static function googleAnalyticsTrackEvent(category:String, action:String, label:String = null, value:Number = NaN, extraParams:Object = null):void {
-      initGoogleAnalytics();
-      if (!_googleAnalyticsTracker)
-         return;
-      _googleAnalyticsTracker.trackEvent(category, action, label, value, extraParams);
-   }
-
-   private static function initGoogleAnalytics():void {
-      if (GAnalytics.isSupported() && (!_googleAnalyticsTracker)) {
-         GAnalytics.create(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE);
-         _googleAnalyticsTracker = GAnalytics.analytics.defaultTracker;
+   private static function googleAnalyticsTrackEvent(
+         category:String,
+         action:String,
+         label:String = null,
+         value:Number = NaN,
+         extraParams:Object = null):void {
+      if (!_isGoogleAnalyticsInitialized) {
+         try {
+            GoogleAnalytics.init("com.brightworks.LangMentor.standard");
+            if (GoogleAnalytics.isSupported) {
+               _googleAnalyticsTracker = GoogleAnalytics.service.getTracker("UA-370084-7");
+               _googleAnalyticsTracker.setValue( "&uid", "com.brightworks.LangMentor.global.anonymous_user" );
+            }
+            _isGoogleAnalyticsInitialized = true;
+         } catch (e:Error) {
+            Log.error("Utils_NativeExtensions.googleAnalyticsTrackEvent(): ANE initialization failed: " + e.message);
+            return;
+         }
       }
+      if (!GoogleAnalytics.isSupported)
+         return;
+      _googleAnalyticsTracker.send(
+            new EventBuilder()
+                  .setCategory(category)
+                  .setAction(action)
+                  .setValue(value)
+                  .build() );
    }
 
    private static function initGoViral():void {
-      if (!_goViralExtension) {
+      /*if (!_goViralExtension) {
          _goViralExtension = GoViral.create();
          _goViralExtension.initFacebook(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
       }
-
+*/
    }
 
    private static function initRateBox():void {
-      if (!_rateBoxExtension) {
+      /*if (!_rateBoxExtension) {
          _rateBoxExtension = RateBox.create("", "", "");
          if (Utils_System.isIOS() && Utils_System.isAlphaOrBetaVersion())
             _rateBoxExtension.useTestMode();
          _rateBoxExtension.setAutoPrompt(false);
-      }
+      }*/
    }
 
-   private static function onFacebookResult_AuthenticateForInvite(event:GVFacebookEvent = null):void {
-      if ((event) && (_goViralExtension)) {
+   private static function onFacebookResult_AuthenticateForInvite(event:Event):void {  //GVFacebookEvent = null):void {
+      /*if ((event) && (_goViralExtension)) {
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGGED_IN, onFacebookResult_AuthenticateForInvite);
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGIN_CANCELED, onFacebookResult_AuthenticateForInvite);
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGIN_FAILED, onFacebookResult_AuthenticateForInvite);
@@ -231,11 +254,11 @@ public class Utils_NativeExtensions {
             _facebookInviteResultFunc(false);
             _facebookInviteResultFunc = null;
          }
-      }
+      }*/
    }
 
-   private static function onFacebookResult_Invite(event:GVFacebookEvent):void {
-      if (_facebookInviteResultFunc is Function) {
+   private static function onFacebookResult_Invite(event:Event):void {  //GVFacebookEvent):void {
+      /*if (_facebookInviteResultFunc is Function) {
          _facebookInviteResultFunc(event.type == GVFacebookEvent.FB_DIALOG_FINISHED);
          _facebookInviteResultFunc = null;
       }
@@ -243,7 +266,7 @@ public class Utils_NativeExtensions {
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_CANCELED, onFacebookResult_Invite);
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_FAILED, onFacebookResult_Invite);
          _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_FINISHED, onFacebookResult_Invite);
-      }
+      }*/
    }
 
    private static function onCodeScanCancel(event:BarcodeEvent):void {
@@ -254,14 +277,14 @@ public class Utils_NativeExtensions {
       _codeScanResultCallback(event.param.data);
    }
 
-   private static function onTweetResult(event:GVTwitterEvent):void {
-      if (_goViralExtension) {
+   private static function onTweetResult(event:Event):void {  //GVTwitterEvent):void {
+      /*if (_goViralExtension) {
          _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_CANCELED, onTweetResult);
          _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_FAILED, onTweetResult);
          _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_FINISHED, onTweetResult);
       }
       if (_tweetResultFunc is Function)
-         _tweetResultFunc();
+         _tweetResultFunc();*/
    }
 
 }
