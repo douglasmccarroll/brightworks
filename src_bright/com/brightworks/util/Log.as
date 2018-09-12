@@ -104,7 +104,6 @@ public class Log implements IManagedSingleton {
    private static var _isDebugMode:Boolean;
    private static var _isInitialized:Boolean;
    private static var _isThrowErrorIfRunningOnDesktopMode:Boolean;
-   private static var _logToServerCallbackFunction:Function;
    private static var _summaryStringAppenderCallback:Function;
 
    private var _performanceAnalyzer:PerformanceAnalyzer;
@@ -217,10 +216,10 @@ public class Log implements IManagedSingleton {
       _inAppTracingFunction = traceFunction;
    }
 
-   public static function error(info:Object, logToServerCallbackFunction:Function = null):void {
+   public static function error(info:Object):void {
       if (!Log._isInitialized)
          return;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR, logToServerCallbackFunction);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR);
       if (Utils_System.isAlphaVersion()) {
          copyRecentInfoToClipboard();
          MobileAlert.open("An internal error has occurred - diagnostic information has been copied to the clipboard", true);
@@ -229,11 +228,11 @@ public class Log implements IManagedSingleton {
          _errorLogUserFeedbackFunction();
    }
 
-   public static function fatal(info:Object, logToServerCallbackFunction:Function = null):void {
+   public static function fatal(info:Object):void {
       if (!Log._isInitialized)
          return;
       Log.hasFatalErrorBeenLogged = true;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL, logToServerCallbackFunction);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL);
       if (Utils_System.isAlphaOrBetaVersion()) {
          var alertString:String = "Fatal error - diagnostic information has been copied to the clipboard\n\n" + info.toString();
          copyRecentInfoToClipboard();
@@ -392,10 +391,10 @@ public class Log implements IManagedSingleton {
       logToServerIfEnabledForLogLevel(LOG_LEVEL__ALWAYS, logToServerCallbackFunction);
    }
 
-   public static function warn(info:Object, logToServerCallbackFunction:Function = null):void {
+   public static function warn(info:Object):void {
       if (!Log._isInitialized)
          return;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__WARN, logToServerCallbackFunction);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__WARN);
    }
 
    // ****************************************************
@@ -456,7 +455,7 @@ public class Log implements IManagedSingleton {
       return "\n\n     ###    \n\n\n";
    }
 
-   private static function doLoggingStuffSharedByAllLoggingLevels(info:Object, logLevel:int, logToServerCallbackFunction:Function = null):void {
+   private static function doLoggingStuffSharedByAllLoggingLevels(info:Object, logLevel:int):void {
       var doDebugModeTracing:Boolean = ((Log.isDebugMode) && (logLevel >= Log._CURRENT_TRACE_LEVEL));
       var doDebugModeBreakpoint:Boolean = ((Log.isDebugMode) && (logLevel >= Log._CURRENT_BREAKPOINT_LEVEL));
       var messageInfo:String;
@@ -476,7 +475,7 @@ public class Log implements IManagedSingleton {
          Log.addMessageToDetailedInfoList(messageInfo);
       }
       if (isLoggingEnabled(logLevel)) {
-         logToServerIfEnabledForLogLevel(logLevel, logToServerCallbackFunction);
+         logToServerIfEnabledForLogLevel(logLevel);
       }
       if (isInAppTracingEnabled(logLevel)) {
          _inAppTracingFunction(messageInfo);
@@ -526,31 +525,12 @@ public class Log implements IManagedSingleton {
    }
 
    private static function logToServerIfEnabledForLogLevel(logLevel:uint, logToServerCallbackFunction:Function = null):void {
-      Log._logToServerCallbackFunction = null;
       if (!Log._configProvider)
          return; // This happens at startup, until config files are downloaded, etc.
       if (!Log._configProvider.isLogToServerEnabled(logLevel))
          return;
-      Log._logToServerCallbackFunction = logToServerCallbackFunction;
-      var logText:String = Log.getLengthLimitedInfoString(_configProvider.getLogToServerMaxStringLength(logLevel));
-      var params:Object = {logText: logText};
-      Log._httpService.url =
-            Utils_System.isRunningOnDesktop() ?
-                  "http://localhost:8080/langcollab/langmentorlogreports" :
-                  _configProvider.getLogToServerURL(logLevel);
-      Log._httpService.method = "POST";
-      var token:AsyncToken = Log._httpService.send(params);
-      token.addResponder(new Responder(onLogToServerComplete, onLogToServerFailure));
-   }
-
-   private static function onLogToServerComplete(event:Event):void {
-      if (Log._logToServerCallbackFunction is Function)
-         Log._logToServerCallbackFunction(event);
-   }
-
-   private static function onLogToServerFailure(event:Event):void {
-      if (Log._logToServerCallbackFunction is Function)
-         Log._logToServerCallbackFunction(event);
+      var logText:String = Log.getLengthLimitedInfoString(_configProvider.getLogToServerMaxStringLength(logLevel));  // 20180912 - Set this to 8000 in all 'mentor type' XML files - which should fit nicely into the 8192 bytes that Google Analytics allows
+      Utils_GoogleAnalytics.trackLogData(logText, logToServerCallbackFunction);
    }
 
    private static function playAudioToneIfInStagingMode(logLevel:uint):void {

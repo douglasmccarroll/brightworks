@@ -19,7 +19,6 @@
 package com.brightworks.util {
 
 
-
 /*
 
  NOTE: This class has separate versions for our production project and our

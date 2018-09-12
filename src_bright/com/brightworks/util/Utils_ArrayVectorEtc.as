@@ -122,6 +122,10 @@ public class Utils_ArrayVectorEtc {
       return (matchCount <= 1);
    }
 
+   public static function doesDictionaryContainKey(d:Dictionary, o:Object):Boolean {
+      return (o in d);
+   }
+
    public static function getDictionaryLength(d:Dictionary):uint {
       var result:uint = 0;
       for each (var o:Object in d) {
