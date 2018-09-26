@@ -15,25 +15,9 @@
 
  You should have received a copy of the GNU General Public License
  along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
+
  */
 package com.brightworks.util {
-import com.brightworks.constant.Constant_Private;
-import com.distriqt.extension.googleanalytics.GoogleAnalytics;
-import com.distriqt.extension.googleanalytics.Tracker;
-import com.distriqt.extension.googleanalytics.builders.EventBuilder;
-import com.distriqt.extension.googleanalytics.builders.ItemBuilder;
-import com.distriqt.extension.googleanalytics.builders.ScreenViewBuilder;
-import com.distriqt.extension.googleanalytics.builders.TimingBuilder;
-import com.distriqt.extension.googleanalytics.builders.TransactionBuilder;
-/*
-import com.milkmangames.nativeextensions.GATracker;
-import com.milkmangames.nativeextensions.GAnalytics;
-import com.milkmangames.nativeextensions.GoViral;
-import com.milkmangames.nativeextensions.RateBox;
-import com.milkmangames.nativeextensions.events.GVFacebookEvent;
-import com.milkmangames.nativeextensions.events.GVTwitterEvent;
-*/
-
 import flash.events.Event;
 
 // Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of androidSupport and overrideAir 'common dependency extensions' are installed
@@ -56,15 +40,9 @@ import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
  */
 public class Utils_NativeExtensions {
 
-   public static const GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP:String = "App Startup";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED:String = "Lesson Entered";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED:String = "Lesson Learned";
-
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
-   private static var _googleAnalyticsTracker:Tracker;
-   private static var _isGoogleAnalyticsInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,21 +98,6 @@ public class Utils_NativeExtensions {
       }*/
    }
 
-   public static function googleAnalyticsTrackAppStartup(appName:String, extraParams:Object):void
-   {
-      googleAnalyticsTrackEvent(GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, appName, null, NaN, extraParams);
-   }
-
-   public static function googleAnalyticsTrackLessonEntered(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void
-   {
-      googleAnalyticsTrackEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED, lessonName + " " + lessonVersion, null, NaN, {lessonId:lessonId, providerId:providerId});
-   }
-
-   public static function googleAnalyticsTrackLessonLearned(lessonName:String, lessonVersion:String):void
-   {
-      googleAnalyticsTrackEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED, lessonName + " " + lessonVersion);
-   }
-
    public static function isFacebookSupported():Boolean {
       initGoViral();
       return false;  //return _goViralExtension.isFacebookSupported();
@@ -184,34 +147,6 @@ public class Utils_NativeExtensions {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static function googleAnalyticsTrackEvent(
-         category:String,
-         action:String,
-         label:String = null,
-         value:Number = NaN,
-         extraParams:Object = null):void {
-      if (!_isGoogleAnalyticsInitialized) {
-         try {
-            GoogleAnalytics.init("com.brightworks.LangMentor.standard");
-            if (GoogleAnalytics.isSupported) {
-               _googleAnalyticsTracker = GoogleAnalytics.service.getTracker("UA-370084-7");
-               _googleAnalyticsTracker.setValue( "&uid", "com.brightworks.LangMentor.global.anonymous_user" );
-            }
-            _isGoogleAnalyticsInitialized = true;
-         } catch (e:Error) {
-            Log.error("Utils_NativeExtensions.googleAnalyticsTrackEvent(): ANE initialization failed: " + e.message);
-            return;
-         }
-      }
-      if (!GoogleAnalytics.isSupported)
-         return;
-      _googleAnalyticsTracker.send(
-            new EventBuilder()
-                  .setCategory(category)
-                  .setAction(action)
-                  .setValue(value)
-                  .build() );
-   }
 
    private static function initGoViral():void {
       /*if (!_goViralExtension) {
