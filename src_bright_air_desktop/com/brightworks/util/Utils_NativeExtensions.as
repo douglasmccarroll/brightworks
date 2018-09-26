@@ -1,5 +1,5 @@
 /*
- Copyright 2008, 2009, 2010, 2011, 2012 Brightworks, Inc.
+ Copyright 2018 Brightworks, Inc.
 
  This file is part of Language Mentor.
 
@@ -23,7 +23,7 @@ package com.brightworks.util {
 
  NOTE: This class has separate versions for our production project and our
  desktop debugging project. Many ANEs don't support
- Windows/Mac, so we use a dummy class/methods for that case.
+ Windows/Mac, so we use a dummy class/methods for the desktop case.
 
  This is the Desktop version.
 
@@ -31,10 +31,6 @@ package com.brightworks.util {
 
 
 public class Utils_NativeExtensions {
-
-   public static const GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP:String = "App Startup";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED:String = "Lesson Entered";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED:String = "Lesson Learned";
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -48,20 +44,10 @@ public class Utils_NativeExtensions {
    public static function facebookInvite(inviteText:String, resultCallbackFunc:Function):void {
    }
 
-   public static function googleAnalyticsTrackAppStartup(appName:String, extraParams:Object):void {
-   }
-
-   public static function googleAnalyticsTrackLessonEntered(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-   }
-
-   public static function googleAnalyticsTrackLessonLearned(lessonName:String, lessonVersion:String):void {
-   }
-
    public static function isFacebookSupported():Boolean {
       return false;
    }
 
-   // MyFlashLabs PermissionCheck needed for AIR 24 and later
    public static function requestMicrophonePermission(callback:Function):void {
    }
 
@@ -69,9 +55,6 @@ public class Utils_NativeExtensions {
    }
 
    public static function tweet(tweetText:String, resultCallbackFunc:Function):void {
-   }
-
-   public static function vibrate(duration:uint = 1):void {
    }
 
 
