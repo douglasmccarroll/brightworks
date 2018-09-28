@@ -18,9 +18,9 @@
 
  */
 package com.brightworks.util {
-import flash.events.Event;
 
-// Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of androidSupport and overrideAir 'common dependency extensions' are installed
+// Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of
+// androidSupport and overrideAir 'common dependency extensions' are installed
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
@@ -32,12 +32,12 @@ import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 
  NOTE: This class has separate versions for our production project and our
  desktop debugging project. Many ANEs don't support
- Windows/Mac, so we use a dummy class/methods for that case.
+ Windows/Mac, so we use a dummy methods for the desktop case.
+
+ This is the production version.
 
 
-
-
- */
+*/
 public class Utils_NativeExtensions {
 
    private static var _codeScanner:Barcode;
@@ -84,26 +84,6 @@ public class Utils_NativeExtensions {
       _codeScanner.open([Barcode.QR], null, true);
    }
 
-   public static function facebookInvite(inviteText:String, resultCallbackFunc:Function):void {
-      /*_facebookInviteText = inviteText;
-      _facebookInviteResultFunc = resultCallbackFunc;
-      initGoViral();
-      if (!_goViralExtension.isFacebookAuthenticated()) {
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_LOGGED_IN, onFacebookResult_AuthenticateForInvite);
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_LOGIN_CANCELED, onFacebookResult_AuthenticateForInvite);
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_LOGIN_FAILED, onFacebookResult_AuthenticateForInvite);
-         _goViralExtension.authenticateWithFacebook("");
-      } else {
-         onFacebookResult_AuthenticateForInvite();
-      }*/
-   }
-
-   public static function isFacebookSupported():Boolean {
-      initGoViral();
-      return false;  //return _goViralExtension.isFacebookSupported();
-   }
-
-   // MyFlashLabs PermissionCheck needed for AIR 24 and later
    public static function requestMicrophonePermission(callback:Function):void {
       if (!_permissionCheck)
          _permissionCheck = new PermissionCheck();
@@ -122,25 +102,6 @@ public class Utils_NativeExtensions {
       }
    }
 
-   public static function showRatingsPrompt():void {
-      /*if (!RateBox.isSupported())
-         return;
-      initRateBox();
-      _rateBoxExtension.showRatingPrompt("Rate Language Mentor", "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?", "Yes!", "Maybe Later", "No");*/
-   }
-
-   public static function tweet(tweetText:String, resultCallbackFunc:Function):void {
-      /*_tweetResultFunc = resultCallbackFunc;
-      initGoViral();
-      _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_CANCELED, onTweetResult);
-      _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_FAILED, onTweetResult);
-      _goViralExtension.addEventListener(GVTwitterEvent.TW_DIALOG_FINISHED, onTweetResult);
-      _goViralExtension.showTweetSheet(tweetText);*/
-   }
-
-   public static function vibrate(duration:uint = 1):void {
-   }
-
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Private Methods
@@ -148,78 +109,12 @@ public class Utils_NativeExtensions {
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-   private static function initGoViral():void {
-      /*if (!_goViralExtension) {
-         _goViralExtension = GoViral.create();
-         _goViralExtension.initFacebook(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
-      }
-*/
-   }
-
-   private static function initRateBox():void {
-      /*if (!_rateBoxExtension) {
-         _rateBoxExtension = RateBox.create("", "", "");
-         if (Utils_System.isIOS() && Utils_System.isAlphaOrBetaVersion())
-            _rateBoxExtension.useTestMode();
-         _rateBoxExtension.setAutoPrompt(false);
-      }*/
-   }
-
-   private static function onFacebookResult_AuthenticateForInvite(event:Event):void {  //GVFacebookEvent = null):void {
-      /*if ((event) && (_goViralExtension)) {
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGGED_IN, onFacebookResult_AuthenticateForInvite);
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGIN_CANCELED, onFacebookResult_AuthenticateForInvite);
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_LOGIN_FAILED, onFacebookResult_AuthenticateForInvite);
-      }
-      var isSuccessfulAuthentication:Boolean = true;
-      if ((event) &&
-            ((event.type == GVFacebookEvent.FB_LOGIN_CANCELED) ||
-            (event.type == GVFacebookEvent.FB_LOGIN_FAILED))) {
-         isSuccessfulAuthentication = false;
-      }
-      if ((isSuccessfulAuthentication) && (_goViralExtension)) {
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_DIALOG_CANCELED, onFacebookResult_Invite);
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_DIALOG_FAILED, onFacebookResult_Invite);
-         _goViralExtension.addEventListener(GVFacebookEvent.FB_DIALOG_FINISHED, onFacebookResult_Invite);
-         _goViralExtension.showFacebookRequestDialog(
-               _facebookInviteText,
-               "Invite your Friends");
-      } else {
-         if (_facebookInviteResultFunc is Function) {
-            _facebookInviteResultFunc(false);
-            _facebookInviteResultFunc = null;
-         }
-      }*/
-   }
-
-   private static function onFacebookResult_Invite(event:Event):void {  //GVFacebookEvent):void {
-      /*if (_facebookInviteResultFunc is Function) {
-         _facebookInviteResultFunc(event.type == GVFacebookEvent.FB_DIALOG_FINISHED);
-         _facebookInviteResultFunc = null;
-      }
-      if (_goViralExtension) {
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_CANCELED, onFacebookResult_Invite);
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_FAILED, onFacebookResult_Invite);
-         _goViralExtension.removeEventListener(GVFacebookEvent.FB_DIALOG_FINISHED, onFacebookResult_Invite);
-      }*/
-   }
-
    private static function onCodeScanCancel(event:BarcodeEvent):void {
       _codeScanCancelCallback();
    }
 
    private static function onCodeScanResult(event:BarcodeEvent):void {
       _codeScanResultCallback(event.param.data);
-   }
-
-   private static function onTweetResult(event:Event):void {  //GVTwitterEvent):void {
-      /*if (_goViralExtension) {
-         _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_CANCELED, onTweetResult);
-         _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_FAILED, onTweetResult);
-         _goViralExtension.removeEventListener(GVTwitterEvent.TW_DIALOG_FINISHED, onTweetResult);
-      }
-      if (_tweetResultFunc is Function)
-         _tweetResultFunc();*/
    }
 
 }
