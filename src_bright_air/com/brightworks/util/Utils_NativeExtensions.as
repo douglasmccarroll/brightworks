@@ -20,11 +20,13 @@
 package com.brightworks.util {
 
 // Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of
-// androidSupport and overrideAir 'common dependency extensions' are installed
+// androidSupport and overrideAir "common dependency extensions" are installed
+import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
-
+import com.myflashlab.air.extensions.rateme.RateMe;
+import com.myflashlab.air.extensions.rateme.RateMeEvents;
 /*
 
 
@@ -43,6 +45,7 @@ public class Utils_NativeExtensions {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
+   private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,19 +105,56 @@ public class Utils_NativeExtensions {
       }
    }
 
+   public static function showRatingsPrompt():void {
+      initializeRateMeIfNeeded();
+      RateMe.api.promote();
+   }
+
+   public static function showRatingsPromptIfEnoughLaunches():void {
+      initializeRateMeIfNeeded();
+      if (RateMe.api.shouldPromote)
+      {
+         RateMe.api.promote();
+      }
+   }
+
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Private Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
+   private static function initializeRateMeIfNeeded():void {
+      if (!_isRateMeExtensionInitialized) {
+         RateMe.init();
+         RateMe.api.addEventListener(RateMeEvents.ERROR, onRateMeError);
+         RateMe.api.autoPromote = false;
+         RateMe.api.daysUntilPrompt = 1000;
+         RateMe.api.launchesUntilPrompt = 10;
+         RateMe.api.remindPeriod = 130;  // Number of days before next prompt, if user has clicked the "remind me later" button
+         RateMe.api.title = "Please Rate " + Constant_AppConfiguration.CURRENT_MENTOR_TYPE__DISPLAY_NAME;
+         RateMe.api.message = "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?";
+         RateMe.api.remindBtnLabel = "Maybe Later";
+         RateMe.api.cancelBtnLabel = "Don't Ask Again";
+         RateMe.api.rateBtnLabel = "Yes";
+         RateMe.api.promptForNewVersionIfUserRated = false;
+         RateMe.api.onlyPromptIfLatestVersion = false;
+         RateMe.api.useSKStoreReviewController = true;
+         RateMe.api.storeType = RateMe.GOOGLEPLAY; // or RateMe.AMAZON  - only used on Android
+         RateMe.api.monitor();
+         _isRateMeExtensionInitialized = true;
+      }
+   }
    private static function onCodeScanCancel(event:BarcodeEvent):void {
       _codeScanCancelCallback();
    }
 
    private static function onCodeScanResult(event:BarcodeEvent):void {
       _codeScanResultCallback(event.param.data);
+   }
+
+   private static function onRateMeError(e:RateMeEvents):void {
+      Log.error("Utils_NativeExtensions.onRateMeError(): " + e.msg);
    }
 
 }
