@@ -21,12 +21,18 @@ package com.brightworks.util {
 
 // Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of
 // androidSupport and overrideAir "common dependency extensions" are installed
+import com.brightworks.constant.Constant_Private;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
+//import com.myflashlab.air.extensions.fb.AccessToken;
+//import com.myflashlab.air.extensions.fb.Facebook;
+//import com.myflashlab.air.extensions.fb.FacebookEvents;
+//import com.myflashlab.air.extensions.fb.ShareLinkContent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 import com.myflashlab.air.extensions.rateme.RateMe;
 import com.myflashlab.air.extensions.rateme.RateMeEvents;
+
 /*
 
 
@@ -45,6 +51,8 @@ public class Utils_NativeExtensions {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
+   //private static var _facebookShareResultCallback:Function;
+   //private static var _isFacebookExtensionInitialized:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
@@ -87,6 +95,20 @@ public class Utils_NativeExtensions {
       _codeScanner.open([Barcode.QR], null, true);
    }
 
+   /*public static function facebookShare(resultCallback:Function):void {
+      _facebookShareResultCallback = resultCallback;
+      initializeFacebookIfNeeded();
+      // Facebook.auth.login(true, [], onFacebookLoginCallback);
+      var content:ShareLinkContent = new ShareLinkContent();
+      content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
+      content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
+      Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
+   }
+
+   public static function isFacebookSupported():Boolean {
+      return true;
+   }*/
+
    public static function requestMicrophonePermission(callback:Function):void {
       if (!_permissionCheck)
          _permissionCheck = new PermissionCheck();
@@ -124,6 +146,13 @@ public class Utils_NativeExtensions {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+   /*private static function initializeFacebookIfNeeded():void {
+      if (!_isFacebookExtensionInitialized) {
+         Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
+         _isFacebookExtensionInitialized = true;
+      }
+   }*/
+
    private static function initializeRateMeIfNeeded():void {
       if (!_isRateMeExtensionInitialized) {
          RateMe.init();
@@ -145,7 +174,8 @@ public class Utils_NativeExtensions {
          _isRateMeExtensionInitialized = true;
       }
    }
-   private static function onCodeScanCancel(event:BarcodeEvent):void {
+
+   private static function onCodeScanCancel(event: BarcodeEvent):void {
       _codeScanCancelCallback();
    }
 
@@ -153,8 +183,32 @@ public class Utils_NativeExtensions {
       _codeScanResultCallback(event.param.data);
    }
 
+   /*private static function onFacebookLoginCallback(isCanceled:Boolean, e:Error, accessToken:AccessToken, recentlyDeclined:Array, recentlyGranted:Array):void {
+      if(e) {
+         Log.error("Utils_NativeExtensions.onFacebookLoginCallback() Error: " + e.message);
+         _facebookShareResultCallback();
+      } else {
+         if (isCanceled) {
+            _facebookShareResultCallback();
+         } else {
+            // We assume here that we want to share content because that's the only thing we do w/ FB at present - if we start doing other things we'll need to modify this code
+            var content:ShareLinkContent = new ShareLinkContent();
+            content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
+            content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
+            Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
+         }
+      }
+   }
+
+   private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
+      if (e) {
+         Log.error("Utils_NativeExtensions.onFacebookShareDialogCallback() Error: " + e.message);
+      }
+      _facebookShareResultCallback();
+   }*/
+
    private static function onRateMeError(e:RateMeEvents):void {
-      Log.error("Utils_NativeExtensions.onRateMeError(): " + e.msg);
+      Log.error("Utils_NativeExtensions.onRateMeError() Error: " + e.msg);
    }
 
 }

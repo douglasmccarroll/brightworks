@@ -41,20 +41,18 @@ public class Utils_NativeExtensions {
    public static function activateCodeScanner(codeScanResultCallback:Function, codeScanCancelCallback:Function, codeScanFailureCallback:Function):void {
    }
 
-   public static function facebookInvite(inviteText:String, resultCallbackFunc:Function):void {
+   /*public static function facebookShare(resultCallback:Function) {
+      resultCallback();
    }
 
    public static function isFacebookSupported():Boolean {
       return false;
-   }
+   }*/
 
    public static function requestMicrophonePermission(callback:Function):void {
    }
 
    public static function showRatingsPrompt():void {
-   }
-
-   public static function tweet(tweetText:String, resultCallbackFunc:Function):void {
    }
 
 
