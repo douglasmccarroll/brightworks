@@ -30,6 +30,14 @@ public class MobileText extends UIComponent {
       _fontSizeChanged = true;
    }
 
+   private var _fontWeight:String;
+   private var _fontWeightChanged:Boolean;
+
+   public function set fontWeight(value:String):void {
+      _fontWeight = value;
+      _fontWeightChanged = true;
+   }
+
    private var _text:String;
    private var _textChanged:Boolean;
 
@@ -91,6 +99,12 @@ public class MobileText extends UIComponent {
          textField.setStyle("fontSize", _fontSize);
          textField.commitStyles();
          _fontSizeChanged = false;
+         invalidateDisplayList();
+      }
+      if (_fontWeightChanged) {
+         textField.setStyle("fontWeight", _fontWeight);
+         textField.commitStyles();
+         _fontWeightChanged = false;
          invalidateDisplayList();
       }
       if (_textChanged) {
