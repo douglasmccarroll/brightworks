@@ -38,6 +38,14 @@ public class MobileText extends UIComponent {
       _fontWeightChanged = true;
    }
 
+   private var _leading:int;
+   private var _leadingChanged:Boolean;
+
+   public function set leading(value:int):void {
+      _leading = value;
+      _leadingChanged = true;
+   }
+
    private var _text:String;
    private var _textChanged:Boolean;
 
@@ -105,6 +113,12 @@ public class MobileText extends UIComponent {
          textField.setStyle("fontWeight", _fontWeight);
          textField.commitStyles();
          _fontWeightChanged = false;
+         invalidateDisplayList();
+      }
+      if (_leadingChanged) {
+         textField.setStyle("leading", _leading);
+         textField.commitStyles();
+         _leadingChanged = false;
          invalidateDisplayList();
       }
       if (_textChanged) {
