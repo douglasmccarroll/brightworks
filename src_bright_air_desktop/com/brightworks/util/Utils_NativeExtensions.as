@@ -21,9 +21,9 @@ package com.brightworks.util {
 
 /*
 
- NOTE: This class has separate versions for our production project and our
- desktop debugging project. Many ANEs don't support
- Windows/Mac, so we use a dummy class/methods for the desktop case.
+ NOTE: We have two versions of this class - one for our production project and one for our
+ desktop debugging project. Many ANEs don't support Windows/Mac, so we use a dummy methods
+ for the desktop case.
 
  This is the Desktop version.
 

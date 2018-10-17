@@ -66,9 +66,6 @@ public class FileSaver extends EventDispatcher implements IDisposable {
       var file:File = new File();
       file.nativePath = getFullFilePath();
       _fileStream = new FileStream();
-      //_fileStream.addEventListener(Event.CLOSE, onStreamClose);
-      //_fileStream.addEventListener(IOErrorEvent.IO_ERROR, onStreamError);
-      //_fileStream.openAsync(file, FileMode.WRITE);
       _fileStream.open(file, FileMode.WRITE);
       _fileStream.writeBytes(fileData, 0, fileData.length);
       _fileStream.close();

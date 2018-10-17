@@ -19,40 +19,47 @@
  */
 package com.brightworks.util {
 
-// Note - If you're having problems with MyFlashLab extensions, ensure that the most recent versions of
-// androidSupport and overrideAir "common dependency extensions" are installed
-import com.brightworks.constant.Constant_Private;
+// If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
+import com.distriqt.extension.mediaplayer.MediaPlayer;
+import com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+import com.distriqt.extension.mediaplayer.audio.AudioPlayerOptions;
+import com.distriqt.extension.mediaplayer.events.AudioPlayerEvent;
+import com.distriqt.extension.mediaplayer.events.MediaErrorEvent;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
-//import com.myflashlab.air.extensions.fb.AccessToken;
-//import com.myflashlab.air.extensions.fb.Facebook;
-//import com.myflashlab.air.extensions.fb.FacebookEvents;
-//import com.myflashlab.air.extensions.fb.ShareLinkContent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 import com.myflashlab.air.extensions.rateme.RateMe;
 import com.myflashlab.air.extensions.rateme.RateMeEvents;
 
+import flash.filesystem.File;
+
+//import com.myflashlab.air.extensions.fb.AccessToken;
+//import com.myflashlab.air.extensions.fb.Facebook;
+//import com.myflashlab.air.extensions.fb.FacebookEvents;
+//import com.myflashlab.air.extensions.fb.ShareLinkContent;
 /*
 
 
 
 
- NOTE: This class has separate versions for our production project and our
- desktop debugging project. Many ANEs don't support
- Windows/Mac, so we use a dummy methods for the desktop case.
+ NOTE: We have two versions of this class - one for our production projects and one for our
+ desktop debugging project. Many ANEs don't support Windows/Mac, so we use a dummy methods
+ for the desktop case.
 
  This is the production version.
 
 
 */
 public class Utils_NativeExtensions {
-
+   private static var _audioCallback:Function;
+   private static var _audioPlayer:AudioPlayer;
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
    //private static var _facebookShareResultCallback:Function;
    //private static var _isFacebookExtensionInitialized:Boolean;
+   private static var _isMediaPlayerExtensionInitialized:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
@@ -95,6 +102,27 @@ public class Utils_NativeExtensions {
       _codeScanner.open([Barcode.QR], null, true);
    }
 
+   public static function audioPlay(file:File, volume:Number, audioCallback:Function):void {
+      initializeMediaPlayerIfNeeded();
+      _audioCallback = audioCallback;
+      _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+      _audioPlayer.setVolume(volume);
+      _audioPlayer.setPlaybackSpeed(1.0);
+      _audioPlayer.loadFile(file);
+   }
+
+   public static function audioStop():void {
+      initializeMediaPlayerIfNeeded();
+      _audioPlayer.removeEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+      _audioCallback = null;
+      _audioPlayer.stop();
+   }
+
+   public static function isMediaPlayerSupported():Boolean {
+      initializeMediaPlayerIfNeeded();
+      return MediaPlayer.isSupported;
+   }
+
    /*public static function facebookShare(resultCallback:Function):void {
       _facebookShareResultCallback = resultCallback;
       initializeFacebookIfNeeded();
@@ -134,8 +162,7 @@ public class Utils_NativeExtensions {
 
    public static function showRatingsPromptIfEnoughLaunches():void {
       initializeRateMeIfNeeded();
-      if (RateMe.api.shouldPromote)
-      {
+      if (RateMe.api.shouldPromote) {
          RateMe.api.promote();
       }
    }
@@ -152,6 +179,24 @@ public class Utils_NativeExtensions {
          _isFacebookExtensionInitialized = true;
       }
    }*/
+
+   private static function initializeMediaPlayerIfNeeded():void {
+      if (_isMediaPlayerExtensionInitialized)
+         return;
+      try {
+         MediaPlayer.init(Constant_AppConfiguration.APP_ID);
+         var options:AudioPlayerOptions = new AudioPlayerOptions();
+         options.enableBackgroundAudio();
+         options.enablePlaybackSpeed()
+         _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
+         _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+         _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
+         _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
+         _isMediaPlayerExtensionInitialized = true;
+      } catch (e:Error) {
+         Log.error("Utils_NativeExtensions.initializeMediaPlayerIfNeeded(): " + e.message);
+      }
+   }
 
    private static function initializeRateMeIfNeeded():void {
       if (!_isRateMeExtensionInitialized) {
@@ -175,7 +220,31 @@ public class Utils_NativeExtensions {
       }
    }
 
-   private static function onCodeScanCancel(event: BarcodeEvent):void {
+   private static function onAudioPlayerComplete(e:AudioPlayerEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+      _audioCallback(e);
+   }
+
+   private static function onAudioPlayerError(e:MediaErrorEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+      _audioCallback(e);
+   }
+
+   private static function onAudioPlayerLoaded(e:AudioPlayerEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+      _audioPlayer.play();
+   }
+
+   private static function onAudioPlayerLoading(e:AudioPlayerEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+
+   }
+
+   private static function onCodeScanCancel(event:BarcodeEvent):void {
       _codeScanCancelCallback();
    }
 
