@@ -20,11 +20,13 @@
 package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
+import com.distriqt.extension.mediaplayer.MediaInfo;
 import com.distriqt.extension.mediaplayer.MediaPlayer;
 import com.distriqt.extension.mediaplayer.audio.AudioPlayer;
 import com.distriqt.extension.mediaplayer.audio.AudioPlayerOptions;
 import com.distriqt.extension.mediaplayer.events.AudioPlayerEvent;
 import com.distriqt.extension.mediaplayer.events.MediaErrorEvent;
+import com.distriqt.extension.mediaplayer.events.RemoteCommandCenterEvent;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -101,20 +103,24 @@ public class Utils_NativeExtensions {
    public static function activateCodeScanner_Continued():void {
       _codeScanner.open([Barcode.QR], null, true);
    }
-
-   public static function audioPlay(file:File, volume:Number, audioCallback:Function):void {
-      initializeMediaPlayerIfNeeded();
-      _audioCallback = audioCallback;
-      _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+                                             
+   public static function audioPlay(file:File, volume:Number):void {
+      initializeAudioPlayerIfNeeded();
       _audioPlayer.setVolume(volume);
-      _audioPlayer.setPlaybackSpeed(1.0);
+      _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+      _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+      _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
+      _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
       _audioPlayer.loadFile(file);
    }
 
-   public static function audioStop():void {
-      initializeMediaPlayerIfNeeded();
+   public static function audioStopMediaPlayer():void {
+      if (!_audioPlayer)
+         return;
       _audioPlayer.removeEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
-      _audioCallback = null;
+      _audioPlayer.removeEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+      _audioPlayer.removeEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
+      _audioPlayer.removeEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
       _audioPlayer.stop();
    }
 
@@ -155,6 +161,10 @@ public class Utils_NativeExtensions {
       }
    }
 
+   public static function setAudioPlayerCallbackFunction(f:Function):void {
+      _audioCallback = f;
+   }
+
    public static function showRatingsPrompt():void {
       initializeRateMeIfNeeded();
       RateMe.api.promote();
@@ -180,18 +190,34 @@ public class Utils_NativeExtensions {
       }
    }*/
 
+   private static function initializeAudioPlayerIfNeeded():void {
+      initializeMediaPlayerIfNeeded();
+      if (!_audioPlayer) {
+         try {
+            var options:AudioPlayerOptions = new AudioPlayerOptions();
+            options.enableBackgroundAudio(true);
+            options.enablePlaybackSpeed(true);
+            _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
+         } catch (e:Error) {
+            Log.error("Utils_NativeExtensions.initializeAudioPlayerIfNeeded(): " + e.message);
+         }
+      }
+   }
+
    private static function initializeMediaPlayerIfNeeded():void {
       if (_isMediaPlayerExtensionInitialized)
          return;
       try {
          MediaPlayer.init(Constant_AppConfiguration.APP_ID);
-         var options:AudioPlayerOptions = new AudioPlayerOptions();
-         options.enableBackgroundAudio();
-         options.enablePlaybackSpeed()
-         _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
-         _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
+         MediaPlayer.service.remoteCommandCenter.registerForControlEvents();
+         var info:MediaInfo = new MediaInfo();
+         info.setTitle("foo");
+         info.setArtist("artist");
+         info.setCurrentTime(16);
+         info.setDuration(160);
+         MediaPlayer.service.remoteCommandCenter.setNowPlayingInfo(info);
+         MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PAUSE, onMediaPlayerUserInput_Pause);
+         MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PLAY, onMediaPlayerUserInput_Play);
          _isMediaPlayerExtensionInitialized = true;
       } catch (e:Error) {
          Log.error("Utils_NativeExtensions.initializeMediaPlayerIfNeeded(): " + e.message);
@@ -233,15 +259,10 @@ public class Utils_NativeExtensions {
    }
 
    private static function onAudioPlayerLoaded(e:AudioPlayerEvent):void {
-      if (!(_audioCallback is Function))
-         return;
       _audioPlayer.play();
    }
 
    private static function onAudioPlayerLoading(e:AudioPlayerEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-
    }
 
    private static function onCodeScanCancel(event:BarcodeEvent):void {
@@ -275,6 +296,18 @@ public class Utils_NativeExtensions {
       }
       _facebookShareResultCallback();
    }*/
+
+   private static function onMediaPlayerUserInput_Pause(e:RemoteCommandCenterEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+      _audioCallback(e);
+   }
+
+   private static function onMediaPlayerUserInput_Play(e:RemoteCommandCenterEvent):void {
+      if (!(_audioCallback is Function))
+         return;
+      _audioCallback(e);
+   }
 
    private static function onRateMeError(e:RateMeEvents):void {
       Log.error("Utils_NativeExtensions.onRateMeError() Error: " + e.msg);
