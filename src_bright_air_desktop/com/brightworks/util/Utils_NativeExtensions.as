@@ -17,6 +17,7 @@
  along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.brightworks.util {
+import flash.filesystem.File;
 
 
 /*
@@ -41,6 +42,14 @@ public class Utils_NativeExtensions {
    public static function activateCodeScanner(codeScanResultCallback:Function, codeScanCancelCallback:Function, codeScanFailureCallback:Function):void {
    }
 
+   public static function audioPlay(f:File, volume:Number):void {
+
+   }
+
+   public static function audioStopMediaPlayer():void {
+
+   }
+
    /*public static function facebookShare(resultCallback:Function) {
       resultCallback();
    }
@@ -49,7 +58,15 @@ public class Utils_NativeExtensions {
       return false;
    }*/
 
+   public static function isMediaPlayerSupported():Boolean {
+      return false;
+   }
+
    public static function requestMicrophonePermission(callback:Function):void {
+   }
+
+   public static function setAudioPlayerCallbackFunction(f:Function):void {
+
    }
 
    public static function showRatingsPrompt():void {
