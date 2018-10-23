@@ -42,12 +42,16 @@ public class Utils_NativeExtensions {
    public static function activateCodeScanner(codeScanResultCallback:Function, codeScanCancelCallback:Function, codeScanFailureCallback:Function):void {
    }
 
-   public static function audioPlay(f:File, volume:Number):void {
+   public static function audioPlay(f:File, audioCallback:Function, volume:Number = 1.0):void {
 
    }
 
    public static function audioStopMediaPlayer():void {
 
+   }
+
+   public static function getAudioCurrentFileUrl():String {
+      return "foo";
    }
 
    /*public static function facebookShare(resultCallback:Function) {
