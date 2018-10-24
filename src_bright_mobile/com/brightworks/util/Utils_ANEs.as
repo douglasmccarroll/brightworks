@@ -20,13 +20,6 @@
 package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
-import com.distriqt.extension.mediaplayer.MediaInfo;
-import com.distriqt.extension.mediaplayer.MediaPlayer;
-import com.distriqt.extension.mediaplayer.audio.AudioPlayer;
-import com.distriqt.extension.mediaplayer.audio.AudioPlayerOptions;
-import com.distriqt.extension.mediaplayer.events.AudioPlayerEvent;
-import com.distriqt.extension.mediaplayer.events.MediaErrorEvent;
-import com.distriqt.extension.mediaplayer.events.RemoteCommandCenterEvent;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -43,9 +36,7 @@ import flash.filesystem.File;
 /*
 
 
-
-
- NOTE: We have two versions of this class - one for our production projects and one for our
+ NOTE: We have two versions of this class - one for our mobile production projects and one for our
  desktop debugging project. Many ANEs don't support Windows/Mac, so we use a dummy methods
  for the desktop case.
 
@@ -53,16 +44,12 @@ import flash.filesystem.File;
 
 
 */
-public class Utils_NativeExtensions {
-   private static var _audioCallback:Function;
-   private static var _audioCurrentFileUrl:String;
-   private static var _audioPlayer:AudioPlayer;
+public class Utils_ANEs {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
    //private static var _facebookShareResultCallback:Function;
    //private static var _isFacebookExtensionInitialized:Boolean;
-   private static var _isMediaPlayerExtensionInitialized:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
@@ -105,27 +92,6 @@ public class Utils_NativeExtensions {
       _codeScanner.open([Barcode.QR], null, true);
    }
                                              
-   public static function audioPlayFile(file:File, audioCallback:Function, volume:Number = 1.0):void {
-      _audioCallback = audioCallback;
-      initializeAudioPlayer();
-      _audioPlayer.setVolume(volume);
-      _audioPlayer.loadFile(file);
-      _audioCurrentFileUrl = file.url;
-   }
-
-   public static function audioStopMediaPlayer():void {
-      disposeAudioPlayer();
-   }
-
-   public static function getAudioCurrentFileUrl():String {
-      return _audioCurrentFileUrl;
-   }
-
-   public static function isMediaPlayerSupported():Boolean {
-      initializeMediaPlayerIfNeeded();
-      return MediaPlayer.isSupported;
-   }
-
    /*public static function facebookShare(resultCallback:Function):void {
       _facebookShareResultCallback = resultCallback;
       initializeFacebookIfNeeded();
@@ -176,61 +142,12 @@ public class Utils_NativeExtensions {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static function disposeAudioPlayer():void {
-      if (_audioPlayer) {
-         _audioPlayer.removeEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
-         _audioPlayer.removeEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
-         _audioPlayer.removeEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
-         _audioPlayer.removeEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
-         _audioPlayer.stop();
-         _audioPlayer.destroy();
-         _audioPlayer = null;
-      }
-      _audioCurrentFileUrl = null;
-   }
-
    /*private static function initializeFacebookIfNeeded():void {
       if (!_isFacebookExtensionInitialized) {
          Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
          _isFacebookExtensionInitialized = true;
       }
    }*/
-
-   private static function initializeAudioPlayer():void {
-      initializeMediaPlayerIfNeeded();
-      disposeAudioPlayer();
-      try {
-         var options:AudioPlayerOptions = new AudioPlayerOptions();
-         options.enableBackgroundAudio(true);
-         _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
-         var info:MediaInfo = new MediaInfo();
-         info.setTitle("foo");
-         info.setArtist("artist");
-         info.setCurrentTime(16);
-         info.setDuration(160);
-         MediaPlayer.service.remoteCommandCenter.setNowPlayingInfo(info);
-         _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
-         _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
-      } catch (e:Error) {
-         Log.error("Utils_NativeExtensions.initializeAudioPlayer(): " + e.message);
-      }
-   }
-
-   private static function initializeMediaPlayerIfNeeded():void {
-      if (_isMediaPlayerExtensionInitialized)
-         return;
-      try {
-         MediaPlayer.init(Constant_AppConfiguration.APP_ID);
-         MediaPlayer.service.remoteCommandCenter.registerForControlEvents();
-         MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PAUSE, onMediaPlayerUserInput_Pause);
-         MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PLAY, onMediaPlayerUserInput_Play);
-         _isMediaPlayerExtensionInitialized = true;
-      } catch (e:Error) {
-         Log.error("Utils_NativeExtensions.initializeMediaPlayerIfNeeded(): " + e.message);
-      }
-   }
 
    private static function initializeRateMeIfNeeded():void {
       if (!_isRateMeExtensionInitialized) {
@@ -254,28 +171,6 @@ public class Utils_NativeExtensions {
       }
    }
 
-   private static function onAudioPlayerComplete(e:AudioPlayerEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      disposeAudioPlayer();
-      _audioCurrentFileUrl = null;
-      _audioCallback(e);
-   }
-
-   private static function onAudioPlayerError(e:MediaErrorEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      disposeAudioPlayer();
-      _audioCallback(e);
-   }
-
-    private static function onAudioPlayerLoaded(e:AudioPlayerEvent):void {
-      _audioPlayer.play();
-   }
-
-   private static function onAudioPlayerLoading(e:AudioPlayerEvent):void {
-   }
-
    private static function onCodeScanCancel(event:BarcodeEvent):void {
       _codeScanCancelCallback();
    }
@@ -286,7 +181,7 @@ public class Utils_NativeExtensions {
 
    /*private static function onFacebookLoginCallback(isCanceled:Boolean, e:Error, accessToken:AccessToken, recentlyDeclined:Array, recentlyGranted:Array):void {
       if(e) {
-         Log.error("Utils_NativeExtensions.onFacebookLoginCallback() Error: " + e.message);
+         Log.error("Utils_ANEs.onFacebookLoginCallback() Error: " + e.message);
          _facebookShareResultCallback();
       } else {
          if (isCanceled) {
@@ -303,25 +198,13 @@ public class Utils_NativeExtensions {
 
    private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
       if (e) {
-         Log.error("Utils_NativeExtensions.onFacebookShareDialogCallback() Error: " + e.message);
+         Log.error("Utils_ANEs.onFacebookShareDialogCallback() Error: " + e.message);
       }
       _facebookShareResultCallback();
    }*/
 
-   private static function onMediaPlayerUserInput_Pause(e:RemoteCommandCenterEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      _audioCallback(e);
-   }
-
-   private static function onMediaPlayerUserInput_Play(e:RemoteCommandCenterEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      _audioCallback(e);
-   }
-
    private static function onRateMeError(e:RateMeEvents):void {
-      Log.error("Utils_NativeExtensions.onRateMeError() Error: " + e.msg);
+      Log.error("Utils_ANEs.onRateMeError() Error: " + e.msg);
    }
 
 }

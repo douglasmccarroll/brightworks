@@ -74,18 +74,6 @@ public class Log implements IManagedSingleton {
    private static const _CURRENT_TRACE_LEVEL:uint = LOG_LEVEL__INFO;
    private static const _DETAILED_INFO_LIST__CAPACITY__ALPHA:uint = 300;
    private static const _DETAILED_INFO_LIST__CAPACITY__STANDARD:uint = 300;
-   [Embed('/assets/audio/logTone_Error.mp3')]
-   private static const _LOG_TONE__ERROR:Class;
-   [Embed('/assets/audio/logTone_Fatal.mp3')]
-   private static const _LOG_TONE__FATAL:Class;
-   [Embed('/assets/audio/logTone_Success.mp3')]
-   private static const _LOG_TONE__SUCCESS:Class;
-   [Embed('/assets/audio/logTone_Warn.mp3')]
-   private static const _LOG_TONE__WARN:Class;
-   private static const _LOG_TONE_INSTANCE__ERROR:SoundAsset = new Log._LOG_TONE__ERROR();
-   private static const _LOG_TONE_INSTANCE__FATAL:SoundAsset = new Log._LOG_TONE__FATAL();
-   private static const _LOG_TONE_INSTANCE__SUCCESS:SoundAsset = new Log._LOG_TONE__SUCCESS();
-   private static const _LOG_TONE_INSTANCE__WARN:SoundAsset = new Log._LOG_TONE__WARN();
    private static const _STAGING_MODE_INACTIVITY_TIMEOUT_PERIOD:uint = 4 * 60 * 1000;
 
    public static var hasFatalErrorBeenLogged:Boolean;

@@ -31,7 +31,7 @@ import flash.filesystem.File;
  */
 
 
-public class Utils_NativeExtensions {
+public class Utils_ANEs {
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
