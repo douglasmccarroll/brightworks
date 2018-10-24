@@ -19,7 +19,7 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 package com.brightworks.component.mobile {
 import com.brightworks.constant.Constant_Misc;
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;
 
 import flash.events.Event;
@@ -52,7 +52,7 @@ public class MobileToggleButton extends ToggleButton implements IDisposable {
          return;
       _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
       if (clickSoundEnabled)
-         Resources_Audio.CLICK.play();
+         Utils_Audio_Files.CLICK.play();
    }
 
    private function onRemovedFromStage(event:Event):void {

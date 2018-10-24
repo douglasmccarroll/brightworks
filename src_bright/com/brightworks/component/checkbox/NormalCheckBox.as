@@ -29,7 +29,7 @@ subclass it, and style the subclass.
 */
 package com.brightworks.component.checkbox {
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 
 import flash.events.Event;
 
@@ -68,7 +68,7 @@ public class NormalCheckBox extends CheckBox implements IDisposable {
 
    private function onChange(event:Event):void {
       if (clickSoundEnabled)
-         Resources_Audio.playClick();
+         Utils_Audio_Files.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {

@@ -29,7 +29,7 @@ subclass it, and style the subclass.
 */
 package com.brightworks.component.list {
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 
 import flash.events.Event;
 
@@ -69,7 +69,7 @@ public class NormalList extends List implements IDisposable {
 
    private function onChange(event:IndexChangeEvent):void {
       if (clickSoundEnabled)
-         Resources_Audio.playClick();
+         Utils_Audio_Files.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {

@@ -30,7 +30,7 @@ subclass it, and style the subclass.
 package com.brightworks.component.button {
 import com.brightworks.constant.Constant_Misc;
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;
 
 import flash.events.Event;
@@ -63,7 +63,7 @@ public class NormalButton extends Button implements IDisposable {
          return;
       _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
       if (clickSoundEnabled)
-         Resources_Audio.playClick();
+         Utils_Audio_Files.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {

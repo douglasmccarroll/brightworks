@@ -28,7 +28,7 @@ vibration and a click sound added.
 */
 package com.brightworks.component.radiobutton {
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.resource.Resources_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 
 import flash.events.Event;
 
@@ -67,7 +67,7 @@ public class NormalRadioButtonGroup extends RadioButtonGroup implements IDisposa
 
    private function onChange(event:Event):void {
       if (clickSoundEnabled)
-         Resources_Audio.playClick();
+         Utils_Audio_Files.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {
