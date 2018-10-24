@@ -67,7 +67,7 @@ public class NormalRadioButtonGroup extends RadioButtonGroup implements IDisposa
 
    private function onChange(event:Event):void {
       if (clickSoundEnabled)
-         Resources_Audio.CLICK.play();
+         Resources_Audio.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {

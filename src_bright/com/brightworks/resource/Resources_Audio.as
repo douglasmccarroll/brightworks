@@ -1,21 +1,55 @@
 package com.brightworks.resource {
-import mx.core.SoundAsset;
+
+import com.brightworks.util.Utils_NativeExtensions;
+
+import flash.filesystem.File;
 
 public class Resources_Audio {
-   [Embed('/assets/audio/chirps.mp3')]
-   private static const _CHIRPS:Class;
-   public static const CHIRPS:SoundAsset = new _CHIRPS(); // 6 chirps in 3 seconds - for experimenting with audio
-   [Embed('/assets/audio/buzz_thud.mp3')]
-   private static const _FAIL_THUD:Class;
-   public static const FAIL_THUD:SoundAsset = new _FAIL_THUD();
-   [Embed('/assets/audio/click.mp3')]
-   private static const _CLICK:Class;
-   public static const CLICK:SoundAsset = new _CLICK();
-   [Embed('/assets/audio/pluck_high.mp3')]
-   private static const _PLUCK_HIGH:Class;
-   public static const PLUCK_HIGH:SoundAsset = new _PLUCK_HIGH();
-   [Embed('/assets/audio/silence_half_second.mp3')]
-   private static const _SILENCE_HALF_SECOND:Class;
-   public static const SILENCE_HALF_SECOND:SoundAsset = new _SILENCE_HALF_SECOND();
+
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   //
+   //     Public Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   public static function playChirps():void {  // 6 chirps in 3 seconds - for experimenting with audio
+      play("assets/audio/chirps.mp3");
+
+   }
+
+   public static function playClick():void {
+      play("assets/audio/click.mp3");
+
+   }
+
+   public static function playFailureSound():void {
+      play("assets/audio/buzz_thud.mp3");
+
+   }
+
+   public static function playHighPluck():void {
+      play("assets/audio/pluck_high.mp3");
+
+   }
+
+   public static function playSilenceHalfSecond():void {
+      play("assets/audio/silence_half_second.mp3");
+
+   }
+
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   //
+   //     Private Methods
+   //
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   private static function audioCallback(o:Object):void {
+      
+   }
+   
+   private static function play(path:String):void {
+      var f:File = File.applicationDirectory.resolvePath(path);
+      Utils_NativeExtensions.audioPlayFile(f, audioCallback);
+   }
 }
 }

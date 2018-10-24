@@ -105,7 +105,7 @@ public class Utils_NativeExtensions {
       _codeScanner.open([Barcode.QR], null, true);
    }
                                              
-   public static function audioPlay(file:File, audioCallback:Function, volume:Number = 1.0):void {
+   public static function audioPlayFile(file:File, audioCallback:Function, volume:Number = 1.0):void {
       _audioCallback = audioCallback;
       initializeAudioPlayer();
       _audioPlayer.setVolume(volume);

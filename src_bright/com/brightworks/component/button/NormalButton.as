@@ -63,7 +63,7 @@ public class NormalButton extends Button implements IDisposable {
          return;
       _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
       if (clickSoundEnabled)
-         Resources_Audio.CLICK.play();
+         Resources_Audio.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {

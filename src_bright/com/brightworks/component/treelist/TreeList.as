@@ -91,7 +91,7 @@ public class TreeList extends List implements IDisposable {
 
    private function onChange(event:IndexChangeEvent):void {
       if (clickSoundEnabled)
-         Resources_Audio.CLICK.play();
+         Resources_Audio.playClick();
    }
 
    private function onRemovedFromStage(event:Event):void {
