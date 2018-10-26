@@ -81,7 +81,7 @@ public class Utils_Audio_Files {
    
    private static function play(path:String):void {
       var f:File = File.applicationDirectory.resolvePath(path);
-      Utils_ANEs_Audio.audioPlayFile(f, audioCallback);
+      Utils_ANEs_Audio.playFile(f, audioCallback);
    }
 }
 }

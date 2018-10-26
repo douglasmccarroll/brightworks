@@ -20,6 +20,7 @@
 package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
+import com.brightworks.util.audio.Utils_ANEs_Audio;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -169,6 +170,10 @@ public class Utils_ANEs {
          RateMe.api.monitor();
          _isRateMeExtensionInitialized = true;
       }
+   }
+
+   public static function isANEBasedMediaPlayerSupported():Boolean {
+      return Utils_ANEs_Audio.isMediaPlayerSupported();
    }
 
    private static function onCodeScanCancel(event:BarcodeEvent):void {

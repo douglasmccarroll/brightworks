@@ -96,7 +96,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
             //
             // dmccarroll 20181019
             // I'm adding this if-clause because I'm finding that there are some cases where the url isn't actually being played.
-            if (soundUrl == Utils_ANEs_Audio.getAudioCurrentFileUrl()) {
+            if (soundUrl == Utils_ANEs_Audio.getCurrentFileUrl()) {
                Log.info(["AudioPlayer.play() - called while sound with same URL is currently playing, so we return without playing", "URL: " + _soundURL]);
                return;
             } else {
@@ -110,13 +110,13 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       _isPlaying = true;
       _soundURL = soundUrl;
       var file:File = new File(_soundURL);
-      Utils_ANEs_Audio.audioPlayFile(file, audioCallback, volume);
+      Utils_ANEs_Audio.playFile(file, audioCallback, volume);
    }
 
    public function stop(url:String = null):void {
       Log.info("AudioPlayer.stop(): " + url);
       if (_isPlaying) {
-         Utils_ANEs_Audio.audioStopMediaPlayer();
+         Utils_ANEs_Audio.stopMediaPlayer();
       }
       _soundURL = null;
       _isPlaying = false;
@@ -134,12 +134,12 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
             case AudioPlayerEvent.COMPLETE:
                // When an audio completes we play an MP3 file consisting of silence. Reason: When the media player is displaying
                // in the lock screen, this causes it to display its controls as if sound is playing, which is what we want.
-               // If/when we want to stop the media player we call Utils_ANEs.audioStopMediaPlayer().
+               // If/when we want to stop the media player we call Utils_ANEs.stopMediaPlayer().
                var silenceAudioFile:File = File.applicationDirectory.resolvePath(
                      Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FOLDER_NAME +
                      File.separator +
                      Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FILE_NAME);
-               Utils_ANEs_Audio.audioPlayFile(silenceAudioFile, audioCallback, 1.0);
+               Utils_ANEs_Audio.playFile(silenceAudioFile, audioCallback, 1.0);
                _isPlaying = false;
                _soundURL = null;
                dispatchEvent(new Event(Event.SOUND_COMPLETE));

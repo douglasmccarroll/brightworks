@@ -43,7 +43,16 @@ public class Utils_ANEs_Audio {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   public static function audioPlayFile(file:File, audioCallback:Function, volume:Number = 1.0):void {
+   public static function getCurrentFileUrl():String {
+      return _audioCurrentFileUrl;
+   }
+
+   public static function isMediaPlayerSupported():Boolean {
+      initializeMediaPlayerIfNeeded();
+      return MediaPlayer.isSupported;
+   }
+
+   public static function playFile(file:File, audioCallback:Function, volume:Number = 1.0):void {
       _audioCallback = audioCallback;
       initializeAudioPlayer();
       _audioPlayer.setVolume(volume);
@@ -51,17 +60,8 @@ public class Utils_ANEs_Audio {
       _audioCurrentFileUrl = file.url;
    }
 
-   public static function audioStopMediaPlayer():void {
+   public static function stopMediaPlayer():void {
       disposeAudioPlayer();
-   }
-
-   public static function getAudioCurrentFileUrl():String {
-      return _audioCurrentFileUrl;
-   }
-
-   public static function isMediaPlayerSupported():Boolean {
-      initializeMediaPlayerIfNeeded();
-      return MediaPlayer.isSupported;
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

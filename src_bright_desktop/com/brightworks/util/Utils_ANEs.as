@@ -56,9 +56,13 @@ public class Utils_ANEs {
 
    /*public static function facebookShare(resultCallback:Function) {
       resultCallback();
+   } */
+
+   public static function isANEBasedMediaPlayerSupported():Boolean {
+      return false;
    }
 
-   public static function isFacebookSupported():Boolean {
+   /*public static function isFacebookSupported():Boolean {
       return false;
    }*/
 

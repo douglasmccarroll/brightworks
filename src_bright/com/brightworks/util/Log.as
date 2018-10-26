@@ -33,6 +33,7 @@ import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.constant.Constant_PlatformName;
 import com.brightworks.interfaces.ILoggingConfigProvider;
 import com.brightworks.interfaces.IManagedSingleton;
+import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.singleton.SingletonManager;
 
 import flash.desktop.Clipboard;
@@ -526,15 +527,15 @@ public class Log implements IManagedSingleton {
          return;
       switch (logLevel) {
          case LOG_LEVEL__WARN: {
-            _LOG_TONE_INSTANCE__WARN.play();
+            Utils_Audio_Files.playLogToneWarn();
             break;
          }
          case LOG_LEVEL__ERROR: {
-            _LOG_TONE_INSTANCE__ERROR.play();
+            Utils_Audio_Files.playLogToneError();
             break;
          }
          case LOG_LEVEL__FATAL: {
-            _LOG_TONE_INSTANCE__FATAL.play();
+            Utils_Audio_Files.playLogToneFatal();
             break;
          }
       }
