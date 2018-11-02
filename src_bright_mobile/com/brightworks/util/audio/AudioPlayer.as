@@ -27,15 +27,24 @@ import com.distriqt.extension.mediaplayer.events.AudioPlayerEvent;
 import com.distriqt.extension.mediaplayer.events.MediaErrorEvent;
 import com.distriqt.extension.mediaplayer.events.RemoteCommandCenterEvent;
 import com.langcollab.languagementor.constant.Constant_LangMentor_Misc;
+import com.langcollab.languagementor.model.MainModel;
+import com.langcollab.languagementor.model.currentlessons.CurrentLessons;
+import com.langcollab.languagementor.util.Utils_LangCollab;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
+import flash.utils.ByteArray;
 
 public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
    private static var _instance:AudioPlayer;
 
+   private var _currentLessons:CurrentLessons;
    private var _isPlaying:Boolean;
+   private var _model:MainModel;
+   private var _silenceAudioFile:File;
    private var _soundURL:String;
 
    // ****************************************************
@@ -47,6 +56,10 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
    public function AudioPlayer(manager:SingletonManager) {
       Log.info("AudioPlayer constructor");
       _instance = this;
+      _silenceAudioFile = File.applicationDirectory.resolvePath(
+            Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FOLDER_NAME +
+            File.separator +
+            Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FILE_NAME);
    }
 
    public static function getInstance():AudioPlayer {
@@ -58,64 +71,56 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
 
    public function initSingleton():void {
       Log.info("AudioPlayer.initSingleton()");
+      _currentLessons = CurrentLessons.getInstance();
+      _model = MainModel.getInstance();
    }
 
    // A passedSoundVolumeAdjustmentFactor of 1 means that the audio file that we're playing will be played at its full volume
-   public function play(soundUrl:String, volume:Number = 1.0):void {
+   public function playMp3File(soundUrl:String, volume:Number = 1.0):void {
       Log.info("AudioPlayer.play(): " + soundUrl);
-      if (_isPlaying) {
-         if (soundUrl == _soundURL) {
-            // dmccarroll 20130719
-            // This can happen when the user is rapidly clicking buttons, especially the Next Lesson and Previous Lesson buttons.
-            // Here's an outline of one way that this can happen:
-            //    We have two timers:
-            //      1. 800 ms  CurrentLessons uses CurrentLessonsAudioTimer
-            //      2. 250 ms  AudioController.playCurrentLessonVersionAndCurrentChunk() sets timer to call
-            //                 playCurrentLessonVersionAndCurrentChunk_CreateCurrentLessonVersionAudioSequence()
-            //                (if new audio sequence creation is needed)
-            //    The sequence:
-            //      > button click
-            //      Timer 1 started
-            //      > button click
-            //      Timer 1 restarted
-            //      Timer 1 finishes
-            //      Timer 2 is started
-            //      < button click
-            //      Timer 1 started
-            //      Timer 2 finishes - playCurrentLessonVersionAndCurrentChunk_CreateCurrentLessonVersionAudioSequence() creates
-            //                         correct audio sequence (because CurrentLessons's lesson/chunk info gets updated before
-            //                         timers) and starts play audio process
-            //      Timer 1 finishes
-            //      No new audio sequence needed - so AudioController.playCurrentLessonVersionAndCurrentChunk() calls
-            //        playCurrentLessonVersionAndCurrentChunk_Finish() immediately (Timer 2 isn't used) - and starts play
-            //        audio process
-            //  Note that nowhere in this process are we ensuring that the play audio process doesn't get started multiple times without getting
-            //  stopped. In fact, I'd argue that we shouldn't do so. What we do instead is to check and see if something needs to be changed and,
-            //  if it does, we make the correct thing happen. It looks as though the simplest way to deal with the possibility that our code may
-            //  try to do 'the right thing' twice, when it really only needs to be done once, is to watch for that case here, and abort.
-            //
-            // dmccarroll 20181019
-            // I'm adding this if-clause because I'm finding that there are some cases where the url isn't actually being played.
-            if (soundUrl == Utils_ANEs_Audio.getCurrentFileUrl()) {
-               Log.info(["AudioPlayer.play() - called while sound with same URL is currently playing, so we return without playing", "URL: " + _soundURL]);
-               return;
-            } else {
-               // Do nothing here, i.e. continue and execute code below
-            }
-         }
-         else {
-            Log.warn(["AudioPlayer.play(): called while sound is playing", "Old URL: " + _soundURL, "New URL: " + soundUrl]);
-         }
-      }
+      stop();
       _isPlaying = true;
       _soundURL = soundUrl;
+      var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
+      var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var file:File = new File(_soundURL);
-      Utils_ANEs_Audio.playFile(file, audioCallback, volume);
+      Log.info("playMp3File() pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
+      Utils_ANEs_Audio.playFile(file, audioCallback, volume, lessonTitle, lessonProvider);
    }
 
-   public function stop(url:String = null):void {
-      Log.info("AudioPlayer.stop(): " + url);
+   // When an audio completes we use this method to play an MP3 file consisting of silence. Reason: When the media player is displaying
+   // in the lock screen, this causes it to display its controls as if sound is playing, which is what we want.
+   // If/when we want to stop the media player we call Utils_ANEs_Audio.stopMediaPlayer().
+   public function playSilenceFile():void {
+      stop();
+      _isPlaying = true;
+      _soundURL = null;
+      var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
+      var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
+      Log.info("playSilenceFile() pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
+      Utils_ANEs_Audio.playFile(_silenceAudioFile, audioCallback, 1.0, lessonTitle, lessonProvider);
+   }
+
+   public function playWavSample(sample:ByteArray):void {
+      stop();
+      _isPlaying = true;
+      _soundURL = null;
+      var result:File = new File(Utils_LangCollab.tempAudioFileURL);
+      var fs:FileStream = new FileStream();
+      fs.open(result, FileMode.WRITE);
+      fs.writeBytes(sample, 0, sample.length);
+      fs.close();
+      var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
+      var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
+      var file:File = new File(Utils_LangCollab.tempAudioFileURL);
+      Log.info("playWavSample() pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp");
+      Utils_ANEs_Audio.playFile(file, audioCallback, 1.0, lessonTitle, lessonProvider);
+   }
+
+   public function stop():void {
+      Log.info("AudioPlayer.stop()");
       if (_isPlaying) {
+         Log.info("stop() ..............................................................................................................................");
          Utils_ANEs_Audio.stopMediaPlayer();
       }
       _soundURL = null;
@@ -132,16 +137,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       if (e is AudioPlayerEvent) {
          switch (AudioPlayerEvent(e).type) {
             case AudioPlayerEvent.COMPLETE:
-               // When an audio completes we play an MP3 file consisting of silence. Reason: When the media player is displaying
-               // in the lock screen, this causes it to display its controls as if sound is playing, which is what we want.
-               // If/when we want to stop the media player we call Utils_ANEs.stopMediaPlayer().
-               var silenceAudioFile:File = File.applicationDirectory.resolvePath(
-                     Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FOLDER_NAME +
-                     File.separator +
-                     Constant_LangMentor_Misc.FILEPATHINFO__SILENCE_AUDIO_FILE_NAME);
-               Utils_ANEs_Audio.playFile(silenceAudioFile, audioCallback, 1.0);
-               _isPlaying = false;
-               _soundURL = null;
+               playSilenceFile();
                dispatchEvent(new Event(Event.SOUND_COMPLETE));
                break;
             default:

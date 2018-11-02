@@ -35,6 +35,8 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
+import org.as3wavsound.WavSound;
+
 [Event(name="complete", type="flash.events.Event")]
 [Event(name="id3", type="flash.events.Event")]
 [Event(name="ioError", type="flash.events.IOErrorEvent")]
@@ -52,10 +54,10 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
    private var _isPlaying:Boolean;
    private var _sound:Sound;
    private var _soundChannel:SoundChannel;
-   private var _soundChannel_Silent:SoundChannel;
    private var _soundURL:String;
    private var _soundVolumeAdjustmentFactor:Number;
    private var _timer:Timer;
+   private var _wavSoundPlayer:WavSound;
 
    // ****************************************************
    //
@@ -80,7 +82,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
    }
 
    // A passedSoundVolumeAdjustmentFactor of 1 means that the sound volume will be left as-is
-   public function play(soundUrl:String, passedSoundVolumeAdjustmentFactor:Number = 1.0):void {
+   public function playMp3File(soundUrl:String, passedSoundVolumeAdjustmentFactor:Number = 1.0):void {
       Log.info("AudioPlayer.play(): " + soundUrl);
       if (_isPlaying) {
          if (soundUrl == _soundURL) {
@@ -135,12 +137,17 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       _soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
    }
 
-   public function stop(url:String = null):void {
+   public function playSilenceFile():void {
+      // Not needed - only implemented in the 'mobile' version of this class
+   }
+
+   public function playWavSample(sample:ByteArray):SoundChannel {
+      _wavSoundPlayer = new WavSound(sample);
+      return _wavSoundPlayer.play();
+   }
+
+   public function stop():void {
       Log.info("AudioPlayer.stop(): " + _soundURL);
-      if ((url) && (_soundURL != "") && (url != _soundURL)) {
-         Log.warn("AudioPlayer.stop(): url != _soundURL: url=" + url + " _soundURL=" + _soundURL);
-         return;
-      }
       clear();
    }
 
@@ -163,12 +170,10 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
          _soundChannel.stop();
          _soundChannel = null;
       }
-      if (_soundChannel_Silent) {
-         _soundChannel_Silent.stop();
-         _soundChannel_Silent = null;
-      }
       _soundURL = "";
       _soundVolumeAdjustmentFactor = 0;
+      if (_wavSoundPlayer)
+            _wavSoundPlayer.stop();
    }
 
    private function clearTimer():void {
@@ -177,15 +182,6 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
          _timer.removeEventListener(TimerEvent.TIMER, play_Continued);
          _timer = null;
       }
-   }
-
-   private function createSilentSample():ByteArray {
-      var result:ByteArray = new ByteArray();
-      var desiredLength:uint = 2 * _SAMPLE_SIZE;
-      for (var i:uint = 0; i < desiredLength; i++) {
-         result.writeFloat(0);
-      }
-      return result;
    }
 
    private function onSoundComplete(event:Event):void {

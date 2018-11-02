@@ -52,9 +52,9 @@ public class Utils_ANEs_Audio {
       return MediaPlayer.isSupported;
    }
 
-   public static function playFile(file:File, audioCallback:Function, volume:Number = 1.0):void {
+   public static function playFile(file:File, audioCallback:Function, volume:Number = 1.0, title:String = "", artist:String = ""):void {
       _audioCallback = audioCallback;
-      initializeAudioPlayer();
+      initializeAudioPlayer(title, artist);
       _audioPlayer.setVolume(volume);
       _audioPlayer.loadFile(file);
       _audioCurrentFileUrl = file.url;
@@ -83,7 +83,7 @@ public class Utils_ANEs_Audio {
       _audioCurrentFileUrl = null;
    }
 
-   private static function initializeAudioPlayer():void {
+   private static function initializeAudioPlayer(title:String, artist:String):void {
       initializeMediaPlayerIfNeeded();
       disposeAudioPlayer();
       try {
@@ -91,10 +91,8 @@ public class Utils_ANEs_Audio {
          options.enableBackgroundAudio(true);
          _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
          var info:MediaInfo = new MediaInfo();
-         info.setTitle("foo");
-         info.setArtist("artist");
-         info.setCurrentTime(16);
-         info.setDuration(160);
+         info.setTitle(title);
+         info.setArtist(artist);
          MediaPlayer.service.remoteCommandCenter.setNowPlayingInfo(info);
          _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
          _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
