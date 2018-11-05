@@ -61,12 +61,6 @@ public class Utils_System {
       return _isGeneration7OrGreaterIOS;
    }
 
-   private static var _isIPadOrPreGeneration5IPhoneOrIPod:Boolean;
-
-   public static function get isIPadOrPreGeneration5IPhoneOrIPod():Boolean {
-      return _isIPadOrPreGeneration5IPhoneOrIPod;
-   }
-
    private static var _platformName:String;
 
    public static function get platformName():String {
@@ -179,7 +173,6 @@ public class Utils_System {
             (operatingSystem.indexOf("iPod") != -1)) {
          _isMobileDevice = true;
          _platformName = Constant_PlatformName.IOS;
-         setIsIPadOrPreGeneration5IPhoneOrIPod();
          setIsGeneration7OrGreaterIOS();
       } else if (operatingSystem.indexOf("Mac") != -1) {
          _isMobileDevice = false;
@@ -201,27 +194,6 @@ public class Utils_System {
          _appWidth = 360;
       }
       _dpi = Capabilities.screenDPI;
-   }
-
-   private static function setIsIPadOrPreGeneration5IPhoneOrIPod():void {
-      var trueMatchList:Array =
-            [
-               "iPad",
-               "iPhone1",
-               "iPhone2",
-               "iPhone3",
-               "iPhone4",
-               "iPod1",
-               "iPod2",
-               "iPod3",
-               "iPod4"];
-      for each (var s:String in trueMatchList) {
-         if (Capabilities.os.indexOf(s) != -1) {
-            _isIPadOrPreGeneration5IPhoneOrIPod = true;
-            return;
-         }
-      }
-      _isIPadOrPreGeneration5IPhoneOrIPod = false;
    }
 
    private static function setIsGeneration7OrGreaterIOS():void {

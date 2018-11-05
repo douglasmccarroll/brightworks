@@ -100,9 +100,8 @@ package org.bytearray.micrecorder
 			_microphone.gain = _gain;
 			_microphone.rate = _rate;
 			_buffer.length = 0;
-			
-			/////_microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
-			/////_microphone.addEventListener(StatusEvent.STATUS, onStatus);
+			_microphone.addEventListener(SampleDataEvent.SAMPLE_DATA, onSampleData);
+			_microphone.addEventListener(StatusEvent.STATUS, onStatus);
 		}
 		
 		private function onStatus(event:StatusEvent):void
