@@ -113,7 +113,7 @@ public class Utils_ANEs_Audio {
          MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PLAY, onMediaPlayerUserInput_Play);
          _isMediaPlayerExtensionInitialized = true;
       } catch (e:Error) {
-         Log.error("Utils_ANEs.initializeMediaPlayerIfNeeded(): " + e.message);
+         Log.error("Utils_ANEs_Audio.initializeMediaPlayerIfNeeded(): " + e.message);
       }
    }
 

@@ -20,7 +20,11 @@
 package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
+import com.brightworks.component.mobilealert.MobileAlert;
+import com.brightworks.constant.Constant_Misc;
 import com.brightworks.util.audio.Utils_ANEs_Audio;
+import com.distriqt.extension.dialog.Dialog;
+import com.distriqt.extension.dialog.Gravity;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -50,6 +54,7 @@ public class Utils_ANEs {
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
    //private static var _facebookShareResultCallback:Function;
+   private static var _isDialogExtensionInitialized:Boolean;
    //private static var _isFacebookExtensionInitialized:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
@@ -125,6 +130,15 @@ public class Utils_ANEs {
       }
    }
 
+   public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
+      initializeDialogExtensionIfNeeded();
+      if (Dialog.isSupported) {
+         Dialog.service.toast(alertText, useLongDisplay ? Dialog.LENGTH_LONG : Dialog.LENGTH_SHORT, 0x9999FF, Gravity.MIDDLE, .8);
+      } else {
+         MobileAlert.open(alertText, true, 1000);
+      }
+   }
+
    public static function showRatingsPrompt():void {
       initializeRateMeIfNeeded();
       RateMe.api.promote();
@@ -142,6 +156,18 @@ public class Utils_ANEs {
    //          Private Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   private static function initializeDialogExtensionIfNeeded():void {
+      if (!_isDialogExtensionInitialized) {
+         try {
+            Dialog.init("17f651bf12b305d3dbf03b374dd4d6d3a9eb7b46K0zaMoXkk3Pbvq1WXjMkodxu9Icmt3LWPjwnDU+8U4+YVEiYKSeCtabcMWu3+cOPnlRh5r/GJJRBo6RaFFmZDt4MYvIlS4xiIqQ44RthhlVw/E7NT27JxRrFHx8sScgbSrz39XBJkQ5eLjtjOwVZE4AjGxedsy7bbGQFcuSzxOM54ScE9eBb2V6LTuLeLXAOgyjY982T6zPoG8vcbSprFZJ3XOR1mnXDOH8ppQNPF+cd2War6Ngsw1WAE9SaDKSvXTiQJS2mgsNgRVKyAUDQdz/csKCbWvqoicNGQ3jyYcKk1X4pwG3l5r1Ns9n9/B1Src5E32AYfhF6yhsR5V23Zg==");
+            _isDialogExtensionInitialized = true;
+         }
+         catch (e:Error) {
+            Log.error("Utils_ANEs_Audio.initializeMediaPlayerIfNeeded(): " + e.message);
+         }
+      }
+   }
 
    /*private static function initializeFacebookIfNeeded():void {
       if (!_isFacebookExtensionInitialized) {

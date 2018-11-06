@@ -211,7 +211,7 @@ public class Log implements IManagedSingleton {
       doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR);
       if (Utils_System.isAlphaVersion()) {
          copyRecentInfoToClipboard();
-         MobileAlert.open("An internal error has occurred - diagnostic information has been copied to the clipboard", true);
+         Utils_ANEs.showAlert_Toast("An internal error has occurred - diagnostic information has been copied to the clipboard");
       }
       if (_errorLogUserFeedbackFunction is Function)
          _errorLogUserFeedbackFunction();

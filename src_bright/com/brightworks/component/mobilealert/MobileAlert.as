@@ -1,4 +1,6 @@
 package com.brightworks.component.mobilealert {
+import com.brightworks.constant.Constant_Misc;
+
 import flash.display.DisplayObjectContainer;
 import flash.events.TimerEvent;
 import flash.utils.Timer;
@@ -14,7 +16,6 @@ import spark.filters.DropShadowFilter;
 import spark.primitives.Rect;
 
 public class MobileAlert extends Group {
-   private static const _DEFAULT_DISPLAY_DURATION:Number = 1000;
    private static const _UI_VALUE__ALPHA:Number = .7;
    private static const _UI_VALUE__BACKGROUND__COLOR:uint = 0;
    private static const _UI_VALUE__BACKGROUND__CORNER_RADIUS:uint = 5;
@@ -93,7 +94,7 @@ public class MobileAlert extends Group {
          stopAutoCloseTimer();
    }
 
-   public static function open(alertText:String, autoClose:Boolean, duration:Number = _DEFAULT_DISPLAY_DURATION):void {
+   public static function open(alertText:String, autoClose:Boolean, duration:Number = 1000):void {
       if (!(_instance)) {
          _instance = new MobileAlert(new SingletonEnforcer(), alertText);
       }

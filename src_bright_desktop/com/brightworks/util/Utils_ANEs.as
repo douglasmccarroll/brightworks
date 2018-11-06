@@ -17,6 +17,9 @@
  along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.brightworks.util {
+import com.brightworks.component.mobilealert.MobileAlert;
+import com.brightworks.constant.Constant_Misc;
+
 import flash.filesystem.File;
 
 
@@ -75,6 +78,11 @@ public class Utils_ANEs {
 
    public static function setAudioPlayerCallbackFunction(f:Function):void {
 
+   }
+
+   public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
+      var duration:int = useLongDisplay ? 4000 : 2000;
+      MobileAlert.open(alertText, true, duration);
    }
 
    public static function showRatingsPrompt():void {
