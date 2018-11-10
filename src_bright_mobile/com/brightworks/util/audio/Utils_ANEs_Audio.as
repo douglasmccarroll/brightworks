@@ -32,6 +32,7 @@ import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import flash.filesystem.File;
 
 public class Utils_ANEs_Audio {
+   private static var _appPauseFunction:Function;
    private static var _audioCallback:Function;
    private static var _audioCurrentFileUrl:String;
    private static var _audioPlayer:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
@@ -58,6 +59,10 @@ public class Utils_ANEs_Audio {
       _audioPlayer.setVolume(volume);
       _audioPlayer.loadFile(file);
       _audioCurrentFileUrl = file.url;
+   }
+
+   public static function setAppPauseFunction(f:Function):void {
+      _appPauseFunction = f;
    }
 
    public static function stopMediaPlayer():void {
@@ -96,6 +101,7 @@ public class Utils_ANEs_Audio {
          MediaPlayer.service.remoteCommandCenter.setNowPlayingInfo(info);
          _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
          _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+         _audioPlayer.addEventListener(AudioPlayerEvent.INTERRUPTION_START, onAudioPlayerInterruptionStart);
          _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
          _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
       } catch (e:Error) {
@@ -130,6 +136,11 @@ public class Utils_ANEs_Audio {
          return;
       disposeAudioPlayer();
       _audioCallback(e);
+   }
+
+   private static function onAudioPlayerInterruptionStart(e:AudioPlayerEvent):void {
+      if (_appPauseFunction is Function)
+            _appPauseFunction();
    }
 
    private static function onAudioPlayerLoaded(e:AudioPlayerEvent):void {
