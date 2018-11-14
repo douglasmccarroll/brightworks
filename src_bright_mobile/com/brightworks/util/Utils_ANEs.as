@@ -21,7 +21,7 @@ package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
 import com.brightworks.component.mobilealert.MobileAlert;
-import com.brightworks.constant.Constant_Misc;
+import com.brightworks.constant.Constant_Private;
 import com.brightworks.util.audio.Utils_ANEs_Audio;
 import com.distriqt.extension.dialog.Dialog;
 import com.distriqt.extension.dialog.Gravity;
@@ -32,12 +32,11 @@ import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 import com.myflashlab.air.extensions.rateme.RateMe;
 import com.myflashlab.air.extensions.rateme.RateMeEvents;
 
-import flash.filesystem.File;
+import com.myflashlab.air.extensions.fb.Facebook;
+import com.myflashlab.air.extensions.fb.FacebookEvents;
+import com.myflashlab.air.extensions.fb.ShareLinkContent;
 
-//import com.myflashlab.air.extensions.fb.AccessToken;
-//import com.myflashlab.air.extensions.fb.Facebook;
-//import com.myflashlab.air.extensions.fb.FacebookEvents;
-//import com.myflashlab.air.extensions.fb.ShareLinkContent;
+
 /*
 
 
@@ -53,9 +52,8 @@ public class Utils_ANEs {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
-   //private static var _facebookShareResultCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
-   //private static var _isFacebookExtensionInitialized:Boolean;
+   private static var _isFacebookExtensionInitialized:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
    private static var _permissionCheck:PermissionCheck;
 
@@ -98,19 +96,21 @@ public class Utils_ANEs {
       _codeScanner.open([Barcode.QR], null, true);
    }
                                              
-   /*public static function facebookShare(resultCallback:Function):void {
-      _facebookShareResultCallback = resultCallback;
-      initializeFacebookIfNeeded();
-      // Facebook.auth.login(true, [], onFacebookLoginCallback);
+   public static function facebookShare():void {
       var content:ShareLinkContent = new ShareLinkContent();
       content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
       content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
       Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
    }
 
+   public static function initialize():void {
+      Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
+      Facebook.listener.addEventListener(FacebookEvents.INIT, onFacebookANEInit);
+   }
+
    public static function isFacebookSupported():Boolean {
-      return true;
-   }*/
+      return _isFacebookExtensionInitialized;
+   }
 
    public static function requestMicrophonePermission(callback:Function):void {
       if (!_permissionCheck)
@@ -169,20 +169,13 @@ public class Utils_ANEs {
       }
    }
 
-   /*private static function initializeFacebookIfNeeded():void {
-      if (!_isFacebookExtensionInitialized) {
-         Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
-         _isFacebookExtensionInitialized = true;
-      }
-   }*/
-
    private static function initializeRateMeIfNeeded():void {
       if (!_isRateMeExtensionInitialized) {
          RateMe.init();
          RateMe.api.addEventListener(RateMeEvents.ERROR, onRateMeError);
          RateMe.api.autoPromote = false;
          RateMe.api.daysUntilPrompt = 1000;
-         RateMe.api.launchesUntilPrompt = 10;
+         RateMe.api.launchesUntilPrompt = 1000;
          RateMe.api.remindPeriod = 130;  // Number of days before next prompt, if user has clicked the "remind me later" button
          RateMe.api.title = "Please Rate " + Constant_AppConfiguration.CURRENT_MENTOR_TYPE__DISPLAY_NAME;
          RateMe.api.message = "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?";
@@ -210,29 +203,15 @@ public class Utils_ANEs {
       _codeScanResultCallback(event.param.data);
    }
 
-   /*private static function onFacebookLoginCallback(isCanceled:Boolean, e:Error, accessToken:AccessToken, recentlyDeclined:Array, recentlyGranted:Array):void {
-      if(e) {
-         Log.error("Utils_ANEs.onFacebookLoginCallback() Error: " + e.message);
-         _facebookShareResultCallback();
-      } else {
-         if (isCanceled) {
-            _facebookShareResultCallback();
-         } else {
-            // We assume here that we want to share content because that's the only thing we do w/ FB at present - if we start doing other things we'll need to modify this code
-            var content:ShareLinkContent = new ShareLinkContent();
-            content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
-            content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
-            Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
-         }
-      }
+   private static function onFacebookANEInit(e:FacebookEvents):void {
+      _isFacebookExtensionInitialized = true;
    }
 
    private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
       if (e) {
          Log.error("Utils_ANEs.onFacebookShareDialogCallback() Error: " + e.message);
       }
-      _facebookShareResultCallback();
-   }*/
+   }
 
    private static function onRateMeError(e:RateMeEvents):void {
       Log.error("Utils_ANEs.onRateMeError() Error: " + e.msg);

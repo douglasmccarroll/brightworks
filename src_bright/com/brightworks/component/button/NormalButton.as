@@ -28,10 +28,10 @@ subclass it, and style the subclass.
 
 */
 package com.brightworks.component.button {
-import com.brightworks.constant.Constant_Misc;
 import com.brightworks.interfaces.IDisposable;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;
+import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -59,7 +59,7 @@ public class NormalButton extends Button implements IDisposable {
    }
 
    private function onMouseDown(event:MouseEvent):void {
-      if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL))
+      if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constant_AppConfiguration.USER_ACTION_REQUIRED_WAIT_INTERVAL))
          return;
       _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
       if (clickSoundEnabled)

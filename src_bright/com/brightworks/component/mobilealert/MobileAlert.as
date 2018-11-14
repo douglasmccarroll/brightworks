@@ -1,5 +1,4 @@
 package com.brightworks.component.mobilealert {
-import com.brightworks.constant.Constant_Misc;
 
 import flash.display.DisplayObjectContainer;
 import flash.events.TimerEvent;

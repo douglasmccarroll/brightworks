@@ -18,7 +18,6 @@
  */
 package com.brightworks.util {
 import com.brightworks.component.mobilealert.MobileAlert;
-import com.brightworks.constant.Constant_Misc;
 
 import flash.filesystem.File;
 
