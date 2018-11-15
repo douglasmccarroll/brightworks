@@ -45,28 +45,24 @@ public class Utils_ANEs {
    }
 
    public static function audioPlay(f:File, audioCallback:Function, volume:Number = 1.0):void {
-
    }
 
    public static function audioStopMediaPlayer():void {
+   }
 
+   public static function facebookShare():void {
    }
 
    public static function getAudioCurrentFileUrl():String {
       return "foo";
    }
 
-   /*public static function facebookShare(resultCallback:Function) {
-      resultCallback();
-   } */
+   public static function initialize():void {
+   }
 
    public static function isANEBasedMediaPlayerSupported():Boolean {
       return false;
    }
-
-   /*public static function isFacebookSupported():Boolean {
-      return false;
-   }*/
 
    public static function isMediaPlayerSupported():Boolean {
       return false;
