@@ -25,6 +25,7 @@ import mx.core.FlexGlobals;
 
 public class Utils_File {
    public static const BYTES_IN_GIGABYTE:int = 1024 * 1024 * 1024;
+   public static const BYTES_IN_MEGABYTE:int = 1024 * 1024;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //

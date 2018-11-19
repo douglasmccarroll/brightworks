@@ -36,6 +36,8 @@ import com.myflashlab.air.extensions.fb.Facebook;
 import com.myflashlab.air.extensions.fb.FacebookEvents;
 import com.myflashlab.air.extensions.fb.ShareLinkContent;
 
+import flash.events.Event;
+
 
 /*
 
@@ -54,8 +56,9 @@ public class Utils_ANEs {
    private static var _codeScanResultCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
    private static var _isFacebookExtensionInitialized:Boolean;
+   private static var _isPermissionGranted_Camera:Boolean;
+   private static var _isPermissionGranted_Microphone:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
-   private static var _permissionCheck:PermissionCheck;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -75,27 +78,9 @@ public class Utils_ANEs {
          codeScanFailureCallback();
          return;
       }
-      if (!_permissionCheck)
-         _permissionCheck = new PermissionCheck();
-      var permissionState:int = _permissionCheck.check(PermissionCheck.SOURCE_CAMERA);
-      if (permissionState == PermissionCheck.PERMISSION_UNKNOWN || permissionState == PermissionCheck.PERMISSION_DENIED) {
-         var requestResultHandler:Function = function (result:int):void {
-            if (result == PermissionCheck.PERMISSION_GRANTED) {
-               activateCodeScanner_Continued();
-            } else {
-               codeScanCancelCallback();
-            }
-         }
-         _permissionCheck.request(PermissionCheck.SOURCE_CAMERA, requestResultHandler);
-      } else {
-         activateCodeScanner_Continued();
-      }
-   }
-
-   public static function activateCodeScanner_Continued():void {
       _codeScanner.open([Barcode.QR], null, true);
    }
-                                             
+
    public static function facebookShare():void {
       var content:ShareLinkContent = new ShareLinkContent();
       content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
@@ -106,28 +91,35 @@ public class Utils_ANEs {
    public static function initialize():void {
       Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
       Facebook.listener.addEventListener(FacebookEvents.INIT, onFacebookANEInit);
+      PermissionCheck.init();
    }
 
-   public static function isFacebookSupported():Boolean {
-      return _isFacebookExtensionInitialized;
+   public static function requestCameraPermission(callback:Function):void {
+      if (_isPermissionGranted_Camera)
+         callback(true);
+      PermissionCheck.request(PermissionCheck.SOURCE_CAMERA, function(o:Object):void {
+               if (o.state == PermissionCheck.PERMISSION_GRANTED) {
+                  _isPermissionGranted_Camera = true;
+                  callback(true);
+               } else {
+                  callback(false);
+               }
+            }
+      );
    }
 
    public static function requestMicrophonePermission(callback:Function):void {
-      if (!_permissionCheck)
-         _permissionCheck = new PermissionCheck();
-      var permissionState:int = _permissionCheck.check(PermissionCheck.SOURCE_MIC);
-      if (permissionState == PermissionCheck.PERMISSION_UNKNOWN || permissionState == PermissionCheck.PERMISSION_DENIED) {
-         var requestResultHandler:Function = function (result:int):void {
-            if (result == PermissionCheck.PERMISSION_GRANTED) {
-               callback(true);
-            } else {
-               callback(false);
-            }
-         }
-         _permissionCheck.request(PermissionCheck.SOURCE_MIC, requestResultHandler);
-      } else {
+      if (_isPermissionGranted_Microphone)
          callback(true);
-      }
+      PermissionCheck.request(PermissionCheck.SOURCE_MIC, function(o:Object):void {
+               if (o.state == PermissionCheck.PERMISSION_GRANTED) {
+                  _isPermissionGranted_Microphone = true;
+                  callback(true);
+               } else {
+                  callback(false);
+               }
+            }
+      );
    }
 
    public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
@@ -142,13 +134,6 @@ public class Utils_ANEs {
    public static function showRatingsPrompt():void {
       initializeRateMeIfNeeded();
       RateMe.api.promote();
-   }
-
-   public static function showRatingsPromptIfEnoughLaunches():void {
-      initializeRateMeIfNeeded();
-      if (RateMe.api.shouldPromote) {
-         RateMe.api.promote();
-      }
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,7 +188,7 @@ public class Utils_ANEs {
       _codeScanResultCallback(event.param.data);
    }
 
-   private static function onFacebookANEInit(e:FacebookEvents):void {
+   private static function onFacebookANEInit(e:Event):void {
       _isFacebookExtensionInitialized = true;
    }
 
