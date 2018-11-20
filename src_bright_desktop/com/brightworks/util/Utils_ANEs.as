@@ -68,11 +68,12 @@ public class Utils_ANEs {
       return false;
    }
 
-   public static function requestMicrophonePermission(callback:Function):void {
+   public static function requestCameraPermission(callback:Function):void {
+      callback(false);
    }
 
-   public static function setAudioPlayerCallbackFunction(f:Function):void {
-
+   public static function requestMicrophonePermission(callback:Function):void {
+      callback(true);
    }
 
    public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
