@@ -146,11 +146,18 @@ public class Utils_DataConversionComparison {
       return result;
    }
 
-   public static function convertStringToArrayOfLineStrings(s:String, bStripWhiteSpaceFromLineEnds:Boolean = false):Array {
+   public static function convertStringToArrayBasedOnDelimiter(s:String, delimiter:String, stripWhiteSpaceFromStringEnds:Boolean = true):Array {
+      if (stripWhiteSpaceFromStringEnds)
+         s = Utils_String.removeWhiteSpaceIncludingLineReturnsFromBeginningAndEndOfString(s)
+      var result:Array = s.split(delimiter);
+      return result;
+   }
+
+   public static function convertStringToArrayOfLineStrings(s:String, stripWhiteSpaceFromLineEnds:Boolean = false):Array {
       s = Utils_String.removeSubstringFromString("\r", s);
       var tempResult:Array = s.split("\n");
       var result:Array;
-      if (bStripWhiteSpaceFromLineEnds) {
+      if (stripWhiteSpaceFromLineEnds) {
          result = [];
          for each (var line:String in tempResult) {
             result.push(Utils_String.removeWhiteSpaceIncludingLineReturnsFromBeginningAndEndOfString(line));
