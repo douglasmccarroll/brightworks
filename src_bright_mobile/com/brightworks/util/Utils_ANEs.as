@@ -21,11 +21,16 @@ package com.brightworks.util {
 
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
 import com.brightworks.component.mobilealert.MobileAlert;
+import com.brightworks.component.mobilealert.MobileDialog;
 import com.brightworks.constant.Constant_Private;
 import com.brightworks.util.audio.Utils_ANEs_Audio;
 import com.distriqt.extension.dialog.Dialog;
+import com.distriqt.extension.dialog.DialogView;
 import com.distriqt.extension.dialog.Gravity;
+import com.distriqt.extension.dialog.builders.AlertBuilder;
+import com.distriqt.extension.dialog.events.DialogViewEvent;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
+import com.langcollab.languagementor.model.MainModel;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
@@ -54,6 +59,8 @@ public class Utils_ANEs {
    private static var _codeScanner:Barcode;
    private static var _codeScanCancelCallback:Function;
    private static var _codeScanResultCallback:Function;
+   private static var _dialogAlert:DialogView;
+   private static var _dialogCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
    private static var _isFacebookExtensionInitialized:Boolean;
    private static var _isPermissionGranted_Camera:Boolean;
@@ -122,7 +129,27 @@ public class Utils_ANEs {
       );
    }
 
+   public static function showAlert_OkayButton(alertText:String, callback:Function = null):void {
+      _dialogCallback = callback;
+      initializeDialogExtensionIfNeeded();
+      if (Dialog.isSupported) {
+         _dialogAlert = Dialog.service.create(
+               new AlertBuilder(true)
+                     .setTitle("")
+                     .setMessage(alertText)
+                     .addOption("OK")
+                     .build()
+         );
+         _dialogAlert.addEventListener(DialogViewEvent.CLOSED, onDialogAlertClose);
+         _dialogAlert.show();
+      } else {
+         MobileDialog.open(alertText, callback);
+      }
+   }
+
    public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
+      if (MainModel.getInstance().isAppRunningInBackground)  // We don't show toast alerts if the app is running in the background
+            return;
       initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
          Dialog.service.toast(alertText, useLongDisplay ? Dialog.LENGTH_LONG : Dialog.LENGTH_SHORT, 0x9999FF, Gravity.MIDDLE, .8);
@@ -186,6 +213,13 @@ public class Utils_ANEs {
 
    private static function onCodeScanResult(event:BarcodeEvent):void {
       _codeScanResultCallback(event.param.data);
+   }
+
+   private static function onDialogAlertClose(event:DialogViewEvent):void {
+      _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onDialogAlertClose);
+      _dialogAlert.dispose();
+      if (_dialogCallback is Function)
+            _dialogCallback();
    }
 
    private static function onFacebookANEInit(e:Event):void {

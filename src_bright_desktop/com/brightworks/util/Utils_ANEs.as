@@ -18,6 +18,7 @@
  */
 package com.brightworks.util {
 import com.brightworks.component.mobilealert.MobileAlert;
+import com.brightworks.component.mobilealert.MobileDialog;
 
 import flash.filesystem.File;
 
@@ -74,6 +75,10 @@ public class Utils_ANEs {
 
    public static function requestMicrophonePermission(callback:Function):void {
       callback(true);
+   }
+
+   public static function showAlert_OkayButton(alertText:String, callback:Function = null):void {
+      MobileDialog.open(alertText, callback);
    }
 
    public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {

@@ -184,6 +184,7 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
          _connection.open(_databaseFile, SQLMode.UPDATE);
       }
       catch (error:SQLError) {
+         Log.error("SQLiteTransaction.execute(): Error when opening DB: " + error.message);
          return createFailureReport(STATUS_OPENING, error);
       }
       _connection.begin();
