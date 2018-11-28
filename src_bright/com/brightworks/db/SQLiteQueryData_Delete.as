@@ -21,6 +21,7 @@ import com.brightworks.util.Log;
 import com.brightworks.vo.IVO;
 
 public class SQLiteQueryData_Delete extends SQLiteQueryData {
+   
    public function SQLiteQueryData_Delete(
          vo:IVO,
          minAllowedRowsAffectedCount:Number = 0,
