@@ -24,7 +24,10 @@ import mx.formatters.NumberBase;
 import mx.formatters.NumberBaseRoundType;
 
 public class Utils_DataConversionComparison {
-   public static function convertArrayToDelimitedString(a:Array, delimiter:String = ","):String {
+   public static function convertArrayToDelimitedString(a:Array, delimiter:String = ",", maxValuesToCopy:int = -1):String {
+      if ((maxValuesToCopy != -1) && (maxValuesToCopy < a.length)) {
+         a = Utils_ArrayVectorEtc.createArrayContainingFirstNValuesFromArray(a, maxValuesToCopy);
+      }
       return a.join(delimiter);
    }
 

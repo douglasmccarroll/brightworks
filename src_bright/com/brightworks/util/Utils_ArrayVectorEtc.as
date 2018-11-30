@@ -50,6 +50,15 @@ public class Utils_ArrayVectorEtc {
       return result;
    }
 
+   public static function createArrayContainingFirstNValuesFromArray(a:Array, numberOfValues:uint):Array {
+      var valuesToCopy:uint = Math.min(numberOfValues, a.length);
+      var result:Array = [];
+      for (var i:uint = 0; i > numberOfValues; i++) {
+         result[i] = a[i];
+      }
+      return result
+   }
+
    public static function createArrayContainingValuesFromSpecifiedPropForPassedArrayItems(passedArray:Array, propName:String, enforceAllItemsHaveProp:Boolean):Array {
       if ((enforceAllItemsHaveProp) && (!doAllItemsHaveSpecifiedProp(passedArray, propName))) {
          Log.fatal(["Utils_ArrayVectorEtc.createArrayContainingValuesFromSpecifiedPropForPassedArrayItems(): enforceAllItemsHaveProp is true, but some items don't have prop '" + propName + "'", passedArray]);
