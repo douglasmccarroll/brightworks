@@ -28,8 +28,8 @@ subclass it, and style the subclass.
 
 */
 package com.brightworks.component.button {
+import com.brightworks.constant.Constants_Misc;
 import com.brightworks.interfaces.IDisposable;
-import com.brightworks.lessoncreator.constants.Constants_Misc;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;
 

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.brightworks.component.mobile {
-import com.brightworks.constant.Constant_Misc;
+import com.brightworks.constant.Constants_Misc;
 import com.brightworks.interfaces.IDisposable;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;

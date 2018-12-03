@@ -172,7 +172,8 @@ public class Utils_ANEs {
    private static function initializeDialogExtensionIfNeeded():void {
       if (!_isDialogExtensionInitialized) {
          try {
-            Dialog.init("17f651bf12b305d3dbf03b374dd4d6d3a9eb7b46K0zaMoXkk3Pbvq1WXjMkodxu9Icmt3LWPjwnDU+8U4+YVEiYKSeCtabcMWu3+cOPnlRh5r/GJJRBo6RaFFmZDt4MYvIlS4xiIqQ44RthhlVw/E7NT27JxRrFHx8sScgbSrz39XBJkQ5eLjtjOwVZE4AjGxedsy7bbGQFcuSzxOM54ScE9eBb2V6LTuLeLXAOgyjY982T6zPoG8vcbSprFZJ3XOR1mnXDOH8ppQNPF+cd2War6Ngsw1WAE9SaDKSvXTiQJS2mgsNgRVKyAUDQdz/csKCbWvqoicNGQ3jyYcKk1X4pwG3l5r1Ns9n9/B1Src5E32AYfhF6yhsR5V23Zg==");
+            var appKey:String = Utils_System.isAndroid() ? Constant_Private.DISTRIQT_APP_KEY__ANDROID : Constant_Private.DISTRIQT_APP_KEY__IOS;
+            Dialog.init(appKey);
             _isDialogExtensionInitialized = true;
          }
          catch (e:Error) {

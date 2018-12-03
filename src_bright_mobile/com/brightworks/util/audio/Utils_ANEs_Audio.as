@@ -19,8 +19,9 @@
  */
 package com.brightworks.util.audio {
 
+import com.brightworks.constant.Constant_Private;
 import com.brightworks.util.Log;
-import com.brightworks.util.Utils_ANEs;
+import com.brightworks.util.Utils_System;
 import com.distriqt.extension.mediaplayer.MediaInfo;
 import com.distriqt.extension.mediaplayer.MediaPlayer;
 import com.distriqt.extension.mediaplayer.audio.AudioPlayer;
@@ -28,7 +29,6 @@ import com.distriqt.extension.mediaplayer.audio.AudioPlayerOptions;
 import com.distriqt.extension.mediaplayer.events.AudioPlayerEvent;
 import com.distriqt.extension.mediaplayer.events.MediaErrorEvent;
 import com.distriqt.extension.mediaplayer.events.RemoteCommandCenterEvent;
-import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 
 import flash.filesystem.File;
 
@@ -114,7 +114,8 @@ public class Utils_ANEs_Audio {
       if (_isMediaPlayerExtensionInitialized)
          return;
       try {
-         MediaPlayer.init(Constant_AppConfiguration.APP_ID);
+         var appKey:String = Utils_System.isAndroid() ? Constant_Private.DISTRIQT_APP_KEY__ANDROID : Constant_Private.DISTRIQT_APP_KEY__IOS;
+         MediaPlayer.init(appKey);
          MediaPlayer.service.remoteCommandCenter.registerForControlEvents();
          MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PAUSE, onMediaPlayerUserInput_Pause);
          MediaPlayer.service.remoteCommandCenter.addEventListener(RemoteCommandCenterEvent.PLAY, onMediaPlayerUserInput_Play);

@@ -53,7 +53,7 @@ public class Utils_ArrayVectorEtc {
    public static function createArrayContainingFirstNValuesFromArray(a:Array, numberOfValues:uint):Array {
       var valuesToCopy:uint = Math.min(numberOfValues, a.length);
       var result:Array = [];
-      for (var i:uint = 0; i > numberOfValues; i++) {
+      for (var i:uint = 0; i < numberOfValues; i++) {
          result[i] = a[i];
       }
       return result

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.brightworks.component.mobile {
-import com.brightworks.constant.Constant_Misc;
+import com.brightworks.constant.Constants_Misc;
 import com.brightworks.interfaces.IDisposable;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.Utils_DateTime;
@@ -48,7 +48,7 @@ public class MobileToggleButton extends ToggleButton implements IDisposable {
    }
 
    private function onMouseDown(event:MouseEvent):void {
-      if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constant_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL))
+      if ((_mostRecentClickTime > 0) && ((Utils_DateTime.getCurrentMS_BasedOnDate() - _mostRecentClickTime) <= Constants_Misc.USER_ACTION_REQUIRED_WAIT_INTERVAL))
          return;
       _mostRecentClickTime = Utils_DateTime.getCurrentMS_BasedOnDate();
       if (clickSoundEnabled)
