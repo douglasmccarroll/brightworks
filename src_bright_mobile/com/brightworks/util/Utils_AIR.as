@@ -59,7 +59,11 @@ package com.brightworks.util {
 
         private static var _appVersionNumber:Number;
 
-        public static function get appVersionNumber():Number {
+       public static function get applicationStorageDirectory():String {
+          return File.applicationStorageDirectory.nativePath + File.separator + Utils_AIR.appId;
+       }
+
+       public static function get appVersionNumber():Number {
             Utils_AIR.ensureAppInfoPropsAreSet();
             return Utils_AIR._appVersionNumber;
         }

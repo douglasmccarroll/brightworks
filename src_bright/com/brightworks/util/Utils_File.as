@@ -86,7 +86,12 @@ public class Utils_File {
       if (dir.exists) {
          return true;
       } else {
-         dir.createDirectory();
+         try {
+            dir.createDirectory();
+         } catch (e:Error) {
+            trace (e.message);
+            return false;
+         }
          return dir.exists;
       }
    }
