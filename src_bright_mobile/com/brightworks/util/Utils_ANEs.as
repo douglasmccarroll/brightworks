@@ -25,6 +25,7 @@ import com.brightworks.component.mobilealert.MobileDialog;
 import com.brightworks.constant.Constant_Private;
 import com.brightworks.util.audio.Utils_ANEs_Audio;
 import com.distriqt.extension.dialog.Dialog;
+import com.distriqt.extension.dialog.DialogTheme;
 import com.distriqt.extension.dialog.DialogView;
 import com.distriqt.extension.dialog.Gravity;
 import com.distriqt.extension.dialog.builders.AlertBuilder;
@@ -137,6 +138,7 @@ public class Utils_ANEs {
                new AlertBuilder(true)
                      .setTitle("")
                      .setMessage(alertText)
+                     .setTheme(new DialogTheme(DialogTheme.LIGHT))
                      .addOption("OK")
                      .build()
          );
