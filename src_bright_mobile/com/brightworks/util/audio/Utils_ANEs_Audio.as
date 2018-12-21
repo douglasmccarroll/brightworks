@@ -36,7 +36,14 @@ public class Utils_ANEs_Audio {
    private static var _appPauseFunction:Function;
    private static var _audioCallback:Function;
    private static var _audioCurrentFileUrl:String;
-   private static var _audioPlayer:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Disposable_Background:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Disposable_Standard:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Chirps:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Click:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Failure:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Log_Error:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Log_Fatal:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
+   private static var _audioPlayer_Reusable_Log_Warn:com.distriqt.extension.mediaplayer.audio.AudioPlayer;
    private static var _isMediaPlayerExtensionInitialized:Boolean;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,17 +56,45 @@ public class Utils_ANEs_Audio {
       return _audioCurrentFileUrl;
    }
 
+   public static function initialize():void {
+      initializeReusableAudioPlayers();
+   }
+
    public static function isMediaPlayerSupported():Boolean {
       initializeMediaPlayerIfNeeded();
       return MediaPlayer.isSupported;
    }
 
+   public static function playChirps():void {  // 6 chirps in 3 seconds - for experimenting with audio
+      _audioPlayer_Reusable_Chirps.play();
+   }
+
+   public static function playClick():void {
+      _audioPlayer_Reusable_Click.play();
+   }
+
+   public static function playFailureSound():void {
+      _audioPlayer_Reusable_Failure.play();
+   }
+
    public static function playFile(file:File, audioCallback:Function, volume:Number = 1.0, title:String = "", artist:String = ""):void {
       _audioCallback = audioCallback;
-      initializeAudioPlayer(title, artist);
-      _audioPlayer.setVolume(volume);
-      _audioPlayer.loadFile(file);
+      initializeAudioPlayer_Disposable_Background(title, artist);
+      _audioPlayer_Disposable_Background.setVolume(volume);
+      _audioPlayer_Disposable_Background.loadFile(file);
       _audioCurrentFileUrl = file.url;
+   }
+
+   public static function playLogToneError():void {
+      _audioPlayer_Reusable_Log_Error.play();
+   }
+
+   public static function playLogToneFatal():void {
+      _audioPlayer_Reusable_Log_Fatal.play();
+   }
+
+   public static function playLogToneWarn():void {
+      _audioPlayer_Reusable_Log_Warn.play();
    }
 
    public static function setAppPauseFunction(f:Function):void {
@@ -67,7 +102,8 @@ public class Utils_ANEs_Audio {
    }
 
    public static function stopMediaPlayer():void {
-      disposeAudioPlayer();
+      disposeDisposableAudioPlayers();
+      _audioCurrentFileUrl = null;
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,37 +112,72 @@ public class Utils_ANEs_Audio {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static function disposeAudioPlayer():void {
-      if (_audioPlayer) {
-         _audioPlayer.removeEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
-         _audioPlayer.removeEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
-         _audioPlayer.removeEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
-         _audioPlayer.removeEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
-         _audioPlayer.stop();
-         _audioPlayer.destroy();
-         _audioPlayer = null;
-      }
-      _audioCurrentFileUrl = null;
+   private static function disposeAudioPlayer(player:com.distriqt.extension.mediaplayer.audio.AudioPlayer):void {
+      player.removeEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+      player.removeEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+      player.removeEventListener(AudioPlayerEvent.INTERRUPTION_START, onAudioPlayerInterruptionStart);
+      player.removeEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
+      player.stop();
+      player.destroy();
    }
 
-   private static function initializeAudioPlayer(title:String, artist:String):void {
+   private static function disposeDisposableAudioPlayers():void {
+      if (_audioPlayer_Disposable_Background) {
+         disposeAudioPlayer(_audioPlayer_Disposable_Background);
+         _audioPlayer_Disposable_Background = null;
+      }
+      if (_audioPlayer_Disposable_Standard) {
+         disposeAudioPlayer(_audioPlayer_Disposable_Standard);
+         _audioPlayer_Disposable_Standard = null;
+      }
+   }
+
+   private static function initializeAudioPlayer_Reusable(path:String):com.distriqt.extension.mediaplayer.audio.AudioPlayer {
       initializeMediaPlayerIfNeeded();
-      disposeAudioPlayer();
+      var player:com.distriqt.extension.mediaplayer.audio.AudioPlayer
+      try {
+         var file:File = File.applicationDirectory.resolvePath(path);
+         if (file.exists) {
+            player = MediaPlayer.service.createAudioPlayer();
+            player.loadFile(file);
+
+         }
+      } catch (e:Error) {
+         Log.error("Utils_ANEs.initializeAudioPlayer_Reusable(): " + e.message);
+      }
+      return player;
+   }
+
+   private static function initializeAudioPlayer_Disposable_Background(title:String, artist:String):void {
+      initializeMediaPlayerIfNeeded();
+      disposeDisposableAudioPlayers();
       try {
          var options:AudioPlayerOptions = new AudioPlayerOptions();
          options.enableBackgroundAudio(true);
-         _audioPlayer = MediaPlayer.service.createAudioPlayer(options);
+         _audioPlayer_Disposable_Background = MediaPlayer.service.createAudioPlayer(options);
          var info:MediaInfo = new MediaInfo();
          info.setTitle(title);
          info.setArtist(artist);
          MediaPlayer.service.remoteCommandCenter.setNowPlayingInfo(info);
-         _audioPlayer.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
-         _audioPlayer.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
-         _audioPlayer.addEventListener(AudioPlayerEvent.INTERRUPTION_START, onAudioPlayerInterruptionStart);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
-         _audioPlayer.addEventListener(AudioPlayerEvent.LOADING, onAudioPlayerLoading);
+         _audioPlayer_Disposable_Background.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+         _audioPlayer_Disposable_Background.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+         _audioPlayer_Disposable_Background.addEventListener(AudioPlayerEvent.INTERRUPTION_START, onAudioPlayerInterruptionStart);
+         _audioPlayer_Disposable_Background.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
       } catch (e:Error) {
-         Log.error("Utils_ANEs.initializeAudioPlayer(): " + e.message);
+         Log.error("Utils_ANEs.initializeAudioPlayer_Disposable_Background(): " + e.message);
+      }
+   }
+
+   private static function initializeAudioPlayer_Disposable_Standard(title:String, artist:String):void {
+      initializeMediaPlayerIfNeeded();
+      disposeDisposableAudioPlayers();
+      try {
+         _audioPlayer_Disposable_Standard = MediaPlayer.service.createAudioPlayer();
+         _audioPlayer_Disposable_Standard.addEventListener(AudioPlayerEvent.COMPLETE, onAudioPlayerComplete);
+         _audioPlayer_Disposable_Standard.addEventListener(MediaErrorEvent.ERROR, onAudioPlayerError);
+         _audioPlayer_Disposable_Standard.addEventListener(AudioPlayerEvent.LOADED, onAudioPlayerLoaded);
+      } catch (e:Error) {
+         Log.error("Utils_ANEs.initializeAudioPlayer_Disposable_Standard(): " + e.message);
       }
    }
 
@@ -125,19 +196,29 @@ public class Utils_ANEs_Audio {
       }
    }
 
+   private static function initializeReusableAudioPlayers():void {  // 6 chirps in 3 seconds - for experimenting with audio
+      _audioPlayer_Reusable_Chirps = initializeAudioPlayer_Reusable("assets/audio/chirps.mp3");
+      _audioPlayer_Reusable_Click = initializeAudioPlayer_Reusable("assets/audio/click.mp3");
+      _audioPlayer_Reusable_Failure = initializeAudioPlayer_Reusable("assets/audio/buzz_thud.mp3");
+      _audioPlayer_Reusable_Log_Error = initializeAudioPlayer_Reusable("assets/audio/logTone_Error.mp3");
+      _audioPlayer_Reusable_Log_Fatal = initializeAudioPlayer_Reusable("assets/audio/logTone_Fatal.mp3");
+      _audioPlayer_Reusable_Log_Warn = initializeAudioPlayer_Reusable("assets/audio/logTone_Warn.mp3");
+   }
+
    private static function onAudioPlayerComplete(e:AudioPlayerEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      disposeAudioPlayer();
+      disposeDisposableAudioPlayers();
       _audioCurrentFileUrl = null;
-      _audioCallback(e);
+      if (_audioCallback is Function) {
+         _audioCallback(e);
+      }
    }
 
    private static function onAudioPlayerError(e:MediaErrorEvent):void {
-      if (!(_audioCallback is Function))
-         return;
-      disposeAudioPlayer();
-      _audioCallback(e);
+      disposeDisposableAudioPlayers();
+      _audioCurrentFileUrl = null;
+      if (_audioCallback is Function) {
+         _audioCallback(e);
+      }
    }
 
    private static function onAudioPlayerInterruptionStart(e:AudioPlayerEvent):void {
@@ -146,10 +227,7 @@ public class Utils_ANEs_Audio {
    }
 
    private static function onAudioPlayerLoaded(e:AudioPlayerEvent):void {
-      _audioPlayer.play();
-   }
-
-   private static function onAudioPlayerLoading(e:AudioPlayerEvent):void {
+      com.distriqt.extension.mediaplayer.audio.AudioPlayer(e.currentTarget).play();
    }
 
    private static function onMediaPlayerUserInput_Pause(e:RemoteCommandCenterEvent):void {

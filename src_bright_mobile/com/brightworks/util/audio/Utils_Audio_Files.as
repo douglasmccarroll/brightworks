@@ -34,54 +34,28 @@ public class Utils_Audio_Files {
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    public static function playChirps():void {  // 6 chirps in 3 seconds - for experimenting with audio
-      play("assets/audio/chirps.mp3");
+      Utils_ANEs_Audio.playChirps();
    }
 
    public static function playClick():void {
-      play("assets/audio/click.mp3");
+      Utils_ANEs_Audio.playClick();
    }
 
    public static function playFailureSound():void {
-      play("assets/audio/buzz_thud.mp3");
+      Utils_ANEs_Audio.playFailureSound();
    }
 
    public static function playLogToneError():void {
-      play("assets/audio/logTone_Error.mp3");
+      Utils_ANEs_Audio.playLogToneError();
    }
 
    public static function playLogToneFatal():void {
-      play("assets/audio/logTone_Fatal.mp3");
-   }
-
-   public static function playLogToneSuccess():void {
-      play("assets/audio/logTone_Success.mp3");
+      Utils_ANEs_Audio.playLogToneFatal();
    }
 
    public static function playLogToneWarn():void {
-      play("assets/audio/logTone_Warn.mp3");
+      Utils_ANEs_Audio.playLogToneWarn();
    }
 
-   public static function playHighPluck():void {
-      play("assets/audio/pluck_high.mp3");
-   }
-
-   public static function playSilenceHalfSecond():void {
-      play("assets/audio/silence_half_second.mp3");
-   }
-
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   //
-   //     Private Methods
-   //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-   private static function audioCallback(o:Object):void {
-      
-   }
-   
-   private static function play(path:String):void {
-      var f:File = File.applicationDirectory.resolvePath(path);
-      Utils_ANEs_Audio.playFile(f, audioCallback);
-   }
 }
 }

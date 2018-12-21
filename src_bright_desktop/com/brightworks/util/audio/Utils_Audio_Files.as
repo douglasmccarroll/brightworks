@@ -39,18 +39,9 @@ public class Utils_Audio_Files {
    [Embed('/assets/audio/logTone_Fatal.mp3')]
    private static const _LOG_TONE__FATAL:Class;
    private static const _LOG_TONE_INSTANCE__FATAL:SoundAsset = new _LOG_TONE__FATAL();
-   [Embed('/assets/audio/logTone_Success.mp3')]
-   private static const _LOG_TONE__SUCCESS:Class;
-   private static const _LOG_TONE_INSTANCE__SUCCESS:SoundAsset = new _LOG_TONE__SUCCESS();
    [Embed('/assets/audio/logTone_Warn.mp3')]
    private static const _LOG_TONE__WARN:Class;
    private static const _LOG_TONE_INSTANCE__WARN:SoundAsset = new _LOG_TONE__WARN();
-   [Embed('/assets/audio/pluck_high.mp3')]
-   private static const _PLUCK_HIGH:Class;
-   private static const _PLUCK_HIGH_INSTANCE:SoundAsset = new _PLUCK_HIGH();
-   [Embed('/assets/audio/silence_half_second.mp3')]
-   private static const _SILENCE_HALF_SECOND:Class;
-   private static const _SILENCE_HALF_SECOND_INSTANCE:SoundAsset = new _SILENCE_HALF_SECOND();
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -78,20 +69,8 @@ public class Utils_Audio_Files {
       _LOG_TONE_INSTANCE__FATAL.play();
    }
 
-   public static function playLogToneSuccess():void {
-      _LOG_TONE_INSTANCE__SUCCESS.play();
-   }
-
    public static function playLogToneWarn():void {
       _LOG_TONE_INSTANCE__WARN.play();
-   }
-
-   public static function playHighPluck():void {
-      _PLUCK_HIGH_INSTANCE.play();
-   }
-
-   public static function playSilenceHalfSecond():void {
-      _SILENCE_HALF_SECOND_INSTANCE.play();
    }
 
 }
