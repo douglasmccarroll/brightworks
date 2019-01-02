@@ -174,8 +174,7 @@ public class Utils_ANEs {
    private static function initializeDialogExtensionIfNeeded():void {
       if (!_isDialogExtensionInitialized) {
          try {
-            var appKey:String = Utils_System.isAndroid() ? Constant_Private.DISTRIQT_APP_KEY__ANDROID : Constant_Private.DISTRIQT_APP_KEY__IOS;
-            Dialog.init(appKey);
+            Dialog.init(Constant_AppConfiguration.ANE_KEY__DISTRIQT);
             _isDialogExtensionInitialized = true;
          }
          catch (e:Error) {

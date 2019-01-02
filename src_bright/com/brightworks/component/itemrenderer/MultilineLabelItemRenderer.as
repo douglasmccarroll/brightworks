@@ -34,8 +34,10 @@ public class MultilineLabelItemRenderer extends BwLabelItemRenderer {
 
    public function MultilineLabelItemRenderer() {
       super();
-      if (applicationDPI == DPIClassification.DPI_320)
-         _oldUnscaledWidth = 640;
+      if (applicationDPI == DPIClassification.DPI_480)
+         _oldUnscaledWidth = 960;
+      else if (applicationDPI == DPIClassification.DPI_320)
+         _oldUnscaledWidth = 640
       else if (applicationDPI == DPIClassification.DPI_240)
          _oldUnscaledWidth = 480
       else // 160 dpi
