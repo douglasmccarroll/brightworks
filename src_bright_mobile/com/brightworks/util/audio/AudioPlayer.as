@@ -85,7 +85,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var file:File = new File(_soundURL);
-      Utils_ANEs_Audio.playFile(file, audioCallback, volume, lessonTitle, lessonProvider);
+      Utils_ANEs_Audio.playFile_Background(file, audioCallback, volume, lessonTitle, lessonProvider);
    }
 
    // When an audio completes we use this method to play an MP3 file consisting of silence. Reason: When the media player is displaying
@@ -98,7 +98,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       _soundURL = null;
       var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
-      Utils_ANEs_Audio.playFile(_silenceAudioFile, audioCallback, 1.0, lessonTitle, lessonProvider);
+      Utils_ANEs_Audio.playFile_Background(_silenceAudioFile, audioCallback, 1.0, lessonTitle, lessonProvider);
    }
 
    public function playWavSample(sample:ByteArray):void {
@@ -114,7 +114,7 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
       var lessonProvider:String = _model.getLessonVersionNativeLanguageProviderNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var lessonTitle:String = _model.getLessonVersionNativeLanguageNameFromLessonVersionVO(_currentLessons.currentLessonVO);
       var file:File = new File(Utils_LangCollab.tempAudioFileURL);
-      Utils_ANEs_Audio.playFile(file, audioCallback, 1.0, lessonTitle, lessonProvider);
+      Utils_ANEs_Audio.playFile_Background(file, audioCallback, 1.0, lessonTitle, lessonProvider);
    }
 
    public function stop():void {
