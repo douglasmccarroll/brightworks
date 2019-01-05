@@ -205,10 +205,6 @@ public class Utils_ANEs {
       }
    }
 
-   public static function isANEBasedMediaPlayerSupported():Boolean {
-      return Utils_ANEs_Audio.isMediaPlayerSupported();
-   }
-
    private static function onCodeScanCancel(event:BarcodeEvent):void {
       _codeScanCancelCallback();
    }
