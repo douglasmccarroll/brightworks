@@ -162,7 +162,7 @@ public class Utils_ANEs {
 
    public static function showRatingsPrompt():void {
       initializeRateMeIfNeeded();
-      RateMe.api.promote();
+      /////RateMe.api.promote();
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +183,8 @@ public class Utils_ANEs {
       }
    }
 
-   private static function initializeRateMeIfNeeded():void {
+   private static function initializeRateMeIfNeeded():void {      /////
+      return;
       if (!_isRateMeExtensionInitialized) {
          RateMe.init();
          RateMe.api.addEventListener(RateMeEvents.ERROR, onRateMeError);
