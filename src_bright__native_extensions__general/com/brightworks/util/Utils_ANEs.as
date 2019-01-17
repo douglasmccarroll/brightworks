@@ -38,9 +38,11 @@ import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
 import com.myflashlab.air.extensions.rateme.RateMe;
 import com.myflashlab.air.extensions.rateme.RateMeEvents;
 
+/*
 import com.myflashlab.air.extensions.fb.Facebook;
 import com.myflashlab.air.extensions.fb.FacebookEvents;
 import com.myflashlab.air.extensions.fb.ShareLinkContent;
+*/
 
 import flash.events.Event;
 
@@ -89,16 +91,16 @@ public class Utils_ANEs {
       _codeScanner.open([Barcode.QR], null, true);
    }
 
-   public static function facebookShare():void {
+   /*public static function facebookShare():void {
       var content:ShareLinkContent = new ShareLinkContent();
       content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
       content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
       Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
-   }
+   } */
 
    public static function initialize():void {
-      Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
-      Facebook.listener.addEventListener(FacebookEvents.INIT, onFacebookANEInit);
+      //Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
+      //Facebook.listener.addEventListener(FacebookEvents.INIT, onFacebookANEInit);
       PermissionCheck.init();
    }
 
@@ -160,7 +162,7 @@ public class Utils_ANEs {
       }
    }
 
-   public static function showRatingsPrompt():void {
+   public static function showRatingsPrompt():void {     ///// 20190116   This currently gets called after 25 lessons have been entered - but then it seems to keep getting called too often - every time we leave the lesson select screen?
       initializeRateMeIfNeeded();
       /////RateMe.api.promote();
    }

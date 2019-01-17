@@ -219,6 +219,7 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
          catch (error:SQLError) {
             try {
                _connection.rollback();
+               var path:String = File.applicationStorageDirectory.nativePath;  // For debugging
                return createFailureReport(STATEMENTSTATUS_EXECUTING, error);
             }
             catch (error:SQLError) {
