@@ -65,7 +65,7 @@ public class Utils_ANEs {
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
-   private static var _isFacebookExtensionInitialized:Boolean;
+   //private static var _isFacebookExtensionInitialized:Boolean;
    private static var _isPermissionGranted_Camera:Boolean;
    private static var _isPermissionGranted_Microphone:Boolean;
    private static var _isRateMeExtensionInitialized:Boolean;
@@ -223,15 +223,15 @@ public class Utils_ANEs {
             _dialogCallback();
    }
 
-   private static function onFacebookANEInit(e:Event):void {
+   /*private static function onFacebookANEInit(e:Event):void {
       _isFacebookExtensionInitialized = true;
-   }
+   }*/
 
-   private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
+   /*private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
       if (e) {
          Log.error("Utils_ANEs.onFacebookShareDialogCallback() Error: " + e.message);
       }
-   }
+   }*/
 
    private static function onRateMeError(e:RateMeEvents):void {
       Log.error("Utils_ANEs.onRateMeError() Error: " + e.msg);

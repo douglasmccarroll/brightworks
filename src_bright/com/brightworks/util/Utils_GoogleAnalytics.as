@@ -28,6 +28,8 @@
 package com.brightworks.util {
 
 import com.brightworks.constant.Constant_Private;
+import com.brightworks.constant.Constant_ReleaseType;
+import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 
 import flash.display.Loader;
 import flash.events.ErrorEvent;
@@ -133,8 +135,16 @@ public class Utils_GoogleAnalytics {
          action:String,
          label:String = null,
          value:Number = NaN):void {
-      if (!_clientID)
-         _clientID = Utils_Misc.generateImitationUUIDString();
+      // We create a new client ID each time the app is initialized. We don't persist this because we don't want to make it easy for governments or other actors to trace users.
+      // Exception: If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app. 
+      if (!_clientID) {
+         if (Constant_AppConfiguration.RELEASE_TYPE == Constant_ReleaseType.PRODUCTION) {
+            _clientID = Utils_Misc.generateImitationUUIDString();
+         }
+         else {
+            _clientID = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
+         }
+      }
       if (!_loader) {
          _loader = new Loader();
          _loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onLoaderUncaughtError);
