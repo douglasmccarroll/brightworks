@@ -28,8 +28,6 @@
 package com.brightworks.util {
 
 import com.brightworks.constant.Constant_Private;
-import com.brightworks.constant.Constant_ReleaseType;
-import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 
 import flash.display.Loader;
 import flash.events.ErrorEvent;
@@ -48,6 +46,7 @@ public class Utils_GoogleAnalytics {
    public static const GOOGLE_ANALYTICS_CATEGORY__LOG_DATA:String = "Log Data";
 
    private static var _clientID:String;
+   private static var _isAlphaOrBetaRelease:Boolean;
    private static var _loader:Loader;
    private static var _trackLogDataCallbackFunction:Function;
 
@@ -56,6 +55,10 @@ public class Utils_GoogleAnalytics {
    //     Public Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+   
+   public static function setIsAlphaOrBetaRelease(b:Boolean):void {
+      _isAlphaOrBetaRelease = b;
+   }
 
    public static function trackAppStartup(data:String):void {
       _trackLogDataCallbackFunction = null;
@@ -138,11 +141,11 @@ public class Utils_GoogleAnalytics {
       // We create a new client ID each time the app is initialized. We don't persist this because we don't want to make it easy for governments or other actors to trace users.
       // Exception: If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app. 
       if (!_clientID) {
-         if (Constant_AppConfiguration.RELEASE_TYPE == Constant_ReleaseType.PRODUCTION) {
-            _clientID = Utils_Misc.generateImitationUUIDString();
+         if (_isAlphaOrBetaRelease) {
+            _clientID = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
          }
          else {
-            _clientID = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
+            _clientID = Utils_Misc.generateImitationUUIDString();
          }
       }
       if (!_loader) {
