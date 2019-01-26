@@ -115,8 +115,10 @@ public class ByteArrayPersistenceManager {
             fs.readBytes(byteArray);
             fs.close();
             _persistenceDict = Dictionary(byteArray.readObject());
+            Log.info("ByteArrayPersistenceManager.load() - File loaded");
          }
          else {
+            Log.info("ByteArrayPersistenceManager.load() - No file found - calling new PersistenceDict()");
             _persistenceDict = new PersistenceDict();
          }
          _initialized = true;
