@@ -36,6 +36,7 @@ import flash.utils.ByteArray;
 import flash.utils.Timer;
 
 import org.as3wavsound.WavSound;
+import org.as3wavsound.sazameki.core.AudioSetting;
 
 [Event(name="complete", type="flash.events.Event")]
 [Event(name="id3", type="flash.events.Event")]
@@ -138,12 +139,14 @@ public class AudioPlayer extends EventDispatcher implements IManagedSingleton {
    }
 
    public function playSilenceFile():void {
-      // Not needed - only implemented in the 'mobile' version of this class
+      // Not needed - only implemented in the 'ANE' version of this class
    }
 
-   public function playWavSample(sample:ByteArray):SoundChannel {
-      _wavSoundPlayer = new WavSound(sample);
-      return _wavSoundPlayer.play();
+   public function playWavSample(sample:ByteArray, volume:Number):SoundChannel {
+      var audioSetting:AudioSetting = new AudioSetting(1);
+      _wavSoundPlayer = new WavSound(sample, audioSetting);
+      var soundTransform:SoundTransform = new SoundTransform(volume);
+      return _wavSoundPlayer.play(0, 0, soundTransform);
    }
 
    public function stop():void {

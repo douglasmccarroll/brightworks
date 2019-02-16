@@ -31,6 +31,7 @@ import com.distriqt.extension.dialog.Gravity;
 import com.distriqt.extension.dialog.builders.AlertBuilder;
 import com.distriqt.extension.dialog.events.DialogViewEvent;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
+import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 import com.langcollab.languagementor.model.MainModel;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
@@ -176,7 +177,7 @@ public class Utils_ANEs {
    private static function initializeDialogExtensionIfNeeded():void {
       if (!_isDialogExtensionInitialized) {
          try {
-            Dialog.init(Constant_AppConfiguration.ANE_KEY__DISTRIQT);
+            Dialog.init(Constant_MentorTypeSpecific.ANE_KEY__DISTRIQT);
             _isDialogExtensionInitialized = true;
          }
          catch (e:Error) {
@@ -194,7 +195,7 @@ public class Utils_ANEs {
          RateMe.api.daysUntilPrompt = 1000;
          RateMe.api.launchesUntilPrompt = 1000;
          RateMe.api.remindPeriod = 130;  // Number of days before next prompt, if user has clicked the "remind me later" button
-         RateMe.api.title = "Please Rate " + Constant_AppConfiguration.CURRENT_MENTOR_TYPE__DISPLAY_NAME;
+         RateMe.api.title = "Please Rate " + Constant_MentorTypeSpecific.APP_NAME__FULL;
          RateMe.api.message = "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?";
          RateMe.api.remindBtnLabel = "Maybe Later";
          RateMe.api.cancelBtnLabel = "Don't Ask Again";

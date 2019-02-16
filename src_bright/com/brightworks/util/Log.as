@@ -222,9 +222,9 @@ public class Log implements IManagedSingleton {
          return;
       Log.hasFatalErrorBeenLogged = true;
       doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL);
+      copyRecentInfoToClipboard();
       if (Utils_System.isAlphaOrBetaVersion()) {
          var alertString:String = "Fatal error - diagnostic information has been copied to the clipboard\n\n" + info.toString();
-         copyRecentInfoToClipboard();
          MobileAlert.open(alertString, false);
       }
       _fatalLogUserFeedbackFunction();
