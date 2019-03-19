@@ -36,8 +36,8 @@ import com.langcollab.languagementor.model.MainModel;
 import com.myflashlab.air.extensions.barcode.Barcode;
 import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
-import com.myflashlab.air.extensions.rateme.RateMe;
-import com.myflashlab.air.extensions.rateme.RateMeEvents;
+/////import com.myflashlab.air.extensions.rateme.RateMe;
+/////import com.myflashlab.air.extensions.rateme.RateMeEvents;
 
 /*
 import com.myflashlab.air.extensions.fb.Facebook;
@@ -188,7 +188,7 @@ public class Utils_ANEs {
 
    private static function initializeRateMeIfNeeded():void {      /////
       return;
-      if (!_isRateMeExtensionInitialized) {
+      /*if (!_isRateMeExtensionInitialized) {
          RateMe.init();
          RateMe.api.addEventListener(RateMeEvents.ERROR, onRateMeError);
          RateMe.api.autoPromote = false;
@@ -206,7 +206,7 @@ public class Utils_ANEs {
          RateMe.api.storeType = RateMe.GOOGLEPLAY; // or RateMe.AMAZON  - only used on Android
          RateMe.api.monitor();
          _isRateMeExtensionInitialized = true;
-      }
+      }*/
    }
 
    private static function onCodeScanCancel(event:BarcodeEvent):void {
@@ -234,9 +234,9 @@ public class Utils_ANEs {
       }
    }*/
 
-   private static function onRateMeError(e:RateMeEvents):void {
+   /*private static function onRateMeError(e:RateMeEvents):void {
       Log.error("Utils_ANEs.onRateMeError() Error: " + e.msg);
-   }
+   }*/
 
 }
 }
