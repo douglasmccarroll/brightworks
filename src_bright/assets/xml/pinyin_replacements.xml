@@ -14,6 +14,22 @@
 
    <items>
       <item>
+         <search>v1,v2,v3,v4,v0</search>
+         <replace>ǖ,ǘ,ǚ,ǜ,ü</replace>
+      </item>
+      <item>
+         <search>V1,V2,V3,V4,V0</search>
+         <replace>Ǖ,Ǘ,Ǚ,Ǜ,Ü</replace>
+      </item>
+      <item>
+         <search>ve1,ve2,ve3,ve4,ve0</search>
+         <replace>ǖe,ǘe,ǚe,ǜe,üe</replace>
+      </item>
+      <item>
+         <search>Ve1,Ve2,Ve3,Ve4,Ve0</search>
+         <replace>Ǖe,Ǘe,Ǚe,Ǜe,Üe</replace>
+      </item>
+      <item>
          <search>a1,a2,a3,a4</search>
          <replace>ā,á,ǎ,à</replace>
       </item>
@@ -188,22 +204,6 @@
       <item>
          <search>Un1,Un2,Un3,Un4</search>
          <replace>Ūn,Ún,Ǔn,Ùn</replace>
-      </item>
-      <item>
-         <search>v1,v2,v3,v4,v0</search>
-         <replace>ǖ,ǘ,ǚ,ǜ,ü</replace>
-      </item>
-      <item>
-         <search>V1,V2,V3,V4,V0</search>
-         <replace>Ǖ,Ǘ,Ǚ,Ǜ,Ü</replace>
-      </item>
-      <item>
-         <search>ve1,ve2,ve3,ve4,ve0</search>
-         <replace>ǖe,ǘe,ǚe,ǜe,üe</replace>
-      </item>
-      <item>
-         <search>Ve1,Ve2,Ve3,Ve4,Ve0</search>
-         <replace>Ǖe,Ǘe,Ǚe,Ǜe,Üe</replace>
       </item>
    </items>
 </replacements>
