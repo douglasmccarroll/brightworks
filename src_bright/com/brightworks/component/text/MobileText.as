@@ -22,6 +22,14 @@ public class MobileText extends UIComponent {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+   private var _fontFamily:String;
+   private var _fontFamilyChanged:Boolean;
+
+   public function set fontFamily(value:String):void {
+      _fontFamily = value;
+      _fontFamilyChanged = true;
+   }
+
    private var _fontSize:int;
    private var _fontSizeChanged:Boolean;
 
@@ -103,6 +111,12 @@ public class MobileText extends UIComponent {
    }
 
    protected function doCommitProperties():void {
+      if (_fontFamilyChanged) {
+         textField.setStyle("fontFamily", _fontFamily);
+         textField.commitStyles();
+         _fontFamilyChanged = false;
+         invalidateDisplayList();
+      }
       if (_fontSizeChanged) {
          textField.setStyle("fontSize", _fontSize);
          textField.commitStyles();

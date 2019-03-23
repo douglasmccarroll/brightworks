@@ -72,6 +72,12 @@ public class Utils_XML {
       return result;
    }
 
+   public static function getSubnodeListLength(node:XML, subnodeName:String):uint {
+      // This function is here mainly as a reference - to show how this is done - it is, perhaps, easier and clearer to just use a line like this...
+      return node[subnodeName].length()
+      // ... in your code
+   }
+
    public static function isNodeNonNullAndSingleSubnodeExistsInNode(node:XML, subnodeName:String):Boolean {
       if (!node)
          return false;

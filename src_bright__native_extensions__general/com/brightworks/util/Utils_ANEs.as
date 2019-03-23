@@ -30,6 +30,8 @@ import com.distriqt.extension.dialog.DialogView;
 import com.distriqt.extension.dialog.Gravity;
 import com.distriqt.extension.dialog.builders.AlertBuilder;
 import com.distriqt.extension.dialog.events.DialogViewEvent;
+import com.distriqt.extension.dialog.objects.DialogAction;
+import com.distriqt.extension.dialog.objects.DialogParameters;
 import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 import com.langcollab.languagementor.model.MainModel;
@@ -133,6 +135,25 @@ public class Utils_ANEs {
       );
    }
 
+   public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
+      _dialogCallback = callback;
+      initializeDialogExtensionIfNeeded();
+      if (Dialog.isSupported) {
+         var alertBuilder:AlertBuilder = new AlertBuilder(true);
+         alertBuilder.setTitle("");
+         alertBuilder.setMessage(messageText);
+         alertBuilder.setTheme(new DialogTheme(DialogTheme.LIGHT));
+         for (var i:uint = 0; i < optionDisplayNames.length; i++) {
+            alertBuilder.addOption(optionDisplayNames[i], DialogAction.STYLE_POSITIVE, i);
+         }
+         alertBuilder.addOption("Cancel", DialogAction.STYLE_CANCEL, -1);
+         var params:DialogParameters = alertBuilder.build();
+         _dialogAlert = Dialog.service.create(params);
+         _dialogAlert.addEventListener( DialogViewEvent.CLOSED, onMultiOptionDialogClose);
+         _dialogAlert.show();
+      }
+   }
+
    public static function showAlert_OkayButton(alertText:String, callback:Function = null):void {
       _dialogCallback = callback;
       initializeDialogExtensionIfNeeded();
@@ -222,6 +243,13 @@ public class Utils_ANEs {
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
             _dialogCallback();
+   }
+
+   private static function onMultiOptionDialogClose(event:DialogViewEvent):void {
+      _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onMultiOptionDialogClose);
+      _dialogAlert.dispose();
+      if (_dialogCallback is Function)
+         _dialogCallback(event.index);
    }
 
    /*private static function onFacebookANEInit(e:Event):void {

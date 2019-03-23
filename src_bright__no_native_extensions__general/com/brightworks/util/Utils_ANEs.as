@@ -37,6 +37,8 @@ import flash.filesystem.File;
 
 public class Utils_ANEs {
 
+   private static var _callback:Function;
+
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Public Methods
@@ -66,6 +68,12 @@ public class Utils_ANEs {
       callback(true);
    }
 
+   public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
+      _callback = callback;
+      var alertText:String = "This is a dummy multi-option alert\n\nMessage: " + messageText + "\n\nOptions: " + Utils_DataConversionComparison.convertArrayToDelimitedString(optionDisplayNames, ", ");
+      MobileDialog.open(alertText, onMultiOptionDialogClose);
+   }
+
    public static function showAlert_OkayButton(alertText:String, callback:Function = null):void {
       MobileDialog.open(alertText, callback);
    }
@@ -76,6 +84,10 @@ public class Utils_ANEs {
    }
 
    public static function showRatingsPrompt():void {
+   }
+
+   private static function onMultiOptionDialogClose():void {
+      _callback(1);
    }
 
 
