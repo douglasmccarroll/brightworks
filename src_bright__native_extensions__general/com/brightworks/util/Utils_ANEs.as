@@ -144,7 +144,7 @@ public class Utils_ANEs {
          alertBuilder.setMessage(messageText);
          alertBuilder.setTheme(new DialogTheme(DialogTheme.LIGHT));
          for (var i:uint = 0; i < optionDisplayNames.length; i++) {
-            alertBuilder.addOption(optionDisplayNames[i], DialogAction.STYLE_POSITIVE, i);
+            alertBuilder.addOption(optionDisplayNames[i], DialogAction.STYLE_DEFAULT, i);
          }
          alertBuilder.addOption("Cancel", DialogAction.STYLE_CANCEL, -1);
          var params:DialogParameters = alertBuilder.build();
