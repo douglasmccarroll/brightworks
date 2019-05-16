@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version = "1.0" viewHeight = "500" viewWidth = "500" xmlns = "http://ns.adobe.com/fxg/2008">
+   <Library/>
+   <Group x = "10" y = "10" d:type = "layer" d:userLabel = "Layer 1" xmlns:d = "http://ns.adobe.com/fxg/2008/dt">
+      <Path winding = "nonZero"
+            data = "M480 468C480 474.627 474.627 480 468 480L12 480C5.37256 480 0 474.627 0 468L0 12C0 5.37256 5.37256 0 12 0L468 0C474.627 0 480 5.37256 480 12L480 468Z">
+         <fill>
+            <SolidColor color = "#647966"/>
+         </fill>
+      </Path>
+   </Group>
+</Graphic>

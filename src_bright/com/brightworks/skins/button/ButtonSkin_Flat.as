@@ -31,13 +31,13 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
    mx_internal var fillColorStyleName:String = "chromeColor";
 
    public var labelDisplayShadow:StyleableTextField;
+   protected var disabledBorderSkin:Class;
+   protected var downBorderSkin:Class;
+   protected var upBorderSkin:Class;
    private var _border:DisplayObject;
    private var _borderClass:Class;
    private var _changeFXGSkin:Boolean = false;
-   private var _disabledBorderSkin:Class;
-   private var _downBorderSkin:Class;
    private var _layoutCornerEllipseSize:uint;
-   private var _upBorderSkin:Class;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -58,9 +58,6 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
    public function ButtonSkin_Flat() {
       super();
       Utils_Graphic.addDropShadow(this, Utils_Text.getStandardFontSize() / 6, .4);
-      _disabledBorderSkin = ButtonSkin_Flat_fxg_disabled;
-      _downBorderSkin = ButtonSkin_Flat_fxg_down;
-      _upBorderSkin = ButtonSkin_Flat_fxg_up;
       _layoutCornerEllipseSize = 0;
       switch (applicationDPI) {
          case DPIClassification.DPI_640: {
@@ -227,19 +224,19 @@ public class ButtonSkin_Flat extends ButtonSkinBase {
       if (UIComponent(owner).enabled) {
          switch (currentState) {
             case "down":
-               return _downBorderSkin;
+               return downBorderSkin;
             case "downAndSelected":
-               return _downBorderSkin;
+               return downBorderSkin;
             case "up":
-               return _upBorderSkin;
+               return upBorderSkin;
             case "upAndSelected":
-               return _downBorderSkin;
+               return downBorderSkin;
             default:
                Log.warn("ButtonSkin_Flat.getBorderClassForCurrentState(): No case for current state: " + currentState);
-               return _upBorderSkin;
+               return upBorderSkin;
          }
       } else {
-         return _disabledBorderSkin;
+         return disabledBorderSkin;
       }
    }
 
