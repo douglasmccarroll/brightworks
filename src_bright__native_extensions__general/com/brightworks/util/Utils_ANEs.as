@@ -24,6 +24,7 @@ import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.component.mobilealert.MobileDialog;
 import com.brightworks.constant.Constant_Private;
 import com.brightworks.util.audio.Utils_ANEs_Audio;
+import com.brightworks.util.audio.Utils_Audio_Files;
 import com.distriqt.extension.dialog.Dialog;
 import com.distriqt.extension.dialog.DialogTheme;
 import com.distriqt.extension.dialog.DialogView;
@@ -139,7 +140,7 @@ public class Utils_ANEs {
       _dialogCallback = callback;
       initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
-         var alertBuilder:AlertBuilder = new AlertBuilder(true);
+         var alertBuilder:AlertBuilder = new AlertBuilder();
          alertBuilder.setTitle("");
          alertBuilder.setMessage(messageText);
          alertBuilder.setTheme(new DialogTheme(DialogTheme.LIGHT));
@@ -159,7 +160,7 @@ public class Utils_ANEs {
       initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
          _dialogAlert = Dialog.service.create(
-               new AlertBuilder(true)
+               new AlertBuilder()
                      .setTitle("")
                      .setMessage(alertText)
                      .setTheme(new DialogTheme(DialogTheme.LIGHT))
@@ -239,6 +240,7 @@ public class Utils_ANEs {
    }
 
    private static function onDialogAlertClose(event:DialogViewEvent):void {
+      Utils_Audio_Files.playClick();
       _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onDialogAlertClose);
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
@@ -246,6 +248,7 @@ public class Utils_ANEs {
    }
 
    private static function onMultiOptionDialogClose(event:DialogViewEvent):void {
+      Utils_Audio_Files.playClick();
       _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onMultiOptionDialogClose);
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
