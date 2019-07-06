@@ -23,7 +23,7 @@ import com.brightworks.constant.Constant_ReleaseType;
 import flash.system.Capabilities;
 
 public class Utils_System {
-   public static var releaseType:String; // This can be set by each app that uses this class, using a constant from Constant_ReleaseTypes
+   public static var appReleaseType:String; // This can be set by each app that uses this class, using a constant from Constant_ReleaseTypes
 
    private static var _isInitialized:Boolean;
    private static var _isMobileDevice:Boolean;
@@ -75,7 +75,7 @@ public class Utils_System {
 
    public static function isAlphaOrBetaVersion():Boolean {
       var result:Boolean = false;
-      switch (releaseType) {
+      switch (appReleaseType) {
          case Constant_ReleaseType.ALPHA:
          case Constant_ReleaseType.BETA:
             result = true;
@@ -88,7 +88,7 @@ public class Utils_System {
 
    public static function isAlphaVersion():Boolean {
       var result:Boolean = false;
-      switch (releaseType) {
+      switch (appReleaseType) {
          case Constant_ReleaseType.ALPHA:
             result = true;
             break;

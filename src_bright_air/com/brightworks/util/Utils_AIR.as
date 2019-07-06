@@ -33,13 +33,6 @@ public class Utils_AIR {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static var _appFileName:String;
-
-   public static function get appFileName():String {
-      Utils_AIR.ensureAppInfoPropsAreSet();
-      return Utils_AIR._appFileName;
-   }
-
    public static function get appId():String {
       var result:String = NativeApplication.nativeApplication.applicationID;
       return result;
@@ -129,7 +122,6 @@ public class Utils_AIR {
       if (!Utils_AIR._isAppInfoPropsSet) {
          var descriptor:XML = NativeApplication.nativeApplication.applicationDescriptor;
          var ns:Namespace = descriptor.namespaceDeclarations()[0];
-         Utils_AIR._appFileName = descriptor.ns::fileName;
          Utils_AIR._appName = descriptor.ns::name;
          Utils_AIR._appVersionNumber = Utils_AIR.convertVersionNumberToDecimalFormat(descriptor.ns::versionNumber);
          Utils_AIR._appVersionLabel = descriptor.ns::versionLabel;

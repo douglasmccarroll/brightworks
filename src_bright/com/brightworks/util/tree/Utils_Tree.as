@@ -19,7 +19,9 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 package com.brightworks.util.tree {
 import com.brightworks.component.treelist.TreeItem;
 import com.brightworks.component.treelist.TreeListLevelInfo;
+import com.brightworks.constant.Constant_ReleaseType;
 import com.brightworks.util.Log;
+import com.langcollab.languagementor.vo.LessonVersionVO;
 
 import mx.collections.ArrayCollection;
 import mx.collections.Sort;
@@ -78,6 +80,9 @@ public class Utils_Tree {
             leafItem.data = currentSourceObject;
             leafItem.isLeaf = true;
             leafItem.label = currentSourceObject[levelInfo.displayAndGroupingProp];
+            if (LessonVersionVO(currentSourceObject.lessonVersionVO).releaseType == Constant_ReleaseType.BETA) {
+               leafItem.label += " (Beta)";
+            }
             if (levelInfo.customSort)
                leafItem.sortInfo = currentSourceObject[levelInfo.sortInfoProp];
             leafItem.levelDisplayName = levelInfo.levelDisplayName;

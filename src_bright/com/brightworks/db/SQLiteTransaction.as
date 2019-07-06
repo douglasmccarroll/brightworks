@@ -271,6 +271,7 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
       //   - Failing to ensure "clear app date" - may need to delete DB file manually
       Log.debug("SQLiteTransaction.createFailureReport()" + getDiagnosticInfoString());
       var report:SQLiteTransactionReport = new SQLiteTransactionReport();
+      report.error = error;
       report.finalTransactionStatus = status;
       report.index_statementStatus_by_queryData = _index_statementStatus_by_queryData;
       report.isSuccessful = false;
