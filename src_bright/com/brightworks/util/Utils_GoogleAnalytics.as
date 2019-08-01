@@ -110,6 +110,8 @@ public class Utils_GoogleAnalytics {
          // the request was accepted
       }
       else {
+         if (Utils_System.isRunningOnDesktop())
+            return;
          Log.warn("GATracker.onLoaderHTTPStatus() - event's status was not 200 (accepted)");
          if (_trackLogDataCallbackFunction is Function) {
             _trackLogDataCallbackFunction(false);
@@ -119,6 +121,8 @@ public class Utils_GoogleAnalytics {
    }
 
    private static function onLoaderIOError(e:IOErrorEvent):void {
+      if (Utils_System.isRunningOnDesktop())
+            return;
       Log.warn("GATracker.onLoaderIOError() - errorID: " + e.errorID);
       if (_trackLogDataCallbackFunction is Function) {
          _trackLogDataCallbackFunction(false);

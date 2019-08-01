@@ -98,7 +98,7 @@ public class Log implements IManagedSingleton {
    private var _performanceAnalyzer:PerformanceAnalyzer;
 
 
-   public static function breakpointHolderMethod():void {
+   public static function debugModeBreakpointHolderMethod():void {
       if (_isThrowErrorIfRunningOnDesktopMode && Utils_System.isRunningOnDesktop()) {
          // Let's throw an error, just in case no breakpoint is set, as has happened repeatedly (and unfortunately)
          // Of course, this will also create an infinite loop as uncaught errors cause Log.warn() to be called....
@@ -209,10 +209,6 @@ public class Log implements IManagedSingleton {
       if (!Log._isInitialized)
          return;
       doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR);
-      if (Utils_System.isAlphaVersion()) {
-         copyRecentInfoToClipboard();
-         Utils_ANEs.showAlert_Toast("An internal error has occurred - diagnostic information has been copied to the clipboard");
-      }
       if (_errorLogUserFeedbackFunction is Function)
          _errorLogUserFeedbackFunction();
    }
@@ -223,10 +219,6 @@ public class Log implements IManagedSingleton {
       Log.hasFatalErrorBeenLogged = true;
       doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL);
       copyRecentInfoToClipboard();
-      if (Utils_System.isAlphaOrBetaVersion()) {
-         var alertString:String = "Fatal error - diagnostic information has been copied to the clipboard\n\n" + info.toString();
-         MobileAlert.open(alertString, false);
-      }
       _fatalLogUserFeedbackFunction();
    }
 
@@ -473,7 +465,7 @@ public class Log implements IManagedSingleton {
          trace(messageInfo);
       }
       if (doDebugModeBreakpoint) {
-         breakpointHolderMethod();
+         debugModeBreakpointHolderMethod();
       }
    }
 
@@ -514,12 +506,27 @@ public class Log implements IManagedSingleton {
    }
 
    private static function logToServerIfEnabledForLogLevel(logLevel:uint, logToServerCallbackFunction:Function = null):void {
-      if (!Log._configProvider)
-         return; // This happens at startup, until config files are downloaded, etc.
-      if (!Log._configProvider.isLogToServerEnabled(logLevel))
-         return;
-      var logText:String = Log.getLengthLimitedInfoString(_configProvider.getLogToServerMaxStringLength(logLevel));  // 20180912 - Set this to 8000 in all 'mentor type' XML files - which should fit nicely into the 8192 bytes that Google Analytics allows
+      if (Log._configProvider) {
+         if (!Log._configProvider.isLogToServerEnabled(logLevel))
+            return;
+      }
+      else {
+         // This happens at startup, until config files are downloaded, etc.
+         if (logLevel < LOG_LEVEL__ERROR)
+            return;
+      }
+      trace("aaa");
+      var maxStringLength:Number;  // 20180912 - Set this to 8000 in all 'mentor type' XML files - which should fit nicely into the 8192 bytes that Google Analytics allows
+      if (_configProvider) {
+         maxStringLength = _configProvider.getLogToServerMaxStringLength(logLevel);
+      }
+      else {
+         maxStringLength = 7500;
+      }
+      var logText:String = Log.getLengthLimitedInfoString(maxStringLength);
+      trace("bbb");
       Utils_GoogleAnalytics.trackLogData(logText, logToServerCallbackFunction);
+      trace("ccc");
    }
 
    private static function playAudioToneIfInStagingMode(logLevel:uint):void {

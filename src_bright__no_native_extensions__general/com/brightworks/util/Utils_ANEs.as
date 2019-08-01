@@ -60,7 +60,7 @@ public class Utils_ANEs {
    public static function initialize():void {
    }
 
-   public static function requestCameraPermission(callback:Function):void {
+   public static function requestCameraPermissionForScanner(callback:Function):void {
       callback(false);
    }
 
@@ -83,7 +83,7 @@ public class Utils_ANEs {
       MobileAlert.open(alertText, true, duration);
    }
 
-   public static function showRatingsPrompt():void {
+   public static function showRatingsPromptIfAppropriate():void {
    }
 
    private static function onMultiOptionDialogClose():void {

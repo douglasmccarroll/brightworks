@@ -22,9 +22,8 @@ package com.brightworks.util {
 // If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
 import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.component.mobilealert.MobileDialog;
-import com.brightworks.constant.Constant_Private;
-import com.brightworks.util.audio.Utils_ANEs_Audio;
 import com.brightworks.util.audio.Utils_Audio_Files;
+import com.distriqt.extension.applicationrater.ApplicationRater;
 import com.distriqt.extension.dialog.Dialog;
 import com.distriqt.extension.dialog.DialogTheme;
 import com.distriqt.extension.dialog.DialogView;
@@ -33,22 +32,14 @@ import com.distriqt.extension.dialog.builders.AlertBuilder;
 import com.distriqt.extension.dialog.events.DialogViewEvent;
 import com.distriqt.extension.dialog.objects.DialogAction;
 import com.distriqt.extension.dialog.objects.DialogParameters;
-import com.langcollab.languagementor.constant.Constant_AppConfiguration;
+import com.distriqt.extension.scanner.AuthorisationStatus;
+import com.distriqt.extension.scanner.Scanner;
+import com.distriqt.extension.scanner.ScannerOptions;
+import com.distriqt.extension.scanner.events.AuthorisationEvent;
+import com.distriqt.extension.scanner.events.ScannerEvent;
 import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 import com.langcollab.languagementor.model.MainModel;
-import com.myflashlab.air.extensions.barcode.Barcode;
-import com.myflashlab.air.extensions.barcode.BarcodeEvent;
 import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
-/////import com.myflashlab.air.extensions.rateme.RateMe;
-/////import com.myflashlab.air.extensions.rateme.RateMeEvents;
-
-/*
-import com.myflashlab.air.extensions.fb.Facebook;
-import com.myflashlab.air.extensions.fb.FacebookEvents;
-import com.myflashlab.air.extensions.fb.ShareLinkContent;
-*/
-
-import flash.events.Event;
 
 
 /*
@@ -62,17 +53,18 @@ import flash.events.Event;
 
 
 */
+
+
 public class Utils_ANEs {
-   private static var _codeScanner:Barcode;
+   private static var _cameraPermissionCallback:Function;
    private static var _codeScanCancelCallback:Function;
+   private static var _codeScanErrorCallback:Function;
    private static var _codeScanResultCallback:Function;
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
-   //private static var _isFacebookExtensionInitialized:Boolean;
-   private static var _isPermissionGranted_Camera:Boolean;
    private static var _isPermissionGranted_Microphone:Boolean;
-   private static var _isRateMeExtensionInitialized:Boolean;
+   private static var _microphonePermissionCallback:Function;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -81,59 +73,58 @@ public class Utils_ANEs {
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    public static function activateCodeScanner(codeScanResultCallback:Function, codeScanCancelCallback:Function, codeScanFailureCallback:Function):void {
-      _codeScanCancelCallback = codeScanCancelCallback;
-      _codeScanResultCallback = codeScanResultCallback;
-      if (!_codeScanner) {
-         _codeScanner = new Barcode();
-         _codeScanner.addEventListener(BarcodeEvent.RESULT, onCodeScanResult);
-         _codeScanner.addEventListener(BarcodeEvent.CANCEL, onCodeScanCancel);
-      }
-      if (!_codeScanner.isSupported()) {
+      if (!Scanner.isSupported) {
          codeScanFailureCallback();
          return;
       }
-      _codeScanner.open([Barcode.QR], null, true);
+      _codeScanCancelCallback = codeScanCancelCallback;
+      _codeScanErrorCallback = codeScanFailureCallback;
+      _codeScanResultCallback = codeScanResultCallback;
+      Scanner.service.addEventListener(ScannerEvent.CODE_FOUND, onCodeScanResult);
+      Scanner.service.addEventListener(ScannerEvent.CANCELLED, onCodeScanCancel);
+      Scanner.service.addEventListener(ScannerEvent.ERROR, onCodeScanError);
+      var options:ScannerOptions = new ScannerOptions();
+      options.singleResult = true;
+      Scanner.service.startScan(options);
    }
-
-   /*public static function facebookShare():void {
-      var content:ShareLinkContent = new ShareLinkContent();
-      content.quote = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_TEXT;
-      content.contentUrl = Constant_AppConfiguration.SHARING__FACEBOOK_SHARE_URL;
-      Facebook.share.shareDialog(content, onFacebookShareDialogCallback);
-   } */
 
    public static function initialize():void {
-      //Facebook.init(Constant_Private.LANGMENTOR_FACEBOOK_APP_ID);
-      //Facebook.listener.addEventListener(FacebookEvents.INIT, onFacebookANEInit);
       PermissionCheck.init();
+      initApplicationRater();
    }
 
-   public static function requestCameraPermission(callback:Function):void {
-      if (_isPermissionGranted_Camera)
+   public static function requestCameraPermissionForScanner(callback:Function):void {
+      if (Scanner.service.authorisationStatus() == com.distriqt.extension.scanner.AuthorisationStatus.AUTHORISED)
          callback(true);
-      PermissionCheck.request(PermissionCheck.SOURCE_CAMERA, function(o:Object):void {
-               if (o.state == PermissionCheck.PERMISSION_GRANTED) {
-                  _isPermissionGranted_Camera = true;
-                  callback(true);
-               } else {
-                  callback(false);
-               }
-            }
-      );
+      if (Scanner.service.authorisationStatus() == com.distriqt.extension.scanner.AuthorisationStatus.DENIED)
+         callback(false);
+      _cameraPermissionCallback = callback;
+      Scanner.service.addEventListener(com.distriqt.extension.scanner.events.AuthorisationEvent.CHANGED, onCameraPermissionRequestResult);
+      Scanner.service.requestAccess();
    }
 
    public static function requestMicrophonePermission(callback:Function):void {
       if (_isPermissionGranted_Microphone)
          callback(true);
-      PermissionCheck.request(PermissionCheck.SOURCE_MIC, function(o:Object):void {
-               if (o.state == PermissionCheck.PERMISSION_GRANTED) {
-                  _isPermissionGranted_Microphone = true;
-                  callback(true);
-               } else {
-                  callback(false);
-               }
-            }
-      );
+      var permissionState:int = PermissionCheck.check(PermissionCheck.SOURCE_CAMERA);
+      switch (permissionState) {
+         case PermissionCheck.PERMISSION_DENIED:
+            callback(false);
+            break;
+         case PermissionCheck.PERMISSION_GRANTED:
+            _isPermissionGranted_Microphone = true;
+            callback(true);
+            break;
+         case PermissionCheck.PERMISSION_OS_ERR:
+            callback(false);
+            break;
+         case PermissionCheck.PERMISSION_UNKNOWN:
+            _microphonePermissionCallback = callback;
+            PermissionCheck.request(PermissionCheck.SOURCE_MIC, onMicrophonePermissionRequestResponse);
+            break;
+         default:
+            Log.error("Utils_ANEs_Audio.requestMicrophonePermission() - no case for permissionState: " + permissionState);
+      }
    }
 
    public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
@@ -185,9 +176,31 @@ public class Utils_ANEs {
       }
    }
 
-   public static function showRatingsPrompt():void {     ///// 20190116   This currently gets called after 25 lessons have been entered - but then it seems to keep getting called too often - every time we leave the lesson select screen?
-      initializeRateMeIfNeeded();
-      /////RateMe.api.promote();
+   public static function showRatingsPromptIfAppropriate():void {
+      if (ApplicationRater.service.hasMetConditions()) {
+         if (ApplicationRater.service.review.isSupported) {
+            ApplicationRater.service.review.requestReview();
+            ApplicationRater.service.lastPromptDate = new Date();
+            ApplicationRater.service.state = ApplicationRater.STATE_LATER;
+         }
+         else {
+            var title:String = "Please Rate";
+            var message:String = "\n" +
+                  "Are you enjoying " + Constant_MentorTypeSpecific.APP_NAME__FULL + "?\n" +
+                  "If so, could you please leave us a review?\n" +
+                  "\n" +
+                  "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?";
+            var rateLabel:String = "Yes";
+            var laterLabel:String = "Maybe Later";
+            var declineLabel:String = "Don't Ask Again";
+            ApplicationRater.service.setDialogTitle(title);
+            ApplicationRater.service.setDialogMessage(message);
+            ApplicationRater.service.setLabels(rateLabel, declineLabel, laterLabel);
+            ApplicationRater.service.showRateDialog();
+         }
+      }
+
+
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,6 +208,16 @@ public class Utils_ANEs {
    //          Private Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   private static function initApplicationRater():void {
+      ApplicationRater.service.autoPrompt = false;
+      ApplicationRater.service.setDaysUntilPrompt(-1);
+      ApplicationRater.service.setLaunchesUntilPrompt(5);
+      ApplicationRater.service.setTimeBeforeReminding(15);
+      ApplicationRater.service.setApplicationId(Constant_MentorTypeSpecific.APPLE_APP_ID, ApplicationRater.IMPLEMENTATION_IOS);
+      ApplicationRater.service.setApplicationId("air." + Utils_AIR.appId, ApplicationRater.IMPLEMENTATION_ANDROID);
+      ApplicationRater.service.applicationLaunched();
+   }
 
    private static function initializeDialogExtensionIfNeeded():void {
       if (!_isDialogExtensionInitialized) {
@@ -208,35 +231,20 @@ public class Utils_ANEs {
       }
    }
 
-   private static function initializeRateMeIfNeeded():void {      /////
-      return;
-      /*if (!_isRateMeExtensionInitialized) {
-         RateMe.init();
-         RateMe.api.addEventListener(RateMeEvents.ERROR, onRateMeError);
-         RateMe.api.autoPromote = false;
-         RateMe.api.daysUntilPrompt = 1000;
-         RateMe.api.launchesUntilPrompt = 1000;
-         RateMe.api.remindPeriod = 130;  // Number of days before next prompt, if user has clicked the "remind me later" button
-         RateMe.api.title = "Please Rate " + Constant_MentorTypeSpecific.APP_NAME__FULL;
-         RateMe.api.message = "This will take you to the " + Utils_System.getAppStoreName() + ". Proceed?";
-         RateMe.api.remindBtnLabel = "Maybe Later";
-         RateMe.api.cancelBtnLabel = "Don't Ask Again";
-         RateMe.api.rateBtnLabel = "Yes";
-         RateMe.api.promptForNewVersionIfUserRated = false;
-         RateMe.api.onlyPromptIfLatestVersion = false;
-         RateMe.api.useSKStoreReviewController = true;
-         RateMe.api.storeType = RateMe.GOOGLEPLAY; // or RateMe.AMAZON  - only used on Android
-         RateMe.api.monitor();
-         _isRateMeExtensionInitialized = true;
-      }*/
+   private static function onCameraPermissionRequestResult(e:com.distriqt.extension.scanner.events.AuthorisationEvent):void {
+      _cameraPermissionCallback((e.status == com.distriqt.extension.scanner.AuthorisationStatus.AUTHORISED));
    }
 
-   private static function onCodeScanCancel(event:BarcodeEvent):void {
+   private static function onCodeScanCancel(event:ScannerEvent):void {
       _codeScanCancelCallback();
    }
 
-   private static function onCodeScanResult(event:BarcodeEvent):void {
-      _codeScanResultCallback(event.param.data);
+   private static function onCodeScanError(event:ScannerEvent):void {
+      _codeScanErrorCallback();
+   }
+
+   private static function onCodeScanResult(event:ScannerEvent):void {
+      _codeScanResultCallback(event.data);
    }
 
    private static function onDialogAlertClose(event:DialogViewEvent):void {
@@ -247,6 +255,15 @@ public class Utils_ANEs {
             _dialogCallback();
    }
 
+   private static function onMicrophonePermissionRequestResponse(o:Object):void {
+      if (o.state == PermissionCheck.PERMISSION_GRANTED) {
+         _isPermissionGranted_Microphone = true;
+         _microphonePermissionCallback(true);
+      } else {
+         _microphonePermissionCallback(false);
+      }
+   }
+
    private static function onMultiOptionDialogClose(event:DialogViewEvent):void {
       Utils_Audio_Files.playClick();
       _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onMultiOptionDialogClose);
@@ -255,19 +272,6 @@ public class Utils_ANEs {
          _dialogCallback(event.index);
    }
 
-   /*private static function onFacebookANEInit(e:Event):void {
-      _isFacebookExtensionInitialized = true;
-   }*/
-
-   /*private static function onFacebookShareDialogCallback(isCanceled:Boolean, e:Error):void {
-      if (e) {
-         Log.error("Utils_ANEs.onFacebookShareDialogCallback() Error: " + e.message);
-      }
-   }*/
-
-   /*private static function onRateMeError(e:RateMeEvents):void {
-      Log.error("Utils_ANEs.onRateMeError() Error: " + e.msg);
-   }*/
 
 }
 }
