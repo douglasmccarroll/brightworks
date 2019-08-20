@@ -40,7 +40,7 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-   // vo arg contains "update to" values for the props specified in updatedPropNames //// can we use getPropNameList_SetProps() instead of updatedPropNames?
+   // vo arg contains "update to" values for the props specified in updatedPropNames /// can we use getPropNameList_SetProps() instead of updatedPropNames?
    public function SQLiteQueryData_Update(
          vo:IVO,
          updatedPropNames:Array,
