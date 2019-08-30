@@ -87,7 +87,7 @@ public class Utils_ANEs {
    }
 
    private static function onMultiOptionDialogClose():void {
-      _callback(-1);
+      _callback(0);
    }
 
 
