@@ -43,12 +43,10 @@ public class Utils_GoogleAnalytics {
    public static const GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP:String = "App Startup";
    public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED:String = "Lesson Entered";
    public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED:String = "Lesson Learned";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LOG_DATA:String = "Log Data";
 
    private static var _clientID:String;
    private static var _isAlphaOrBetaRelease:Boolean;
    private static var _loader:Loader;
-   private static var _trackLogDataCallbackFunction:Function;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -61,22 +59,14 @@ public class Utils_GoogleAnalytics {
    }
 
    public static function trackAppStartup(data:String):void {
-      _trackLogDataCallbackFunction = null;
       sendEvent(GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, data);
    }
 
    public static function trackLessonEntered(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-      _trackLogDataCallbackFunction = null;
       sendEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
    }
 
-   public static function trackLogData(data:String, trackLogDataCallbackFunction:Function = null):void {
-      _trackLogDataCallbackFunction = trackLogDataCallbackFunction;
-      sendEvent(GOOGLE_ANALYTICS_CATEGORY__LOG_DATA, data);
-   }
-
    public static function trackLessonLearned(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-      _trackLogDataCallbackFunction = null;
       sendEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
    }
 
@@ -90,18 +80,14 @@ public class Utils_GoogleAnalytics {
    private static function onLoaderUncaughtError(e:UncaughtErrorEvent):void {
       if (e.error is Error) {
          var error:Error = e.error as Error;
-         Log.warn("GATracker.onLoaderUncaughtError() - events error is Error - message: " + error.message);
+         Log.warn("Utils_GoogleAnalytics.onLoaderUncaughtError() - events error is Error - message: " + error.message);
       }
       else if (e.error is ErrorEvent) {
          var errorEvent:ErrorEvent = e.error as ErrorEvent;
-         Log.warn("GATracker.onLoaderUncaughtError() - event's error is ErrorEvent - errorID: " + errorEvent.errorID);
+         Log.warn("Utils_GoogleAnalytics.onLoaderUncaughtError() - event's error is ErrorEvent - errorID: " + errorEvent.errorID);
       }
       else {
-         Log.warn("GATracker.onLoaderUncaughtError() - event's error is neither Error nor ErrorEvent - toString() generates: " + e.toString());
-      }
-      if (_trackLogDataCallbackFunction is Function) {
-         _trackLogDataCallbackFunction(false);
-         _trackLogDataCallbackFunction = null;
+         Log.warn("Utils_GoogleAnalytics.onLoaderUncaughtError() - event's error is neither Error nor ErrorEvent - toString() generates: " + e.toString());
       }
    }
 
@@ -112,29 +98,17 @@ public class Utils_GoogleAnalytics {
       else {
          if (Utils_System.isRunningOnDesktop())
             return;
-         Log.warn("GATracker.onLoaderHTTPStatus() - event's status was not 200 (accepted)");
-         if (_trackLogDataCallbackFunction is Function) {
-            _trackLogDataCallbackFunction(false);
-            _trackLogDataCallbackFunction = null;
-         }
+         Log.warn("Utils_GoogleAnalytics.onLoaderHTTPStatus() - event's status was not 200 (accepted)");
       }
    }
 
    private static function onLoaderIOError(e:IOErrorEvent):void {
       if (Utils_System.isRunningOnDesktop())
             return;
-      Log.warn("GATracker.onLoaderIOError() - errorID: " + e.errorID);
-      if (_trackLogDataCallbackFunction is Function) {
-         _trackLogDataCallbackFunction(false);
-         _trackLogDataCallbackFunction = null;
-      }
+      Log.warn("Utils_GoogleAnalytics.onLoaderIOError() - errorID: " + e.errorID);
    }
 
    private static function onLoaderComplete(e:Event):void {
-      if (_trackLogDataCallbackFunction is Function) {
-         _trackLogDataCallbackFunction(true);
-         _trackLogDataCallbackFunction = null;
-      }
    }
 
    private static function sendEvent(
@@ -178,7 +152,7 @@ public class Utils_GoogleAnalytics {
          _loader.load(request);
       }
       catch (e:Error) {
-         Log.warn("GATracker.sendEvent() - Exception occurred when we executed _loader.load()");
+         Log.warn("Utils_GoogleAnalytics.sendEvent() - Exception occurred when we executed _loader.load()");
       }
    }
 

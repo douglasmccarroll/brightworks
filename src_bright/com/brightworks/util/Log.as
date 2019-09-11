@@ -35,6 +35,7 @@ import com.brightworks.interfaces.ILoggingConfigProvider;
 import com.brightworks.interfaces.IManagedSingleton;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.singleton.SingletonManager;
+import com.langcollab.languagementor.constant.Constant_AppConfiguration;
 
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
@@ -53,12 +54,12 @@ import mx.rpc.http.HTTPService;
 import mx.utils.ArrayUtil;
 
 public class Log implements IManagedSingleton {
-   public static const LOG_LEVEL__ALWAYS:uint = 0;
+   public static const LOG_LEVEL__ALWAYS:uint = 6;
    public static const LOG_LEVEL__DEBUG:uint = 1;
    public static const LOG_LEVEL__ERROR:uint = 4;
    public static const LOG_LEVEL__FATAL:uint = 5;
    public static const LOG_LEVEL__INFO:uint = 2;
-   public static const LOG_LEVEL__NEVER:uint = 6;
+   public static const LOG_LEVEL__NEVER:uint = 0;
    public static const LOG_LEVEL__WARN:uint = 3;
    public static const LOG_LEVEL_STRING__ALWAYS:String = "Always";
    public static const LOG_LEVEL_STRING__DEBUG:String = "Debug";
@@ -75,7 +76,6 @@ public class Log implements IManagedSingleton {
    private static const _CURRENT_TRACE_LEVEL:uint = LOG_LEVEL__INFO;
    private static const _DETAILED_INFO_LIST__CAPACITY__ALPHA:uint = 300;
    private static const _DETAILED_INFO_LIST__CAPACITY__STANDARD:uint = 300;
-   private static const _STAGING_MODE_INACTIVITY_TIMEOUT_PERIOD:uint = 4 * 60 * 1000;
 
    public static var hasFatalErrorBeenLogged:Boolean;
    public static var inAppLogLevelOverrideLevel:int = LOG_LEVEL__NEVER;
@@ -186,7 +186,7 @@ public class Log implements IManagedSingleton {
       }
       result += "\n";
       if (_summaryStringAppenderCallback is Function)
-         result += _summaryStringAppenderCallback(result) + "\n";
+         result = _summaryStringAppenderCallback(result) + "\n";
       result += "mb key: air in-use mb / air total mb / app mb\n";
       return result;
    }
@@ -205,19 +205,19 @@ public class Log implements IManagedSingleton {
       _inAppTracingFunction = traceFunction;
    }
 
-   public static function error(info:Object):void {
+   public static function error(info:Object, allowLogToServer:Boolean = true):void {
       if (!Log._isInitialized)
          return;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__ERROR, allowLogToServer);
       if (_errorLogUserFeedbackFunction is Function)
          _errorLogUserFeedbackFunction();
    }
 
-   public static function fatal(info:Object):void {
+   public static function fatal(info:Object, allowLogToServer:Boolean = true):void {
       if (!Log._isInitialized)
          return;
       Log.hasFatalErrorBeenLogged = true;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__FATAL, allowLogToServer);
       copyRecentInfoToClipboard();
       _fatalLogUserFeedbackFunction();
    }
@@ -303,10 +303,10 @@ public class Log implements IManagedSingleton {
       return result;
    }
 
-   public static function info(info:Object):void {
+   public static function info(info:Object, allowLogToServer:Boolean = true):void {
       if (!Log._isInitialized)
          return;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__INFO);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__INFO, allowLogToServer);
    }
 
    public static function init(
@@ -372,10 +372,10 @@ public class Log implements IManagedSingleton {
       logToServerIfEnabledForLogLevel(LOG_LEVEL__ALWAYS, logToServerCallbackFunction);
    }
 
-   public static function warn(info:Object):void {
+   public static function warn(info:Object, allowLogToServer:Boolean = true):void {
       if (!Log._isInitialized)
          return;
-      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__WARN);
+      doLoggingStuffSharedByAllLoggingLevels(info, LOG_LEVEL__WARN, allowLogToServer);
    }
 
    // ****************************************************
@@ -436,7 +436,7 @@ public class Log implements IManagedSingleton {
       return "\n\n     ###    \n\n\n";
    }
 
-   private static function doLoggingStuffSharedByAllLoggingLevels(info:Object, logLevel:int):void {
+   private static function doLoggingStuffSharedByAllLoggingLevels(info:Object, logLevel:int, allowLogToServer:Boolean = true):void {
       var doDebugModeTracing:Boolean = ((Log.isDebugMode) && (logLevel >= Log._CURRENT_TRACE_LEVEL));
       var doDebugModeBreakpoint:Boolean = ((Log.isDebugMode) && (logLevel >= Log._CURRENT_BREAKPOINT_LEVEL));
       var messageInfo:String;
@@ -455,7 +455,7 @@ public class Log implements IManagedSingleton {
          }
          Log.addMessageToDetailedInfoList(messageInfo);
       }
-      if (isLoggingEnabled(logLevel)) {
+      if ((isLoggingEnabled(logLevel)) && allowLogToServer) {
          logToServerIfEnabledForLogLevel(logLevel);
       }
       if (isInAppTracingEnabled(logLevel)) {
@@ -515,18 +515,22 @@ public class Log implements IManagedSingleton {
          if (logLevel < LOG_LEVEL__ERROR)
             return;
       }
-      trace("aaa");
-      var maxStringLength:Number;  // 20180912 - Set this to 8000 in all 'mentor type' XML files - which should fit nicely into the 8192 bytes that Google Analytics allows
+      var maxStringLength:Number;
+      var serverURL:String;
       if (_configProvider) {
          maxStringLength = _configProvider.getLogToServerMaxStringLength(logLevel);
+         serverURL = _configProvider.getLogToServerURL(logLevel);
       }
       else {
-         maxStringLength = 7500;
+         maxStringLength = Constant_AppConfiguration.DEFAULT_CONFIG_INFO__LOG_TO_SERVER_MAX_STRING_LENGTH;
+         serverURL = Constant_AppConfiguration.DEFAULT_CONFIG_INFO__LOG_URL;
       }
       var logText:String = Log.getLengthLimitedInfoString(maxStringLength);
-      trace("bbb");
-      Utils_GoogleAnalytics.trackLogData(logText, logToServerCallbackFunction);
-      trace("ccc");
+      var o:Object = new Object();
+      o["subject"] = "LangMentor Log Message";
+      o["message"] = logText;
+      var jsonText:String = JSON.stringify(o);
+      Utils_AWS.sendLogMessage(serverURL, jsonText, logToServerCallbackFunction);
    }
 
    private static function playAudioToneIfInStagingMode(logLevel:uint):void {

@@ -64,10 +64,6 @@ public class Utils_ANEs {
       callback(false);
    }
 
-   public static function requestMicrophonePermission(callback:Function):void {
-      callback(true);
-   }
-
    public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
       _callback = callback;
       var alertText:String = "This is a dummy multi-option alert\n\nMessage: " + messageText + "\n\nOptions: " + Utils_DataConversionComparison.convertArrayToDelimitedString(optionDisplayNames, ", ");

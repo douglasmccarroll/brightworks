@@ -39,8 +39,6 @@ import com.distriqt.extension.scanner.events.AuthorisationEvent;
 import com.distriqt.extension.scanner.events.ScannerEvent;
 import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 import com.langcollab.languagementor.model.MainModel;
-import com.myflashlab.air.extensions.nativePermissions.PermissionCheck;
-
 
 /*
 
@@ -63,8 +61,6 @@ public class Utils_ANEs {
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
-   private static var _isPermissionGranted_Microphone:Boolean;
-   private static var _microphonePermissionCallback:Function;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -89,7 +85,6 @@ public class Utils_ANEs {
    }
 
    public static function initialize():void {
-      PermissionCheck.init();
       initApplicationRater();
    }
 
@@ -101,30 +96,6 @@ public class Utils_ANEs {
       _cameraPermissionCallback = callback;
       Scanner.service.addEventListener(com.distriqt.extension.scanner.events.AuthorisationEvent.CHANGED, onCameraPermissionRequestResult);
       Scanner.service.requestAccess();
-   }
-
-   public static function requestMicrophonePermission(callback:Function):void {
-      if (_isPermissionGranted_Microphone)
-         callback(true);
-      var permissionState:int = PermissionCheck.check(PermissionCheck.SOURCE_CAMERA);
-      switch (permissionState) {
-         case PermissionCheck.PERMISSION_DENIED:
-            callback(false);
-            break;
-         case PermissionCheck.PERMISSION_GRANTED:
-            _isPermissionGranted_Microphone = true;
-            callback(true);
-            break;
-         case PermissionCheck.PERMISSION_OS_ERR:
-            callback(false);
-            break;
-         case PermissionCheck.PERMISSION_UNKNOWN:
-            _microphonePermissionCallback = callback;
-            PermissionCheck.request(PermissionCheck.SOURCE_MIC, onMicrophonePermissionRequestResponse);
-            break;
-         default:
-            Log.error("Utils_ANEs_Audio.requestMicrophonePermission() - no case for permissionState: " + permissionState);
-      }
    }
 
    public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
@@ -199,8 +170,6 @@ public class Utils_ANEs {
             ApplicationRater.service.showRateDialog();
          }
       }
-
-
    }
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,15 +222,6 @@ public class Utils_ANEs {
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
             _dialogCallback();
-   }
-
-   private static function onMicrophonePermissionRequestResponse(o:Object):void {
-      if (o.state == PermissionCheck.PERMISSION_GRANTED) {
-         _isPermissionGranted_Microphone = true;
-         _microphonePermissionCallback(true);
-      } else {
-         _microphonePermissionCallback(false);
-      }
    }
 
    private static function onMultiOptionDialogClose(event:DialogViewEvent):void {
