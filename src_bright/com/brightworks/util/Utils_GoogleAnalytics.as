@@ -41,10 +41,9 @@ import flash.net.URLRequestMethod;
 public class Utils_GoogleAnalytics {
 
    public static const GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP:String = "App Startup";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED:String = "Lesson Entered";
-   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED:String = "Lesson Learned";
+   public static const GOOGLE_ANALYTICS_CATEGORY__LESSON_FINISHED:String = "Lesson Finished";
 
-   private static var _clientID:String;
+   private static var _sessionId:String;
    private static var _isAlphaOrBetaRelease:Boolean;
    private static var _loader:Loader;
 
@@ -59,15 +58,16 @@ public class Utils_GoogleAnalytics {
    }
 
    public static function trackAppStartup(data:String):void {
-      sendEvent(GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, data);
+      initIfNeeded();
+      sendEvent(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE__MENTOR_TYPE_SPECIFIC, _sessionId, GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, data);
    }
 
-   public static function trackLessonEntered(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-      sendEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_ENTERED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
-   }
-
-   public static function trackLessonLearned(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-      sendEvent(GOOGLE_ANALYTICS_CATEGORY__LESSON_LEARNED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
+   public static function trackLessonFinished(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
+      initIfNeeded();
+      // We generate a new "client ID" every time we report that a lesson has been finished because we want these events to display in Google Analytics on a map, and the only way we
+      //    can see to do this is to use GA's Audience > Geo > Location map, which shows Users, Sessions, etc, but doesn't have the ability to display events. Solution: Make every lesson learned a separate "User".
+      // We also use the same GA TID code in all "mentor types", i.e. the universal version and in language-specific versions, so that all lessons learned will be displayed in the same map
+      sendEvent(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE__COMMON_TO_ALL_MENTOR_TYPES, Utils_Misc.generateImitationUUIDString(), GOOGLE_ANALYTICS_CATEGORY__LESSON_FINISHED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
    }
 
 
@@ -76,6 +76,21 @@ public class Utils_GoogleAnalytics {
    //     Private Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+   private static function initIfNeeded():void {
+      // We create a new client ID each time the app is initialized. We don't persist this because we don't want to make it easy for governments or other actors to trace users.
+      // Note that this is currently only being used on app startup, so we don't even really need to save the ID for the rest of the session. But we've used it in the past for events, and may do so again, so we're keeping it.
+      if (!_sessionId) {
+         _sessionId = Utils_Misc.generateImitationUUIDString();
+      }
+      if (!_loader) {
+         _loader = new Loader();
+         _loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onLoaderUncaughtError);
+         _loader.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHTTPStatus);
+         _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete);
+         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoaderIOError);
+      }
+   }
 
    private static function onLoaderUncaughtError(e:UncaughtErrorEvent):void {
       if (e.error is Error) {
@@ -112,31 +127,20 @@ public class Utils_GoogleAnalytics {
    }
 
    private static function sendEvent(
+         googleAnalyticsTIDCode:String,
+         clientId:String,
          category:String,
          action:String,
          label:String = null,
          value:Number = NaN):void {
-      // We create a new client ID each time the app is initialized. We don't persist this because we don't want to make it easy for governments or other actors to trace users.
-      // Exception: If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app. 
-      if (!_clientID) {
-         if (_isAlphaOrBetaRelease) {
-            _clientID = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
-         }
-         else {
-            _clientID = Utils_Misc.generateImitationUUIDString();
-         }
-      }
-      if (!_loader) {
-         _loader = new Loader();
-         _loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onLoaderUncaughtError);
-         _loader.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHTTPStatus);
-         _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete);
-         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoaderIOError);
+      if (_isAlphaOrBetaRelease) {
+         // If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app.
+         clientId = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
       }
       var payload:Array = [];
       payload.push("v=1");
-      payload.push("tid=" + Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE);
-      payload.push("cid=" + _clientID);
+      payload.push("tid=" + googleAnalyticsTIDCode);
+      payload.push("cid=" + clientId);
       payload.push("t=event");
       payload.push("ec=" + category);
       payload.push("ea=" + action);

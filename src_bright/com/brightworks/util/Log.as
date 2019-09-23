@@ -35,7 +35,7 @@ import com.brightworks.interfaces.ILoggingConfigProvider;
 import com.brightworks.interfaces.IManagedSingleton;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.brightworks.util.singleton.SingletonManager;
-import com.langcollab.languagementor.constant.Constant_AppConfiguration;
+import com.brightworks.constant.Constant_AppConfiguration;
 
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
