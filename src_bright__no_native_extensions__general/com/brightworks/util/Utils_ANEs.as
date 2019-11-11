@@ -27,7 +27,7 @@ import flash.filesystem.File;
 
 
  NOTE: We have two versions of this class - one for our mobile production projects and one for our
- desktop debugging project. Many ANEs don't support Windows/Mac, so we use a dummy methods
+ desktop debugging project. Many ANEs don't support Windows/Mac, so we use dummy methods
  for the desktop case.
 
  This is the Desktop version.

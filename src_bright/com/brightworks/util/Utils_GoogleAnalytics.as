@@ -104,26 +104,72 @@ public class Utils_GoogleAnalytics {
       else {
          Log.warn("Utils_GoogleAnalytics.onLoaderUncaughtError() - event's error is neither Error nor ErrorEvent - toString() generates: " + e.toString());
       }
+      if (_loader) {
+         try {
+            _loader.close();
+            _loader.unload();
+         }
+         catch (error:Error) {
+            var a:int = 1;  // for debugging
+         }
+      }
    }
 
    private static function onLoaderHTTPStatus(e:HTTPStatusEvent):void {
-      if (e.status == 200) {
+      if (e.status == 0) {
+         // this happens when there is no internet connection
+      }
+      else if ((e.status >= 200) && (e.status < 300)) {
          // the request was accepted
       }
       else {
-         if (Utils_System.isRunningOnDesktop())
-            return;
-         Log.warn("Utils_GoogleAnalytics.onLoaderHTTPStatus() - event's status was not 200 (accepted)");
+         Log.warn("Utils_GoogleAnalytics.onLoaderHTTPStatus() - event's status was not accepted");
+         if (Utils_System.isAlphaOrBetaVersion()) {
+            Utils_ANEs.showAlert_OkayButton("GA Post | Event's status was " + e.status);
+         }
+         if (_loader) {
+            try {
+               _loader.close();
+               _loader.unload();
+            }
+            catch (error:Error) {
+               var a:int = 1;  // for debugging
+            }
+         }
       }
    }
 
    private static function onLoaderIOError(e:IOErrorEvent):void {
-      if (Utils_System.isRunningOnDesktop())
-            return;
-      Log.warn("Utils_GoogleAnalytics.onLoaderIOError() - errorID: " + e.errorID);
+      switch (e.errorID) {
+         case 2036:
+            // "Load never completed" - this happens when there is no connection to internet
+            break;
+         default:
+            if (Utils_System.isAlphaOrBetaVersion()) {
+               Utils_ANEs.showAlert_OkayButton("GA Post | ioError | Error ID: " + e.errorID);
+            }
+            Log.warn("Utils_GoogleAnalytics.onLoaderIOError() - errorID: " + e.errorID);
+      }
+      if (_loader) {
+         try {
+            _loader.close();
+            _loader.unload();
+         }
+         catch (error:Error) {
+            var a:int = 1;  // for debugging
+         }
+      }
    }
 
    private static function onLoaderComplete(e:Event):void {
+      if (_loader) {
+         try {
+            _loader.unload();
+         }
+         catch (error:Error) {
+            var a:int = 1;  // for debugging
+         }
+      }
    }
 
    private static function sendEvent(
@@ -155,8 +201,8 @@ public class Utils_GoogleAnalytics {
       try {
          _loader.load(request);
       }
-      catch (e:Error) {
-         Log.warn("Utils_GoogleAnalytics.sendEvent() - Exception occurred when we executed _loader.load()");
+      catch (error:Error) {
+         Log.warn("Utils_GoogleAnalytics.sendEvent() - Exception occurred when we executed _loader.load() - error.message: " + error.message);
       }
    }
 

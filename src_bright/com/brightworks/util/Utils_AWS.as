@@ -54,54 +54,93 @@ public class Utils_AWS {
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    private static function onLoaderUncaughtError(e:UncaughtErrorEvent):void {
+      if (_logMessageCallbackFunction is Function) {
+         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction = null;
+      }
+      var errorString:String;
       if (e.error is Error) {
          var error:Error = e.error as Error;
-         Log.warn("Utils_AWS.onLoaderUncaughtError() - events error is Error - message: " + error.message, false);
+         errorString = "Error Message: " + error.message;
       }
       else if (e.error is ErrorEvent) {
          var errorEvent:ErrorEvent = e.error as ErrorEvent;
-         Log.warn("Utils_AWS.onLoaderUncaughtError() - event's error is ErrorEvent - errorID: " + errorEvent.errorID, false);
+         errorString = "Error ID: " + errorEvent.errorID;
       }
       else {
-         Log.warn("Utils_AWS.onLoaderUncaughtError() - event's error is neither Error nor ErrorEvent - toString() generates: " + e.toString(), false);
+         errorString = "Error is neither Error nor ErrorEvent - toString() generates: " + e.toString();
       }
-      if (_logMessageCallbackFunction is Function) {
-         _logMessageCallbackFunction(true);   //// Returning true here because we don't want to spook the user, given the fact that this is probably a false alarm
-         _logMessageCallbackFunction = null;
+      if (_loader) {
+         try {
+            _loader.close();
+            _loader.unload();
+         }
+         catch (e:Error) {
+            var a:int = 1;  // for debugging
+         }
+      }
+      if (Utils_System.isAlphaOrBetaVersion()) {
+         Utils_ANEs.showAlert_OkayButton("AWS Post | Uncaught Error | " + errorString);
       }
    }
 
    private static function onLoaderHTTPStatus(e:HTTPStatusEvent):void {
-      if (e.status == 200) {
+      if (_logMessageCallbackFunction is Function) {
+         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction = null;
+      }
+      if (e.status == 0) {
+         // 
+      }
+      else if ((e.status >= 200) && (e.status < 300)) {
          // the request was accepted
       }
       else {
-         if (Utils_System.isRunningOnDesktop())
-            return;
-         Log.warn("Utils_AWS.onLoaderHTTPStatus() - event's status was not 200 (accepted)", false);
-         if (_logMessageCallbackFunction is Function) {
-            _logMessageCallbackFunction(true);    //// Returning true here because we don't want to spook the user, given the fact that this is probably a false alarm
-            _logMessageCallbackFunction = null;
+         if (Utils_System.isAlphaOrBetaVersion()) {
+            Utils_ANEs.showAlert_OkayButton("AWS Post | Event's status was " + e.status);
+         }
+         if (_loader) {
+            try {
+               _loader.close();
+               _loader.unload();
+            }
+            catch (error:Error) {
+               var a:int = 1;  // for debugging
+            }
          }
       }
    }
 
    private static function onLoaderIOError(e:IOErrorEvent):void {
-      if (Utils_System.isRunningOnDesktop())
-            return;
+      if (_logMessageCallbackFunction is Function) {
+         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction = null;
+      }
+      var isFailure:Boolean = false;
       switch (e.errorID) {
+         case 2036:
+            // This happens when there's no internet connection
+            isFailure = true;
+            break;
          case 2124:
             //// AWS API Gateway is returning these errors even when the call succeeds - ignore for now
             break;
          default:
+            isFailure = true;
             if (Utils_System.isAlphaOrBetaVersion()) {
-               Utils_ANEs.showAlert_OkayButton("HTTP AWS Post ioError - error ID: " + e.errorID);
+               Utils_ANEs.showAlert_OkayButton("AWS Post | ioError | Error ID: " + e.errorID);
             }
-            Log.warn("Utils_AWS.onLoaderIOError() - errorID: " + e.errorID, false);
-            if (_logMessageCallbackFunction is Function) {
-               _logMessageCallbackFunction(true);   //// Returning true here because we don't want to spook the user, given the fact that this is probably a false alarm
-               _logMessageCallbackFunction = null;
+      }
+      if (isFailure) {
+         if (_loader) {
+            try {
+               _loader.close();
+               _loader.unload();
             }
+            catch (error:Error) {
+               var a:int = 1;  // for debugging
+            }
+         }
       }
    }
 
@@ -110,11 +149,20 @@ public class Utils_AWS {
          _logMessageCallbackFunction(true);
          _logMessageCallbackFunction = null;
       }
+      if (_loader) {
+         try {
+            _loader.unload();
+         }
+         catch (error:Error) {
+            var a:int = 1;  // for debugging
+         }
+      }
    }
 
    private static function sendHttpPost(
          url:String,
          body:String):void {
+      // Useful for generating 2035 ioErrors -   url = "http://lmentorlogs.cloudfoundry.com/logreports";
       if (!_loader) {
          _loader = new Loader();
          _loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onLoaderUncaughtError);
@@ -129,8 +177,10 @@ public class Utils_AWS {
       try {
          _loader.load(request);
       }
-      catch (e:Error) {
-         Log.warn("Utils_AWS.sendEvent() - Exception occurred when we executed _loader.load()", false);
+      catch (error:Error) {
+         if (Utils_System.isAlphaOrBetaVersion()) {
+            Utils_ANEs.showAlert_OkayButton("AWS Post | Exception occurred when we executed _loader.load() - error.message: " + error.message);
+         }
       }
    }
 
