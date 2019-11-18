@@ -59,7 +59,15 @@ public class Utils_GoogleAnalytics {
 
    public static function trackAppStartup(data:String):void {
       initIfNeeded();
-      sendEvent(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE__MENTOR_TYPE_SPECIFIC, _sessionId, GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, data);
+      var clientId:String;
+      if (_isAlphaOrBetaRelease) {
+         // If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app.
+         clientId = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
+      }
+      else {
+         clientId = _sessionId;
+      }
+      sendEvent(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE__MENTOR_TYPE_SPECIFIC, clientId, GOOGLE_ANALYTICS_CATEGORY__APP_STARTUP, data);
    }
 
    public static function trackLessonFinished(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
@@ -179,10 +187,6 @@ public class Utils_GoogleAnalytics {
          action:String,
          label:String = null,
          value:Number = NaN):void {
-      if (_isAlphaOrBetaRelease) {
-         // If we're in alpha or beta mode we use a hardcoded client ID, so that testing isn't reported as "real use" of the app.
-         clientId = "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE";
-      }
       var payload:Array = [];
       payload.push("v=1");
       payload.push("tid=" + googleAnalyticsTIDCode);

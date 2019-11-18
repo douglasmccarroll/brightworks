@@ -90,7 +90,7 @@ public class Utils_AWS {
          _logMessageCallbackFunction = null;
       }
       if (e.status == 0) {
-         // 
+         // we do nothing here because a zero means "no result yet"
       }
       else if ((e.status >= 200) && (e.status < 300)) {
          // the request was accepted
