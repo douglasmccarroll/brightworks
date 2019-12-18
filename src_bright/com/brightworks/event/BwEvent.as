@@ -27,6 +27,7 @@ import flash.events.Event;
 import mx.utils.ArrayUtil;
 
 public class BwEvent extends Event {
+   public static const APP_RESTART_NEEDED:String = "appRestartNeeded";
    public static const COMPLETE:String = "complete";
    public static const FAILURE:String = "failure";
    public static const NEW_INFO:String = "newInfo";
