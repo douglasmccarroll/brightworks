@@ -20,13 +20,8 @@
 
 package com.brightworks.interfaces {
 
-public interface ILoggingConfigProvider {
-   function getLogToServerMaxStringLength(level:uint):uint
+public interface IUserDataReportingConfigProvider {
+   function getUserActivityReportingURL():String
 
-   function getLogToServerURL(level:uint):String
-
-   function isLoggingEnabled(level:uint):Boolean
-
-   function isLogToServerEnabled(level:uint):Boolean
 }
 }

@@ -32,7 +32,6 @@ import flash.net.URLRequestMethod;
 
 public class Utils_AWS {
 
-   private static var _clientID:String;
    private static var _loader:Loader;
    private static var _logMessageCallbackFunction:Function;
 
@@ -41,9 +40,13 @@ public class Utils_AWS {
    //     Public Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   
+
    public static function sendLogMessage(url:String, body:String, trackLogDataCallbackFunction:Function = null):void {
       _logMessageCallbackFunction = trackLogDataCallbackFunction;
+      sendHttpPost(url, body);
+   }
+
+   public static function sendUserActivityReportingToServer(url:String, body:String):void {
       sendHttpPost(url, body);
    }
 
