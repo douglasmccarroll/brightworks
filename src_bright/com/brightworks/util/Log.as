@@ -31,6 +31,7 @@ second meaning....   /// Change name for second meaning to "details"? "data"?
 
 import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.constant.Constant_PlatformName;
+import com.brightworks.constant.Constant_Private;
 import com.brightworks.interfaces.ILoggingConfigProvider;
 import com.brightworks.interfaces.IManagedSingleton;
 import com.brightworks.util.audio.Utils_Audio_Files;
@@ -523,7 +524,7 @@ public class Log implements IManagedSingleton {
       }
       else {
          maxStringLength = Constant_AppConfiguration.DEFAULT_CONFIG_INFO__LOG_TO_SERVER_MAX_STRING_LENGTH;
-         serverURL = Constant_AppConfiguration.DEFAULT_CONFIG_INFO__LOG_URL;
+         serverURL = Constant_Private.DEFAULT_CONFIG_INFO__LOG_URL;
       }
       var logText:String = Log.getLengthLimitedInfoString(maxStringLength);
       var o:Object = new Object();
