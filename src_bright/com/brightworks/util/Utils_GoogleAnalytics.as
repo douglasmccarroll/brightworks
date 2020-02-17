@@ -52,7 +52,7 @@ public class Utils_GoogleAnalytics {
    //     Public Methods
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-   
+
    public static function setIsAlphaOrBetaRelease(b:Boolean):void {
       _isAlphaOrBetaRelease = b;
    }
@@ -71,9 +71,12 @@ public class Utils_GoogleAnalytics {
    }
 
    public static function trackLessonFinished(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
+      /*if (_isAlphaOrBetaRelease) {
+         return;
+      }*/
       initIfNeeded();
       // We generate a new "client ID" every time we report that a lesson has been finished because we want these events to display in Google Analytics on a map, and the only way we
-      //    can see to do this is to use GA's Audience > Geo > Location map, which shows Users, Sessions, etc, but doesn't have the ability to display events. Solution: Make every lesson learned a separate "User".
+      //    can find to do this is to use GA's Audience > Geo > Location map, which shows Users, Sessions, etc, but doesn't have the ability to display events. Solution: Make every lesson learned a separate "User".
       // We also use the same GA TID code in all "mentor types", i.e. the universal version and in language-specific versions, so that all lessons learned will be displayed in the same map
       sendEvent(Constant_Private.LANGMENTOR_GOOGLE_ANALYTICS_CODE__COMMON_TO_ALL_MENTOR_TYPES, Utils_Misc.generateImitationUUIDString(), GOOGLE_ANALYTICS_CATEGORY__LESSON_FINISHED, providerId + ":" + lessonId + ":" + lessonVersion, lessonName);
    }

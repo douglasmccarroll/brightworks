@@ -32,6 +32,7 @@ public class BwEvent extends Event {
    public static const FAILURE:String = "failure";
    public static const NEW_INFO:String = "newInfo";
    public static const NO_INTERNET_CONNECTION:String = "noInternetConnection";
+   public static const UPDATE_REQUIRED:String = "updateRequired";
 
    public var callbacks:Callbacks;
    public var cause:Object;
