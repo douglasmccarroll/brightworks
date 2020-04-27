@@ -34,6 +34,7 @@ public class Utils_AWS {
 
    private static var _loader:Loader;
    private static var _logMessageCallbackFunction:Function;
+   private static var _mostRecentlySentUserActivityReportBody:String;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -43,10 +44,12 @@ public class Utils_AWS {
 
    public static function sendLogMessage(url:String, body:String, trackLogDataCallbackFunction:Function = null):void {
       _logMessageCallbackFunction = trackLogDataCallbackFunction;
+      _mostRecentlySentUserActivityReportBody = null;
       sendHttpPost(url, body);
    }
 
    public static function sendUserActivityReportingToServer(url:String, body:String):void {
+      _mostRecentlySentUserActivityReportBody = body;
       sendHttpPost(url, body);
    }
 
@@ -84,6 +87,9 @@ public class Utils_AWS {
       }
       if (Utils_System.isAlphaOrBetaVersion()) {
          Utils_ANEs.showAlert_OkayButton("AWS Post | Uncaught Error | " + errorString);
+         if (_mostRecentlySentUserActivityReportBody) {
+            Log.warn("Utils_AWS.onLoaderUncaughtError() - Error String: " + errorString + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
+         }
       }
    }
 
@@ -101,6 +107,9 @@ public class Utils_AWS {
       else {
          if (Utils_System.isAlphaOrBetaVersion()) {
             Utils_ANEs.showAlert_OkayButton("AWS Post | Event's status was " + e.status);
+            if (_mostRecentlySentUserActivityReportBody) {
+               Log.warn("Utils_AWS.onLoaderHTTPStatus() - Status: " + e.status + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
+            }
          }
          if (_loader) {
             try {
@@ -132,6 +141,9 @@ public class Utils_AWS {
             isFailure = true;
             if (Utils_System.isAlphaOrBetaVersion()) {
                Utils_ANEs.showAlert_OkayButton("AWS Post | ioError | Error ID: " + e.errorID);
+               if (_mostRecentlySentUserActivityReportBody) {
+                  Log.warn("Utils_AWS.onLoaderIOError() - Error ID: " + e.errorID + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
+               }
             }
       }
       if (isFailure) {
