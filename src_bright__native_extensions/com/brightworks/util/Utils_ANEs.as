@@ -37,6 +37,9 @@ import com.distriqt.extension.scanner.Scanner;
 import com.distriqt.extension.scanner.ScannerOptions;
 import com.distriqt.extension.scanner.events.AuthorisationEvent;
 import com.distriqt.extension.scanner.events.ScannerEvent;
+import com.distriqt.extension.volume.Volume;
+import com.distriqt.extension.volume.Volume;
+import com.distriqt.extension.volume.events.VolumeEvent;
 import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 import com.langcollab.languagementor.model.MainModel;
 
@@ -61,6 +64,8 @@ public class Utils_ANEs {
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
    private static var _isDialogExtensionInitialized:Boolean;
+   private static var _silenceSwitchCallback:Function;
+   private static var _silenceSwitchMostRecentlyReportedState:Boolean;  //  true = muted, false = not muted
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -84,8 +89,30 @@ public class Utils_ANEs {
       Scanner.service.startScan(options);
    }
 
+   public static function activateSilenceSwitchMonitor(silenceSwitchActivatedCallback:Function):void {
+      if (_silenceSwitchCallback is Function) {
+         return;
+      }
+      _silenceSwitchCallback = silenceSwitchActivatedCallback;
+      if (Volume.isSupported && Utils_System.isIOS()) {     // Volume ANE doesn't provide "muting" monitoring for Android
+         Volume.service.monitorMuteState(true);
+         Volume.service.addEventListener(VolumeEvent.MUTED, onSilenceSwitchMuted);
+         Volume.service.addEventListener(VolumeEvent.UNMUTED, onSilenceSwitchUnmuted);
+      }
+   }
+
    public static function initialize():void {
       initApplicationRater();
+   }
+
+   public static function isSilenceSwitchMuted():Boolean {
+      if (Volume.isSupported && Utils_System.isIOS()) {
+         return Volume.service.isMuted();
+      }
+      else {
+         // Volume ANE doesn't provide "muting" monitoring for Android
+         return false;
+      }
    }
 
    public static function requestCameraPermissionForScanner(callback:Function):void {
@@ -228,6 +255,17 @@ public class Utils_ANEs {
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
          _dialogCallback(event.index);
+   }
+
+   private static function onSilenceSwitchMuted(event:VolumeEvent):void {
+      if (!_silenceSwitchMostRecentlyReportedState) {
+         _silenceSwitchCallback(true);
+      }
+      _silenceSwitchMostRecentlyReportedState = true;
+   }
+
+   private static function onSilenceSwitchUnmuted(event:VolumeEvent):void {
+      _silenceSwitchMostRecentlyReportedState = false;
    }
 
 

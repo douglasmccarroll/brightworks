@@ -33,6 +33,9 @@ public class Utils_Audio_Files {
    [Embed('/assets/audio/buzz_thud.mp3')]
    private static const _FAIL_THUD:Class;
    private static const _FAIL_THUD_INSTANCE:SoundAsset = new _FAIL_THUD();
+   [Embed('/assets/audio/gong.mp3')]
+   private static const _GONG:Class;
+   private static const _GONG_INSTANCE:SoundAsset = new _GONG();
    [Embed('/assets/audio/logTone_Error.mp3')]
    private static const _LOG_TONE__ERROR:Class;
    private static const _LOG_TONE_INSTANCE__ERROR:SoundAsset = new _LOG_TONE__ERROR();
@@ -59,6 +62,10 @@ public class Utils_Audio_Files {
 
    public static function playFailureSound():void {
       _FAIL_THUD_INSTANCE.play();
+   }
+
+   public static function playGongSound():void {
+      _GONG_INSTANCE.play();
    }
 
    public static function playLogToneError():void {

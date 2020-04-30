@@ -48,16 +48,14 @@ public class Utils_ANEs {
    public static function activateCodeScanner(codeScanResultCallback:Function, codeScanCancelCallback:Function, codeScanFailureCallback:Function):void {
    }
 
-   public static function audioPlay(f:File, audioCallback:Function, volume:Number = 1.0):void {
-   }
-
-   public static function audioStopMediaPlayer():void {
-   }
-
-   public static function facebookShare():void {
+   public static function activateSilenceSwitchMonitor(silenceSwitchActivatedCallback:Function):void {
    }
 
    public static function initialize():void {
+   }
+
+   public static function isSilenceSwitchTurnedOn():Boolean {
+      return false;
    }
 
    public static function requestCameraPermissionForScanner(callback:Function):void {
@@ -89,5 +87,3 @@ public class Utils_ANEs {
 
 }
 }
-
-

@@ -30,11 +30,15 @@ import flash.events.UncaughtErrorEvent;
 import flash.net.URLRequest;
 import flash.net.URLRequestMethod;
 
+import mx.core.FlexGlobals;
+
 public class Utils_AWS {
 
    private static var _loader:Loader;
+   private static var _loaderUseCount:int = 0;
    private static var _logMessageCallbackFunction:Function;
-   private static var _mostRecentlySentUserActivityReportBody:String;
+   private static var _mostRecentBody:String;
+   private static var _mostRecentURL:String;
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -44,12 +48,10 @@ public class Utils_AWS {
 
    public static function sendLogMessage(url:String, body:String, trackLogDataCallbackFunction:Function = null):void {
       _logMessageCallbackFunction = trackLogDataCallbackFunction;
-      _mostRecentlySentUserActivityReportBody = null;
       sendHttpPost(url, body);
    }
 
    public static function sendUserActivityReportingToServer(url:String, body:String):void {
-      _mostRecentlySentUserActivityReportBody = body;
       sendHttpPost(url, body);
    }
 
@@ -80,16 +82,18 @@ public class Utils_AWS {
          try {
             _loader.close();
             _loader.unload();
+            _loader = null;  // Once again, we assume that most errors are false alarms, so we don't resend
          }
          catch (e:Error) {
             var a:int = 1;  // for debugging
          }
       }
       if (Utils_System.isAlphaOrBetaVersion()) {
-         Utils_ANEs.showAlert_OkayButton("AWS Post | Uncaught Error | " + errorString);
-         if (_mostRecentlySentUserActivityReportBody) {
-            Log.warn("Utils_AWS.onLoaderUncaughtError() - Error String: " + errorString + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
+         var alertText:String = "AWS Post | Uncaught Error | " + errorString + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
+         if (_mostRecentBody) {
+            alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
          }
+         Utils_ANEs.showAlert_OkayButton(alertText);
       }
    }
 
@@ -98,27 +102,57 @@ public class Utils_AWS {
          _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
          _logMessageCallbackFunction = null;
       }
+      var isFailure:Boolean = false;
       if (e.status == 0) {
          // we do nothing here because a zero means "no result yet"
       }
       else if ((e.status >= 200) && (e.status < 300)) {
          // the request was accepted
-      }
-      else {
-         if (Utils_System.isAlphaOrBetaVersion()) {
-            Utils_ANEs.showAlert_OkayButton("AWS Post | Event's status was " + e.status);
-            if (_mostRecentlySentUserActivityReportBody) {
-               Log.warn("Utils_AWS.onLoaderHTTPStatus() - Status: " + e.status + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
-            }
-         }
          if (_loader) {
             try {
-               _loader.close();
+               // _loader.close();   // Causes an error - because loader is already closed, I assume
                _loader.unload();
+               _loader = null;
             }
             catch (error:Error) {
                var a:int = 1;  // for debugging
             }
+         }
+      }
+      else if (e.status == 502) {
+         // Getting a lot of these for activity reports
+         isFailure = true;
+         if (_loader) {
+            try {
+               _loader.close();
+               _loader.unload();
+               FlexGlobals.topLevelApplication.callLater(sendHttpPost, [_mostRecentURL, _mostRecentBody]);
+            }
+            catch (error:Error) {
+               var b:int = 1;  // for debugging
+            }
+         }
+      }
+      else {
+         isFailure = true;
+         if (_loader) {
+            try {
+               _loader.close();
+               _loader.unload();
+               _loader = null;
+            }
+            catch (error:Error) {
+               var c:int = 1;  // for debugging
+            }
+         }
+      }
+      if (isFailure) {
+         if (Utils_System.isAlphaOrBetaVersion()) {
+            var alertText:String = "AWS Post | Event's status was " + e.status + " | " + _loaderUseCount + " Retries | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
+            if (_mostRecentBody) {
+               alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
+            }
+            Utils_ANEs.showAlert_OkayButton(alertText);
          }
       }
    }
@@ -140,10 +174,11 @@ public class Utils_AWS {
          default:
             isFailure = true;
             if (Utils_System.isAlphaOrBetaVersion()) {
-               Utils_ANEs.showAlert_OkayButton("AWS Post | ioError | Error ID: " + e.errorID);
-               if (_mostRecentlySentUserActivityReportBody) {
-                  Log.warn("Utils_AWS.onLoaderIOError() - Error ID: " + e.errorID + ", ActivityReport: " + _mostRecentlySentUserActivityReportBody);
+               var alertText:String = "AWS Post | ioError | Error ID: " + e.errorID + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
+               if (_mostRecentBody) {
+                  alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
                }
+               Utils_ANEs.showAlert_OkayButton(alertText);
             }
       }
       if (isFailure) {
@@ -151,11 +186,15 @@ public class Utils_AWS {
             try {
                _loader.close();
                _loader.unload();
+               _loader = null;  // Once again, we assume that most errors are false alarms, so we don't resend
             }
             catch (error:Error) {
                var a:int = 1;  // for debugging
             }
          }
+      }
+      else {
+         _loader = null;
       }
    }
 
@@ -167,6 +206,7 @@ public class Utils_AWS {
       if (_loader) {
          try {
             _loader.unload();
+            _loader = null;
          }
          catch (error:Error) {
             var a:int = 1;  // for debugging
@@ -177,13 +217,16 @@ public class Utils_AWS {
    private static function sendHttpPost(
          url:String,
          body:String):void {
-      // Useful for generating 2035 ioErrors -   url = "http://lmentorlogs.cloudfoundry.com/logreports";
-      if (!_loader) {
+      if (_loader) {
+         _loaderUseCount++;
+      }
+      else {
          _loader = new Loader();
          _loader.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onLoaderUncaughtError);
          _loader.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHTTPStatus);
          _loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete);
          _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoaderIOError);
+         _loaderUseCount = 1;
       }
       var request:URLRequest = new URLRequest();
       request.data = body;
@@ -191,10 +234,16 @@ public class Utils_AWS {
       request.url = url;
       try {
          _loader.load(request);
+         _mostRecentBody = body;
+         _mostRecentURL = url;
       }
       catch (error:Error) {
          if (Utils_System.isAlphaOrBetaVersion()) {
-            Utils_ANEs.showAlert_OkayButton("AWS Post | Exception occurred when we executed _loader.load() - error.message: " + error.message);
+            var alertText:String = "AWS Post | Exception occurred when we executed _loader.load() - error.message: " + error.message + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
+            if (body) {
+               alertText += " | " + body.substr(0, 250) + "...";
+            }
+            Utils_ANEs.showAlert_OkayButton(alertText);
          }
       }
    }
