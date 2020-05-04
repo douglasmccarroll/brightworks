@@ -61,6 +61,12 @@ public class Utils_System {
       return _isGeneration7OrGreaterIOS;
    }
 
+   private static var _isIPad:Boolean;
+
+   public static function get isIPad():Boolean {
+      return _isIPad;
+   }
+
    private static var _platformName:String;
 
    public static function get platformName():String {
@@ -173,6 +179,7 @@ public class Utils_System {
             (operatingSystem.indexOf("iPod") != -1)) {
          _isMobileDevice = true;
          _platformName = Constant_PlatformName.IOS;
+         _isIPad = (operatingSystem.indexOf("iPad") != -1);
          setIsGeneration7OrGreaterIOS();
       } else if (operatingSystem.indexOf("Mac") != -1) {
          _isMobileDevice = false;

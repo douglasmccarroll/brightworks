@@ -54,7 +54,7 @@ public class Utils_ANEs {
    public static function initialize():void {
    }
 
-   public static function isSilenceSwitchTurnedOn():Boolean {
+   public static function isSilenceSwitchMuted():Boolean {
       return false;
    }
 

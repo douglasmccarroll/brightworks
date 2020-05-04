@@ -71,9 +71,9 @@ public class Utils_GoogleAnalytics {
    }
 
    public static function trackLessonFinished(lessonName:String, lessonId:String, lessonVersion:String, providerId:String):void {
-      /*if (_isAlphaOrBetaRelease) {
+      if (_isAlphaOrBetaRelease) {
          return;
-      }*/
+      }
       initIfNeeded();
       // We generate a new "client ID" every time we report that a lesson has been finished because we want these events to display in Google Analytics on a map, and the only way we
       //    can find to do this is to use GA's Audience > Geo > Location map, which shows Users, Sessions, etc, but doesn't have the ability to display events. Solution: Make every lesson learned a separate "User".
