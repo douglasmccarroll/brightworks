@@ -19,11 +19,12 @@
  */
 package com.brightworks.util {
 
-// If you're having problems with extensions, ensure that the most recent versions of extension and of "common dependency extensions" are installed
+// If you're having problems with extensions, ensure that the most recent versions of all extensions and of "common dependency extensions" are installed
 import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.component.mobilealert.MobileDialog;
 import com.brightworks.util.audio.Utils_Audio_Files;
 import com.distriqt.extension.applicationrater.ApplicationRater;
+import com.distriqt.extension.core.Core;
 import com.distriqt.extension.dialog.Dialog;
 import com.distriqt.extension.dialog.DialogTheme;
 import com.distriqt.extension.dialog.DialogView;
@@ -38,10 +39,8 @@ import com.distriqt.extension.scanner.ScannerOptions;
 import com.distriqt.extension.scanner.events.AuthorisationEvent;
 import com.distriqt.extension.scanner.events.ScannerEvent;
 import com.distriqt.extension.volume.Volume;
-import com.distriqt.extension.volume.Volume;
 import com.distriqt.extension.volume.events.VolumeEvent;
 import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
-import com.langcollab.languagementor.model.MainModel;
 
 /*
 
@@ -63,7 +62,6 @@ public class Utils_ANEs {
    private static var _codeScanResultCallback:Function;
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
-   private static var _isDialogExtensionInitialized:Boolean;
    private static var _silenceSwitchCallback:Function;
    private static var _silenceSwitchMostRecentlyReportedState:Boolean;  //  true = muted, false = not muted
 
@@ -102,6 +100,7 @@ public class Utils_ANEs {
    }
 
    public static function initialize():void {
+      Core.init();
       initApplicationRater();
    }
 
@@ -127,7 +126,6 @@ public class Utils_ANEs {
 
    public static function showAlert_MultipleOptions(messageText:String, optionDisplayNames:Array, callback:Function):void {
       _dialogCallback = callback;
-      initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
          var alertBuilder:AlertBuilder = new AlertBuilder();
          alertBuilder.setTitle("");
@@ -146,7 +144,6 @@ public class Utils_ANEs {
 
    public static function showAlert_OkayButton(alertText:String, callback:Function = null):void {
       _dialogCallback = callback;
-      initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
          _dialogAlert = Dialog.service.create(
                new AlertBuilder()
@@ -164,7 +161,6 @@ public class Utils_ANEs {
    }
 
    public static function showAlert_Toast(alertText:String, useLongDisplay:Boolean = false):void {
-      initializeDialogExtensionIfNeeded();
       if (Dialog.isSupported) {
          Dialog.service.toast(alertText, useLongDisplay ? Dialog.LENGTH_LONG : Dialog.LENGTH_SHORT, 0x9999FF, Gravity.MIDDLE, .8);
       } else {
@@ -211,18 +207,6 @@ public class Utils_ANEs {
       ApplicationRater.service.setApplicationId(Constant_MentorTypeSpecific.APPLE_APP_ID, ApplicationRater.IMPLEMENTATION_IOS);
       ApplicationRater.service.setApplicationId("air." + Utils_AIR.appId, ApplicationRater.IMPLEMENTATION_ANDROID);
       ApplicationRater.service.applicationLaunched();
-   }
-
-   private static function initializeDialogExtensionIfNeeded():void {
-      if (!_isDialogExtensionInitialized) {
-         try {
-            Dialog.init(Constant_MentorTypeSpecific.ANE_KEY__DISTRIQT);
-            _isDialogExtensionInitialized = true;
-         }
-         catch (e:Error) {
-            Log.error("Utils_ANEs_Audio.initializeMediaPlayerIfNeeded(): " + e.message);
-         }
-      }
    }
 
    private static function onCameraPermissionRequestResult(e:com.distriqt.extension.scanner.events.AuthorisationEvent):void {
