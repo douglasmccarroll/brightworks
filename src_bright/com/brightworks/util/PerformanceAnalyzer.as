@@ -31,7 +31,6 @@ public class PerformanceAnalyzer implements IManagedSingleton {
 
    private static var _instance:PerformanceAnalyzer;
 
-   public var diagnosticString:String;
 
    private var _mostRecentEnterFrameTime:Number;
    private var _timer:AppActiveElapsedTimeTimer;
@@ -78,21 +77,13 @@ public class PerformanceAnalyzer implements IManagedSingleton {
    // ****************************************************
 
    private function computeLoopsPerMS():void {
-      var loopCount:Number = 100000000;
-      while (true) {
-         var startTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
-         var x:int = 0;
-         for (var i:uint = 0; i < loopCount; i++) {
-            x++;
-         }
-         var elapsedTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate() - startTime;
-         if (elapsedTime > 10) {
-            break;
-         }
-         loopCount *= 10;
+      var loopCount:int = 100000;
+      var startTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
+      for (var i:int = 0; i < loopCount; i++) {
+         var x:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
       }
+      var elapsedTime:Number = Utils_DateTime.getCurrentMS_BasedOnDate() - startTime;
       _loopsPerMS = Math.round(loopCount / elapsedTime);
-      diagnosticString = "loopCount:" + loopCount + " elapsedTime:" + elapsedTime + " loopsPerMS:" + _loopsPerMS + " x:" + x;
    }
 
    private function onEnterFrame(event:Event):void {

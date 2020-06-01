@@ -21,15 +21,18 @@ package com.brightworks.base {
 public class Callbacks {
    public var fault:Function;
    public var result:Function;
+   public var update:Function;
 
-   public function Callbacks(result:Function, fault:Function = null) {
+   public function Callbacks(result:Function, fault:Function = null, update:Function = null) {
       this.fault = fault;
       this.result = result;
+      this.update = update;
    }
 
    public function dispose():void {
       fault = null;
       result = null;
+      update = null;
    }
 }
 }

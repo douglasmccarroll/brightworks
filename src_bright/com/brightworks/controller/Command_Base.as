@@ -25,20 +25,11 @@ import com.brightworks.util.Utils_System;
 import flash.events.TimerEvent;
 
 public class Command_Base {
+   protected var callbacks:Callbacks;
+
    private var _timeoutTimer:AppActiveElapsedTimeTimer;
    private var _timeoutTimerCompleteFunction:Function;
 
-   // --------------------------------------------
-   //
-   //           Getters / Setters
-   //
-   // --------------------------------------------
-
-   private var _callbacks:Callbacks;
-
-   public function set callbacks(value:Callbacks):void {
-      _callbacks = value;
-   }
 
    // --------------------------------------------
    //
@@ -57,8 +48,8 @@ public class Command_Base {
    }
 
    public function fault(info:Object = null):void {
-      if (_callbacks && (_callbacks.fault is Function)) {
-         _callbacks.fault(info);
+      if (callbacks && (callbacks.fault is Function)) {
+         callbacks.fault(info);
       }
       else {
          Log.fatal(["Command_Base.fault()", info]);
@@ -66,11 +57,20 @@ public class Command_Base {
    }
 
    public function result(data:Object = null):void {
-      if (_callbacks && (_callbacks.result is Function)) {
-         _callbacks.result(data);
+      if (callbacks && (callbacks.result is Function)) {
+         callbacks.result(data);
       }
       else {
          Log.fatal(["Command_Base.result(): result function instance isn't available", data]);
+      }
+   }
+
+   public function update(data:Object = null):void {
+      if (callbacks && (callbacks.update is Function)) {
+         callbacks.update(data);
+      }
+      else {
+         Log.fatal(["Command_Base.update(): update function instance isn't available", data]);
       }
    }
 

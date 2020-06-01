@@ -76,7 +76,7 @@ public class Log implements IManagedSingleton {
    private static const _CURRENT_BREAKPOINT_LEVEL:uint = LOG_LEVEL__WARN;
    private static const _CURRENT_TRACE_LEVEL:uint = LOG_LEVEL__INFO;
    private static const _DETAILED_INFO_LIST__CAPACITY__ALPHA:uint = 300;
-   private static const _DETAILED_INFO_LIST__CAPACITY__STANDARD:uint = 300;
+   private static const _DETAILED_INFO_LIST__CAPACITY__STANDARD:uint = 3000;
 
    public static var hasFatalErrorBeenLogged:Boolean;
    public static var inAppLogLevelOverrideLevel:int = LOG_LEVEL__NEVER;
@@ -86,6 +86,7 @@ public class Log implements IManagedSingleton {
    private static var _configProvider:ILoggingConfigProvider;
    private static var _detailedInfoList:Array; // An array of strings
    private static var _detailedInfoListCapacity:uint;
+   private static var _displayDiagnosticsScreenFunction:Function;
    private static var _errorLogUserFeedbackFunction:Function;
    private static var _fatalLogUserFeedbackFunction:Function;
    private static var _httpService:HTTPService;
@@ -202,6 +203,12 @@ public class Log implements IManagedSingleton {
       _inAppTracingFunction = null;
    }
 
+   public static function displayDiagnosticsScreen():void {
+      if (_displayDiagnosticsScreenFunction is Function) {
+         _displayDiagnosticsScreenFunction();
+      }
+   }
+
    public static function enableInAppTracing(traceFunction:Function):void {
       _inAppTracingFunction = traceFunction;
    }
@@ -226,7 +233,7 @@ public class Log implements IManagedSingleton {
    public static function frameLength(length:Number):void {
       if (!Log._isInitialized)
          return;
-      addMessageToDetailedInfoList("frame ms:" + length + "\n");
+      /////addMessageToDetailedInfoList("frame ms:" + length + "\n");
    }
 
    public static function getLengthLimitedInfoString(maxStringLength:Number):String {
@@ -314,6 +321,7 @@ public class Log implements IManagedSingleton {
          appName:String,
          fatalLogUserFeedbackFunction:Function,
          errorLogUserFeedbackFunction:Function = null,
+         displayDiagnosticsScreenFunction:Function = null,
          summaryStringAppenderCallback:Function = null,
          isThrowErrorIfRunningOnDesktopMode:Boolean = false):void {
       if (Log._isInitialized) {
@@ -322,6 +330,7 @@ public class Log implements IManagedSingleton {
       }
       Log._appName = appName;
       Log._detailedInfoList = [];
+      Log._displayDiagnosticsScreenFunction = displayDiagnosticsScreenFunction;
       Log._errorLogUserFeedbackFunction = errorLogUserFeedbackFunction;
       Log._fatalLogUserFeedbackFunction = fatalLogUserFeedbackFunction;
       Log._isDebugMode = Utils_System.isInDebugMode();

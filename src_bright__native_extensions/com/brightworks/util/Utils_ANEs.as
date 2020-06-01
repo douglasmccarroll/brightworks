@@ -23,7 +23,8 @@ package com.brightworks.util {
 import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.component.mobilealert.MobileDialog;
 import com.brightworks.util.audio.Utils_Audio_Files;
-import com.distriqt.extension.applicationrater.ApplicationRater;
+//import com.distriqt.extension.applicationrater.ApplicationRater;
+import com.distriqt.extension.application.Application;
 import com.distriqt.extension.core.Core;
 import com.distriqt.extension.dialog.Dialog;
 import com.distriqt.extension.dialog.DialogTheme;
@@ -99,9 +100,23 @@ public class Utils_ANEs {
       }
    }
 
+   public static function getStatusBarHeight():Number {
+      if (Application.isSupported) {
+         return Application.service.display.getStatusBarHeight();
+      }
+      else {
+         Log.error("Utils_ANEs.getStatusBarHeight() - Application ANE is not supported - client code should have checked isApplicationANESupported() before calling this method");
+         return 0;
+      }
+   }
+
    public static function initialize():void {
       Core.init();
-      initApplicationRater();
+      ////initApplicationRater();
+   }
+
+   public static function isApplicationANESupported():Boolean {
+      return true;
    }
 
    public static function isSilenceSwitchMuted():Boolean {
@@ -168,7 +183,7 @@ public class Utils_ANEs {
       }
    }
 
-   public static function showRatingsPromptIfAppropriate():void {
+   /*public static function showRatingsPromptIfAppropriate():void {
       if (ApplicationRater.service.hasMetConditions()) {
          if (ApplicationRater.service.review.isSupported) {
             ApplicationRater.service.review.requestReview();
@@ -191,7 +206,7 @@ public class Utils_ANEs {
             ApplicationRater.service.showRateDialog();
          }
       }
-   }
+   }*/
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -199,7 +214,7 @@ public class Utils_ANEs {
    //
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   private static function initApplicationRater():void {
+   /*private static function initApplicationRater():void {
       ApplicationRater.service.autoPrompt = false;
       ApplicationRater.service.setDaysUntilPrompt(-1);
       ApplicationRater.service.setLaunchesUntilPrompt(5);
@@ -207,7 +222,7 @@ public class Utils_ANEs {
       ApplicationRater.service.setApplicationId(Constant_MentorTypeSpecific.APPLE_APP_ID, ApplicationRater.IMPLEMENTATION_IOS);
       ApplicationRater.service.setApplicationId("air." + Utils_AIR.appId, ApplicationRater.IMPLEMENTATION_ANDROID);
       ApplicationRater.service.applicationLaunched();
-   }
+   }*/
 
    private static function onCameraPermissionRequestResult(e:com.distriqt.extension.scanner.events.AuthorisationEvent):void {
       _cameraPermissionCallback((e.status == com.distriqt.extension.scanner.AuthorisationStatus.AUTHORISED));

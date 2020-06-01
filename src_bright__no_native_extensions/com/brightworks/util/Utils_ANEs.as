@@ -51,7 +51,15 @@ public class Utils_ANEs {
    public static function activateSilenceSwitchMonitor(silenceSwitchActivatedCallback:Function):void {
    }
 
+   public static function getStatusBarHeight():Number {
+      return 0;
+   }
+
    public static function initialize():void {
+   }
+
+   public static function isApplicationANESupported():Boolean {
+      return false;
    }
 
    public static function isSilenceSwitchMuted():Boolean {
