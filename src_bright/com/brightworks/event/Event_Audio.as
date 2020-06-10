@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018 Brightworks, Inc.
+ *  Copyright 2020 Brightworks, Inc.
  *
  *  This file is part of Language Mentor.
  *
@@ -24,10 +24,10 @@ public class Event_Audio extends BwEvent{
 
    public static const AUDIO__USER_STARTED_AUDIO:String = "event_audio:user_started_audio";
    public static const AUDIO__USER_STOPPED_AUDIO:String = "event_audio:user_stopped_audio";
-   
+
    public function Event_Audio(type:String) {
       super(type);
    }
-   
+
 }
 }

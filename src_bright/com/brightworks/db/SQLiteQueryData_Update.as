@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -34,11 +34,11 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
    private var _isSingleRecordUpdate:Boolean;
    private var _updatedPropNames:Array;
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Public Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    // vo arg contains "update to" values for the props specified in updatedPropNames /// can we use getPropNameList_SetProps() instead of updatedPropNames?
    public function SQLiteQueryData_Update(
@@ -89,7 +89,7 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
    }
 
    override public function getSQLString():String {
-      // UPDATE database-name.table-name SET assignment [, assignment]* [WHERE expr] 
+      // UPDATE database-name.table-name SET assignment [, assignment]* [WHERE expr]
       var result:String =
             "UPDATE " +
             databaseName + "." +
@@ -105,7 +105,7 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
          columnNameAdded = true;
       }
       // If this is a single-record update we use the passed VO's key prop values to specify the
-      // record, plus any values in _index_propNames_to_selectValues. The additional values, if 
+      // record, plus any values in _index_propNames_to_selectValues. The additional values, if
       // any, have the effect of deciding whether the record will be updated or not.
       // If this is a multi-record update we use (only) values in _index_propNames_to_selectValues
       // to construct the SELECT clause. If none are supplied, all records in the specified table
@@ -132,7 +132,7 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
             keyAdded = true;
          }
       }
-      // e.g. result = "UPDATE main.Chunk SET suppressed=:suppressedUpdateValue WHERE contentProviderId=:contentProviderId AND LessonVersionSignature=:LessonVersionSignature AND locationInOrder=:locationInOrder"	
+      // e.g. result = "UPDATE main.Chunk SET suppressed=:suppressedUpdateValue WHERE contentProviderId=:contentProviderId AND LessonVersionSignature=:LessonVersionSignature AND locationInOrder=:locationInOrder"
       return result;
    }
 
@@ -142,11 +142,11 @@ public class SQLiteQueryData_Update extends SQLiteQueryData {
       return true;
    }
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Private Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    private function confirmNotBothSingleRecordUpdateAndKeyPropsAreSpecifiedAsSelectValues():void {
       if (!_isSingleRecordUpdate)

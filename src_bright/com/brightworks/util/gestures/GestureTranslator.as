@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -57,11 +57,11 @@ public class GestureTranslator implements IDisposable {
    private var _stageHeight:int = -1;
    private var _stageWidth:int = -1;
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Public Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    public function GestureTranslator(mouseStageX:int, mouseStageY:int, stageHeight:int, stageWidth:int) {
       var time:Number = Utils_DateTime.getCurrentMS_BasedOnDate();
@@ -126,11 +126,11 @@ public class GestureTranslator implements IDisposable {
       return result;
    }
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Private Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    private function addNoteworthyLoc(mouseStageX:int, mouseStageY:int):void {
       var li:LocInfo = new LocInfo(mouseStageX, mouseStageY, Utils_DateTime.getCurrentMS_BasedOnDate());
@@ -203,7 +203,7 @@ public class GestureTranslator implements IDisposable {
       // Note that the 'corner' extremes - UpRight etc. - require that the new loc have
       // values on *both* axes that take it closer to the corner of the screen. A more
       // precise way to do this would be to measure the distance between the new point
-      // and the corner, and the distance for the 'previous closest to corner point', 
+      // and the corner, and the distance for the 'previous closest to corner point',
       // and use the closest point.
       //
       // On second thought, I've concluded that this won't be accurate enough. Also, I'm

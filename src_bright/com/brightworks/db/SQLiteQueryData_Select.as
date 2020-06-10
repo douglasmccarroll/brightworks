@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -89,8 +89,8 @@ public class SQLiteQueryData_Select extends SQLiteQueryData {
             columnNameAdded = true;
          }
       }
-      // e.g. "SELECT id, iso639_3Code, hasRecommendedLibraries FROM main.Language WHERE iso639_3Code=:iso639_3Code"	
-      //    "SELECT id, locationInOrder, labelToken, isDualLanguage FROM main.LearningMode ORDER BY  locationInOrder"	
+      // e.g. "SELECT id, iso639_3Code, hasRecommendedLibraries FROM main.Language WHERE iso639_3Code=:iso639_3Code"
+      //    "SELECT id, locationInOrder, labelToken, isDualLanguage FROM main.LearningMode ORDER BY  locationInOrder"
 
       return result;
    }

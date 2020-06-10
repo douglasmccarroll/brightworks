@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -75,7 +75,7 @@ public class SQLiteQueryData_Insert extends SQLiteQueryData {
          paramAdded = true;
       }
       result = result + ")"
-      // e.g. "INSERT INTO main.LessonVersion (levelId, uploaded, LessonVersionSignature, contentProviderId, publishedLessonVersionId) VALUES (:levelId, :uploaded, :LessonVersionSignature, :contentProviderId, :publishedLessonVersionId)"	
+      // e.g. "INSERT INTO main.LessonVersion (levelId, uploaded, LessonVersionSignature, contentProviderId, publishedLessonVersionId) VALUES (:levelId, :uploaded, :LessonVersionSignature, :contentProviderId, :publishedLessonVersionId)"
       return result;
    }
 }

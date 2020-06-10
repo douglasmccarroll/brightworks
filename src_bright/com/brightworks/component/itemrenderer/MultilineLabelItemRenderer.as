@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -54,9 +54,9 @@ public class MultilineLabelItemRenderer extends BwLabelItemRenderer {
       super.measure();
       var horizontalPadding:Number = getStyle("paddingLeft") + getStyle("paddingRight");
       var verticalPadding:Number = getStyle("paddingTop") + getStyle("paddingBottom");
-      // now we need to measure labelDisplay's height.  Unfortunately, this is tricky and 
-      // is dependent on labelDisplay's width.  We use the old unscaledWidth as an 
-      // estimate for the new one.  If this estimate is wrong then there is code in 
+      // now we need to measure labelDisplay's height.  Unfortunately, this is tricky and
+      // is dependent on labelDisplay's width.  We use the old unscaledWidth as an
+      // estimate for the new one.  If this estimate is wrong then there is code in
       // updateDisplayList() that will trigger a new measure pass to correct it.
       var labelDisplayEstimatedWidth:Number = _oldUnscaledWidth - horizontalPadding;
       setElementSize(labelDisplay, labelDisplayEstimatedWidth, NaN);
@@ -83,35 +83,35 @@ public class MultilineLabelItemRenderer extends BwLabelItemRenderer {
       if (label != "") {
          labelDisplay.commitStyles();
       }
-      // Size the labelDisplay 
+      // Size the labelDisplay
       //   we want the labelWidth to be the viewWidth and then we'll calculate the height
       //   of the text from that
       var labelWidth:Number = Math.max(viewWidth, 0);
       // keep track of the old label height
       var oldPreferredLabelHeight:Number = 0;
       // We get called with unscaledWidth = 0 a few times...
-      // rather than deal with this case normally, 
+      // rather than deal with this case normally,
       // we can just special-case it later to do something smarter
       if (labelWidth == 0) {
          // if unscaledWidth is 0, we want to make sure labelDisplay is invisible.
-         // we could set labelDisplay's width to 0, but that would cause an extra 
-         // layout pass because of the text reflow logic.  To avoid that we can 
+         // we could set labelDisplay's width to 0, but that would cause an extra
+         // layout pass because of the text reflow logic.  To avoid that we can
          // just set its height to 0 instead of setting the width.
          setElementSize(labelDisplay, NaN, 0);
       }
       else {
          // grab old height before we resize the labelDisplay
          oldPreferredLabelHeight = getElementPreferredHeight(labelDisplay);
-         // keep track of oldUnscaledWidth so we have a good guess as to the width 
+         // keep track of oldUnscaledWidth so we have a good guess as to the width
          // of the labelDisplay on the next measure() pass
          _oldUnscaledWidth = unscaledWidth;
          // set the width of labelDisplay to labelWidth.
-         // set the height to old label height.  If the height's actually wrong, 
+         // set the height to old label height.  If the height's actually wrong,
          // we'll invalidateSize() and go through this layout pass again anyways
          setElementSize(labelDisplay, labelWidth, oldPreferredLabelHeight);
          // grab new labelDisplay height after the labelDisplay has taken its final width
          var newPreferredLabelHeight:Number = getElementPreferredHeight(labelDisplay);
-         // if the resize caused the labelDisplay's height to change (because of 
+         // if the resize caused the labelDisplay's height to change (because of
          // text reflow), then we need to re-measure ourselves with our new width
          if (oldPreferredLabelHeight != newPreferredLabelHeight)
             invalidateSize();

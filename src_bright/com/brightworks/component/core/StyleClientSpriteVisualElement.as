@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -31,7 +31,7 @@ import mx.utils.NameUtil;
 
 import spark.core.SpriteVisualElement;
 
-// IStyleClient: 
+// IStyleClient:
 //    "describes the properties and methods that an object must implement so that it can fully
 //     participate in the style subsystem. This interface is implemented by UIComponent."
 //     Properties:
@@ -50,8 +50,8 @@ import spark.core.SpriteVisualElement;
 //         setStyle(styleProp:String, newValue:*):void - Sets a style property on this component instance.
 //         styleChanged(styleProp:String):void - Called when the value of a style property is changed.
 //
-// IAdvancedStyleClient: 
-//    "describes the advanced properties that a component must implement to fully participate in the advanced style subsystem. 
+// IAdvancedStyleClient:
+//    "describes the advanced properties that a component must implement to fully participate in the advanced style subsystem.
 //     Properties:
 //         id : String - [read-only] The identity of the component.
 //         styleParent : IAdvancedStyleClient - The parent of this IAdvancedStyleClient..
@@ -71,11 +71,11 @@ public class StyleClientSpriteVisualElement extends SpriteVisualElement implemen
    protected var declarations:Dictionary = new Dictionary();
    protected var stateDeclaraion:CSSStyleDeclaration;
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Getters & Setters
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    public function get className():String {
       return NameUtil.getUnqualifiedClassName(this);
@@ -176,11 +176,11 @@ public class StyleClientSpriteVisualElement extends SpriteVisualElement implemen
       _styleParent = value;
    }
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Public Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    public function clearStyle(styleProp:String):void {
       setStyle(styleProp, undefined);
@@ -308,11 +308,11 @@ public class StyleClientSpriteVisualElement extends SpriteVisualElement implemen
       }
    }
 
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
    //          Protected Methods
    //
-   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
    protected function setStateDeclaration():void {
       StyleProtoChain.initProtoChain(this);

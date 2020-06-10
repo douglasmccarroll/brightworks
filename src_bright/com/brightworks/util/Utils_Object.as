@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Brightworks, Inc.
+Copyright 2020 Brightworks, Inc.
 
 This file is part of Language Mentor.
 
@@ -238,7 +238,7 @@ public class Utils_Object {
 
    // Creates a formatted string displaying public props and their values
    public static function getInstanceStateInfo(o:Object, recursionLevel:int = -1):String {
-      // We don't want to use describeType() or do any of the other complex stuff that this method does 
+      // We don't want to use describeType() or do any of the other complex stuff that this method does
       // if o is a simple literal.
       if ((o is String) ||
             (o is int) ||
@@ -328,7 +328,7 @@ public class Utils_Object {
                      break;
                   default:
                      // This means that if this is a Dictionary, and the prop is
-                     // something other than a String or an int, we'll just show 
+                     // something other than a String or an int, we'll just show
                      // the name of the class as its name, and of the details of the
                      // instance. (For now.  :)
                      propDisplayName = propDataType;
@@ -382,7 +382,7 @@ public class Utils_Object {
                propertyInfoString += " void";
                break;
             default:
-               // Property is an Object - recursive call - up to a point - we have to 
+               // Property is an Object - recursive call - up to a point - we have to
                // limit this - at least until we start checking to make sure that we
                // don't get into a loop where instances reference each other.
                var recursionLimit:int = 20;
