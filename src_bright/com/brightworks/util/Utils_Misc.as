@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.brightworks.util {
+import flash.display.DisplayObjectContainer;
 
 
 public class Utils_Misc {
+
    // The random string that this function creates doesn't meet the criteria for a true UUID, but it's good enough to satisfy Google Analytics
    public static function generateImitationUUIDString(value:Array = null):String {
       var uid:Array = new Array();
@@ -35,6 +37,26 @@ public class Utils_Misc {
          }
       }
       var result:String = String.fromCharCode.apply(null, uid);
+      return result;
+   }
+
+   public static function getFirstDisplayListAncestorThatIsInstanceOfClassOrInstanceOfSubclass(comp:DisplayObjectContainer, clazz:Class):DisplayObjectContainer {
+      var currComp:DisplayObjectContainer = comp;
+      var result:DisplayObjectContainer;
+      while (true) {
+         if (currComp.parent) {
+            if (currComp.parent is clazz) {
+               result = currComp.parent;
+               break;
+            }
+            else {
+               currComp = currComp.parent;
+            }
+         }
+         else {
+            break;
+         }
+      }
       return result;
    }
 

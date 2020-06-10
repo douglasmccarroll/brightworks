@@ -55,12 +55,12 @@ import mx.rpc.http.HTTPService;
 import mx.utils.ArrayUtil;
 
 public class Log implements IManagedSingleton {
-   public static const LOG_LEVEL__ALWAYS:uint = 6;
+   public static const LOG_LEVEL__ALWAYS:uint = 0;
    public static const LOG_LEVEL__DEBUG:uint = 1;
    public static const LOG_LEVEL__ERROR:uint = 4;
    public static const LOG_LEVEL__FATAL:uint = 5;
    public static const LOG_LEVEL__INFO:uint = 2;
-   public static const LOG_LEVEL__NEVER:uint = 0;
+   public static const LOG_LEVEL__NEVER:uint = 6;
    public static const LOG_LEVEL__WARN:uint = 3;
    public static const LOG_LEVEL_STRING__ALWAYS:String = "Always";
    public static const LOG_LEVEL_STRING__DEBUG:String = "Debug";
@@ -74,7 +74,7 @@ public class Log implements IManagedSingleton {
    private static const _COPY_TO_CLIPBOARD_STRING__MAX_LENGTH__IOS:Number = 50000;
    private static const _COPY_TO_CLIPBOARD_STRING__MAX_LENGTH__WINDOWS_DESKTOP:Number = Number.MAX_VALUE;
    private static const _CURRENT_BREAKPOINT_LEVEL:uint = LOG_LEVEL__WARN;
-   private static const _CURRENT_TRACE_LEVEL:uint = LOG_LEVEL__INFO;
+   private static const _CURRENT_TRACE_LEVEL:uint = LOG_LEVEL__NEVER;
    private static const _DETAILED_INFO_LIST__CAPACITY__ALPHA:uint = 300;
    private static const _DETAILED_INFO_LIST__CAPACITY__STANDARD:uint = 3000;
 
@@ -359,7 +359,7 @@ public class Log implements IManagedSingleton {
 
    public static function isLoggingEnabled(logLevel:int):Boolean {
       if (!Log._configProvider)
-         return (logLevel > LOG_LEVEL__DEBUG);
+         return (logLevel > LOG_LEVEL__WARN);
       if (_configProvider.isLoggingEnabled(logLevel)) {
          return true;
       } else if (logLevel >= inAppLogLevelOverrideLevel) {
