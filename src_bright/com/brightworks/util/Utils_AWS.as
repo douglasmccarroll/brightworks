@@ -63,7 +63,7 @@ public class Utils_AWS {
 
    private static function onLoaderUncaughtError(e:UncaughtErrorEvent):void {
       if (_logMessageCallbackFunction is Function) {
-         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction(true);   // Returning true in all cases because it seems that most "errors" are false alarms
          _logMessageCallbackFunction = null;
       }
       var errorString:String;
@@ -99,7 +99,7 @@ public class Utils_AWS {
 
    private static function onLoaderHTTPStatus(e:HTTPStatusEvent):void {
       if (_logMessageCallbackFunction is Function) {
-         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction(true);   // Returning true in all cases because it seems that most "errors" are false alarms
          _logMessageCallbackFunction = null;
       }
       var isFailure:Boolean = false;
@@ -159,7 +159,7 @@ public class Utils_AWS {
 
    private static function onLoaderIOError(e:IOErrorEvent):void {
       if (_logMessageCallbackFunction is Function) {
-         _logMessageCallbackFunction(true);   //// Returning true in all cases because it seems that most "errors" are false alarms
+         _logMessageCallbackFunction(true);   // Returning true in all cases because it seems that most "errors" are false alarms
          _logMessageCallbackFunction = null;
       }
       var isFailure:Boolean = false;
@@ -169,7 +169,7 @@ public class Utils_AWS {
             isFailure = true;
             break;
          case 2124:
-            //// AWS API Gateway is returning these errors even when the call succeeds - ignore for now
+            // AWS API Gateway is returning these errors even when the call succeeds - ignore for now
             break;
          default:
             isFailure = true;
