@@ -31,6 +31,7 @@ public class BwEvent extends Event {
    public static const COMPLETE:String = "complete";
    public static const FAILURE:String = "failure";
    public static const NEW_INFO:String = "newInfo";
+   public static const NEW_LESSON_DOWNLOADS:String = "newLessonDownloads";
    public static const NO_INTERNET_CONNECTION:String = "noInternetConnection";
    public static const UPDATE_REQUIRED:String = "updateRequired";
 
