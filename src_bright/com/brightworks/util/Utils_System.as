@@ -108,6 +108,18 @@ public class Utils_System {
       return (platformName == Constant_PlatformName.ANDROID);
    }
 
+   public static function isBetaVersion():Boolean {
+      var result:Boolean = false;
+      switch (appReleaseType) {
+         case Constant_ReleaseType.BETA:
+            result = true;
+            break;
+         default:
+            result = false;
+      }
+      return result;
+   }
+
    public static function getAppStoreName():String {
       if (isAndroid())
          return "Play Store";

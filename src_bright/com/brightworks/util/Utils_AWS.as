@@ -91,7 +91,7 @@ public class Utils_AWS {
       if (Utils_System.isAlphaOrBetaVersion()) {
          var alertText:String = "AWS Post | Uncaught Error | " + errorString + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
          if (_mostRecentBody) {
-            alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
+            alertText += " | " + sizeBodyTextForAlert(_mostRecentBody);
          }
          Utils_ANEs.showAlert_OkayButton(alertText);
       }
@@ -121,6 +121,7 @@ public class Utils_AWS {
       }
       else if (e.status == 502) {
          // Getting a lot of these for activity reports
+         // 502 Bad Gateway server error - the server, while acting as a gateway or proxy, received an invalid response from the upstream server
          isFailure = true;
          if (_loader) {
             try {
@@ -148,9 +149,10 @@ public class Utils_AWS {
       }
       if (isFailure) {
          if (Utils_System.isAlphaOrBetaVersion()) {
-            var alertText:String = "AWS Post | Event's status was " + e.status + " | " + _loaderUseCount + " Retries | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
+            var alertText:String = "AWS Post | Event's status is " + e.status + " | " + _loaderUseCount + " Retries | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
             if (_mostRecentBody) {
-               alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
+               var bodyText:String = sizeBodyTextForAlert(_mostRecentBody);
+               alertText += " | " + bodyText;
             }
             Utils_ANEs.showAlert_OkayButton(alertText);
          }
@@ -164,8 +166,9 @@ public class Utils_AWS {
       }
       var isFailure:Boolean = false;
       switch (e.errorID) {
+         case 2035:
          case 2036:
-            // This happens when there's no internet connection
+            //// These errors occur when there's no internet connection. If we want accurate reporting we should have an actions-to-be-reported pool, and keep trying to send this info.
             isFailure = true;
             break;
          case 2124:
@@ -176,7 +179,7 @@ public class Utils_AWS {
             if (Utils_System.isAlphaOrBetaVersion()) {
                var alertText:String = "AWS Post | ioError | Error ID: " + e.errorID + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
                if (_mostRecentBody) {
-                  alertText += " | " + _mostRecentBody.substr(0, 250) + "...";
+                  alertText += " | " + sizeBodyTextForAlert(_mostRecentBody);
                }
                Utils_ANEs.showAlert_OkayButton(alertText);
             }
@@ -241,12 +244,19 @@ public class Utils_AWS {
          if (Utils_System.isAlphaOrBetaVersion()) {
             var alertText:String = "AWS Post | Exception occurred when we executed _loader.load() - error.message: " + error.message + " | " + Utils_DateTime.getCurrentTimeIn_HHMM_Format();
             if (body) {
-               alertText += " | " + body.substr(0, 250) + "...";
+               alertText += " | " + sizeBodyTextForAlert(body);
             }
             Utils_ANEs.showAlert_OkayButton(alertText);
          }
       }
    }
+
+   private static function sizeBodyTextForAlert(bodyText:String):String {
+      var newTextLength:int = Utils_System.isRunningOnDesktop() ? 250 : 500;
+      return bodyText.length <= newTextLength ? bodyText : bodyText.substr(0, newTextLength) + "...";
+   }
+
+
 
 
 }
