@@ -241,7 +241,6 @@ public class Utils_ANEs {
    }
 
    private static function onDialogAlertClose(event:DialogViewEvent):void {
-      Utils_Audio_Files.playClick();
       _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onDialogAlertClose);
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
@@ -249,7 +248,6 @@ public class Utils_ANEs {
    }
 
    private static function onMultiOptionDialogClose(event:DialogViewEvent):void {
-      Utils_Audio_Files.playClick();
       _dialogAlert.removeEventListener(DialogViewEvent.CLOSED, onMultiOptionDialogClose);
       _dialogAlert.dispose();
       if (_dialogCallback is Function)
