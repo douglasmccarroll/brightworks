@@ -60,7 +60,6 @@ along with Language Mentor.  If not, see <http://www.gnu.org/licenses/>.
 package com.brightworks.db {
 import com.brightworks.interfaces.IDisposable;
 import com.brightworks.util.Log;
-import com.brightworks.util.Utils_DateTime;
 import com.brightworks.util.Utils_Dispose;
 import com.brightworks.util.Utils_Object;
 import com.brightworks.util.Utils_System;
@@ -70,26 +69,18 @@ import flash.data.SQLMode;
 import flash.data.SQLResult;
 import flash.errors.SQLError;
 import flash.events.EventDispatcher;
-import flash.events.SQLErrorEvent;
+import flash.events.PermissionEvent;
 import flash.filesystem.File;
+import flash.permissions.PermissionStatus;
 import flash.utils.Dictionary;
 
 public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperation, IDisposable {
-   public static const STATUS_BEGINNING:String = "beginning";
    public static const STATUS_COMMITTING:String = "committing";
    public static const STATUS_COMPLETE:String = "complete";
-   public static const STATUS_ERROR_BEGIN_FAILED:String = "errorBeginFailed";
-   public static const STATUS_ERROR_COMMIT_FAILED:String = "errorCommitFailed";
-   public static const STATUS_ERROR_OPEN_FAILED:String = "errorOpenFailed";
-   public static const STATUS_ERROR_ROLLBACK_FAILED:String = "errorRollbackFailed";
-   public static const STATUS_EXECUTING_STATEMENTS:String = "executingStatement";
-   public static const STATUS_INSTANTIATED:String = "instantiated";
    public static const STATUS_OPENING:String = "opening";
    public static const STATUS_ROLLING_BACK_AFTER_ERROR:String = "rollingBackAfterError";
-   public static const STATUS_TIMED_OUT:String = "timedOut";
 
    private static const STATEMENTSTATUS_COMPLETE:String = "complete";
-   private static const STATEMENTSTATUS_ERROR:String = "error";
    private static const STATEMENTSTATUS_EXECUTING:String = "executing";
    private static const TIMEOUT_DEFAULT_MS:int = 180000;
 
@@ -97,7 +88,6 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
    public var index_rowsAffected_by_queryData:Dictionary;
 
    private var _connection:SQLConnection;
-   private var _connectionErrorEvent:SQLErrorEvent;
    private var _databaseFile:File;
    private var _diagnosticInfoString:String;
    private var _index_queryData_by_statement:Dictionary;
@@ -105,7 +95,6 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
    private var _index_statement_by_queryData:Dictionary;
    private var _isDisposed:Boolean;
    private var _queryDataList:Array; // An array of SQLiteQueryData instances
-   private var _startTransactionMilliseconds:Number;
    private var _timeoutMilliseconds:int;
 
    // --------------------------------------------
@@ -176,15 +165,28 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
    }
 
    public function execute(databaseFile:File):SQLiteTransactionReport {
-      Log.debug("SQLiteTransaction.execute()" + getDiagnosticInfoString());
-      _startTransactionMilliseconds = Utils_DateTime.getCurrentMS_AppActive();
       _databaseFile = databaseFile;
       _connection = new SQLConnection();
       try {
          _connection.open(_databaseFile, SQLMode.UPDATE);
       }
       catch (error:SQLError) {
-         Log.error("SQLiteTransaction.execute(): Error when opening DB: " + error.message);
+         if (File.permissionStatus != PermissionStatus.GRANTED) {
+            Log.error("SQLiteTransaction.execute(): Error when opening DB - error.message = '" + error.message + "', File.permissionStatus != PermissionStatus.GRANTED - will attempt experimental permission change request");
+            _databaseFile.addEventListener(PermissionEvent.PERMISSION_STATUS, onDBFilePermissionStatusChange);
+            try {
+               _databaseFile.requestPermission();
+            }catch(e:Error){
+               // Is another request in progress?
+               Log.error(["SQLiteTransaction.execute() - dbFile.requestPermission throws error", e]);
+            }
+         }
+         else if (!databaseFile.exists) {
+            Log.fatal("SQLiteTransaction.execute(): Error when opening DB - error.message = '" + error.message + "', databaseFile.exists = false");
+         }
+         else {
+            Log.fatal("SQLiteTransaction.execute(): Error when opening DB - error.message = '" + error.message + "' - file exists and permission is GRANTED - what else could be wrong? - file already in use? ");
+         }
          return createFailureReport(STATUS_OPENING, error);
       }
       _connection.begin();
@@ -293,6 +295,14 @@ public class SQLiteTransaction extends EventDispatcher implements ISQLiteOperati
          return " - diagnostic info: " + _diagnosticInfoString;
       else
          return "";
+   }
+
+   private function onDBFilePermissionStatusChange(e:PermissionEvent):void {
+      // This method is used for diagnostic purposes. We only try to change permission status if/when a) we've failed to open the DB file, and b) it
+      // appears that the problem is a permissions problem.
+      // If e.status equals GRANTED we should think about how to go forward. This code, and our SQLite code in general is synchronous. A request to change permissions
+      // status is asynchronous. What to do?
+      Log.fatal("SQLiteTransaction.onDBFilePermissionStatusChange(): e.status = " + e.status + " - see comments above this log statement");
    }
 
 }
