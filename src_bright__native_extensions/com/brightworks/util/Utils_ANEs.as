@@ -22,8 +22,6 @@ package com.brightworks.util {
 // If you're having problems with extensions, ensure that the most recent versions of all extensions and of "common dependency extensions" are installed
 import com.brightworks.component.mobilealert.MobileAlert;
 import com.brightworks.component.mobilealert.MobileDialog;
-import com.brightworks.util.audio.Utils_Audio_Files;
-//import com.distriqt.extension.applicationrater.ApplicationRater;
 import com.distriqt.extension.application.Application;
 import com.distriqt.extension.core.Core;
 import com.distriqt.extension.dialog.Dialog;
@@ -39,9 +37,6 @@ import com.distriqt.extension.scanner.Scanner;
 import com.distriqt.extension.scanner.ScannerOptions;
 import com.distriqt.extension.scanner.events.AuthorisationEvent;
 import com.distriqt.extension.scanner.events.ScannerEvent;
-import com.distriqt.extension.volume.Volume;
-import com.distriqt.extension.volume.events.VolumeEvent;
-import com.langcollab.languagementor.constant.Constant_MentorTypeSpecific;
 
 /*
 
@@ -63,8 +58,6 @@ public class Utils_ANEs {
    private static var _codeScanResultCallback:Function;
    private static var _dialogAlert:DialogView;
    private static var _dialogCallback:Function;
-   private static var _silenceSwitchCallback:Function;
-   private static var _silenceSwitchMostRecentlyReportedState:Boolean;  //  true = muted, false = not muted
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    //
@@ -88,18 +81,6 @@ public class Utils_ANEs {
       Scanner.service.startScan(options);
    }
 
-   public static function activateSilenceSwitchMonitor(silenceSwitchActivatedCallback:Function):void {
-      if (_silenceSwitchCallback is Function) {
-         return;
-      }
-      _silenceSwitchCallback = silenceSwitchActivatedCallback;
-      if (Volume.isSupported && Utils_System.isIOS()) {     // Volume ANE doesn't provide "muting" monitoring for Android
-         Volume.service.monitorMuteState(true);
-         Volume.service.addEventListener(VolumeEvent.MUTED, onSilenceSwitchMuted);
-         Volume.service.addEventListener(VolumeEvent.UNMUTED, onSilenceSwitchUnmuted);
-      }
-   }
-
    public static function getStatusBarHeight():Number {
       if (Application.isSupported) {
          return Application.service.display.getStatusBarHeight();
@@ -119,23 +100,13 @@ public class Utils_ANEs {
       return true;
    }
 
-   public static function isSilenceSwitchMuted():Boolean {
-      if (Volume.isSupported && Utils_System.isIOS()) {
-         return Volume.service.isMuted();
-      }
-      else {
-         // Volume ANE doesn't provide "muting" monitoring for Android
-         return false;
-      }
-   }
-
    public static function requestCameraPermissionForScanner(callback:Function):void {
-      if (Scanner.service.authorisationStatus() == com.distriqt.extension.scanner.AuthorisationStatus.AUTHORISED)
+      if (Scanner.service.authorisationStatus() == AuthorisationStatus.AUTHORISED)
          callback(true);
-      if (Scanner.service.authorisationStatus() == com.distriqt.extension.scanner.AuthorisationStatus.DENIED)
+      if (Scanner.service.authorisationStatus() == AuthorisationStatus.DENIED)
          callback(false);
       _cameraPermissionCallback = callback;
-      Scanner.service.addEventListener(com.distriqt.extension.scanner.events.AuthorisationEvent.CHANGED, onCameraPermissionRequestResult);
+      Scanner.service.addEventListener(AuthorisationEvent.CHANGED, onCameraPermissionRequestResult);
       Scanner.service.requestAccess();
    }
 
@@ -224,8 +195,8 @@ public class Utils_ANEs {
       ApplicationRater.service.applicationLaunched();
    }*/
 
-   private static function onCameraPermissionRequestResult(e:com.distriqt.extension.scanner.events.AuthorisationEvent):void {
-      _cameraPermissionCallback((e.status == com.distriqt.extension.scanner.AuthorisationStatus.AUTHORISED));
+   private static function onCameraPermissionRequestResult(e:AuthorisationEvent):void {
+      _cameraPermissionCallback((e.status == AuthorisationStatus.AUTHORISED));
    }
 
    private static function onCodeScanCancel(event:ScannerEvent):void {
@@ -254,16 +225,6 @@ public class Utils_ANEs {
          _dialogCallback(event.index);
    }
 
-   private static function onSilenceSwitchMuted(event:VolumeEvent):void {
-      if (!_silenceSwitchMostRecentlyReportedState) {
-         _silenceSwitchCallback(true);
-      }
-      _silenceSwitchMostRecentlyReportedState = true;
-   }
-
-   private static function onSilenceSwitchUnmuted(event:VolumeEvent):void {
-      _silenceSwitchMostRecentlyReportedState = false;
-   }
 
 
 }
